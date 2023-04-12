@@ -7,7 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 
 
+/***
+ * Auxiliary class for working with files
+ */
 public class FileManage {
+    /***
+     * Reading data from a file and entering it into a table
+     * @param parent jframe type object that opens the file
+     * @param table the table in which the data will be entered
+     */
     public static void readRacerFromFile(JFrame parent, DefaultTableModel table) {
         FileDialog load = new FileDialog(parent, "Загрузка данных", FileDialog.LOAD);
         load.setFile("*.txt");
@@ -33,6 +41,11 @@ public class FileManage {
         catch (IOException e) {e.printStackTrace();}
     }
 
+    /***
+     * Writing data from a table to a file
+     * @param parent jframe type object that opens the file
+     * @param table the table in which the data will be entered
+     */
     public static void writeRacerToFile(JFrame parent, DefaultTableModel table) {
         FileDialog save = new FileDialog(parent, "Сохранение данных", FileDialog.SAVE);
         save.setFile("*.txt");
@@ -49,6 +62,5 @@ public class FileManage {
         }
         catch(IOException e) // Ошибка записи в файл
         { e.printStackTrace(); }
-
     }
 }
