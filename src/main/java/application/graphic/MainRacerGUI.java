@@ -1,4 +1,5 @@
 package application.graphic;
+
 import race.system.Racer;
 
 import java.awt.*;
@@ -27,7 +28,8 @@ public class MainRacerGUI {
      */
     private static final JButton addBtn = new JButton(new ImageIcon("src/img/add.png"));
     /**
-     * This button deletes selected field*/
+     * This button deletes selected field
+     */
     private static final JButton deleteBtn = new JButton(new ImageIcon("src/img/delete.png"));
     /**
      * This button allows you to edit selected field
@@ -35,21 +37,23 @@ public class MainRacerGUI {
     private static final JButton editBtn = new JButton(new ImageIcon("src/img/edit.png"));
     private static final JButton fileBtn = new JButton(new ImageIcon("src/img/file.png"));
     /**
-     * This input is used to search for an entry in the table by the name of the racer
+     * This input is used to search for an entry in the table by the name of the
+     * racer
      */
     private static final JTextField searchNameField = new JTextField("Имя гонщика", 10);
     /**
-     * This input is used to search for an entry in the table by the team of the racer
+     * This input is used to search for an entry in the table by the team of the
+     * racer
      */
     private static final JTextField searchTeamField = new JTextField("Команда", 10);
     /**
      * This bar is used to store buttons
      */
-    private static final  JToolBar toolBar = new JToolBar();
+    private static final JToolBar toolBar = new JToolBar();
     /**
      * Table column names
      */
-    private static final String [] columns = {"Имя гонщика", "Возраст", "Команда", "Очки"};
+    private static final String[] columns = { "Имя гонщика", "Возраст", "Команда", "Очки" };
     /**
      * Field of the table
      */
@@ -81,7 +85,8 @@ public class MainRacerGUI {
     private int rowToEdit = -1;
 
     /**
-     * Constructor of GUI*/
+     * Constructor of GUI
+     */
     public void show() {
         mainRacerGUI.setVisible(true);
         mainRacerGUI.setBounds(200, 150, 800, 600);
@@ -93,7 +98,6 @@ public class MainRacerGUI {
 
         Container container = mainRacerGUI.getContentPane();
         container.setLayout(new BorderLayout());
-
 
         searchBtn.setBackground(new Color(0xDFD9D9D9, false));
         clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -151,8 +155,9 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
-             FileManage.readRacerFromFile(mainRacerGUI, racerTable);
+        public void actionPerformed(ActionEvent e) {
+            // FileManage.readRacerFromTextFile(mainRacerGUI, racerTable);
+            FileManage.readRacerFromXmlFile(racerTable);
         }
     }
 
@@ -164,7 +169,7 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             try {
                 changeEditingPermit();
                 setRowToEdit(racers.getSelectedRow());
@@ -179,13 +184,16 @@ public class MainRacerGUI {
     }
 
     private void setRowToEdit(int row) throws UnselectedEditException {
-        if(row < 0)    throw new UnselectedEditException();
+        if (row < 0)
+            throw new UnselectedEditException();
         rowToEdit = row;
     }
 
-    public static void addRacer(Racer racer){
-        racerTable.addRow(new String[]{racer.getName(), racer.getAge().toString(), racer.getTeam(), racer.getPoints().toString()});
+    public static void addRacer(Racer racer) {
+        racerTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
+                racer.getPoints().toString() });
     }
+
     private boolean getEditingPermit() {
         return editingPermit;
     }
@@ -194,36 +202,41 @@ public class MainRacerGUI {
         editingPermit = !editingPermit;
     }
 
-    public static void setInput(JTextField input, String text) { input.setText(text);}
+    public static void setInput(JTextField input, String text) {
+        input.setText(text);
+    }
 
     private static class ClearInputEventListener implements ActionListener {
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             setInput(searchTeamField, "Команда");
             setInput(searchNameField, "Имя гонщика");
         }
     }
 
-
     public static class TeamInputFocusListener implements FocusListener {
 
-        public void focusGained (FocusEvent e) {
-            if(searchTeamField.getText().equals("Команда"))     setInput(searchTeamField, "");
+        public void focusGained(FocusEvent e) {
+            if (searchTeamField.getText().equals("Команда"))
+                setInput(searchTeamField, "");
         }
 
-        public void focusLost (FocusEvent e) {
-            if(searchTeamField.getText().equals(""))     setInput(searchTeamField, "Команда");
+        public void focusLost(FocusEvent e) {
+            if (searchTeamField.getText().equals(""))
+                setInput(searchTeamField, "Команда");
         }
 
     }
 
     public static class RacerInputFocusListener implements FocusListener {
 
-        public void focusGained (FocusEvent e) {
-            if(searchNameField.getText().equals("Имя гонщика"))    setInput(searchNameField, "");
+        public void focusGained(FocusEvent e) {
+            if (searchNameField.getText().equals("Имя гонщика"))
+                setInput(searchNameField, "");
         }
 
-        public void focusLost (FocusEvent e) {
-            if(searchNameField.getText().equals(""))    setInput(searchNameField, "Имя гонщика");
+        public void focusLost(FocusEvent e) {
+            if (searchNameField.getText().equals(""))
+                setInput(searchNameField, "Имя гонщика");
         }
 
     }
@@ -237,8 +250,9 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
-            FileManage.writeRacerToFile(mainRacerGUI, racerTable);
+        public void actionPerformed(ActionEvent e) {
+            // FileManage.writeRacerToTextFile(mainRacerGUI, racerTable);
+            FileManage.writeRacerToXmlFile(racerTable);
         }
     }
 
@@ -251,7 +265,7 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             AddRacerGUI addRacerWindow = new AddRacerGUI();
             mainRacerGUI.setEnabled(false);
             addRacerWindow.show();
@@ -267,12 +281,11 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             String message = "Нажата кнопка удаления из таблицы";
             JOptionPane.showMessageDialog(null, message, "Delete Alert", JOptionPane.PLAIN_MESSAGE);
         }
     }
-
 
     /**
      * Сlass for implementing a search button listener
@@ -283,17 +296,19 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             try {
                 String teamInputText = searchTeamField.getText();
                 String nameInputText = searchNameField.getText();
-                if(teamInputText.equals("Команда") & nameInputText.equals("Имя гонщика"))  throw new EmptySearchInputException();
+                if (teamInputText.equals("Команда") & nameInputText.equals("Имя гонщика"))
+                    throw new EmptySearchInputException();
                 else {
                     String message = "Поиск успешно выполнен!";
                     JOptionPane.showMessageDialog(null, message, "Search Success Alert", JOptionPane.PLAIN_MESSAGE);
                 }
             } catch (EmptySearchInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Search Error Alert", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Search Error Alert",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
     }
