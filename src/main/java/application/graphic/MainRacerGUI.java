@@ -7,6 +7,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import exception.*;
+import util.CreateReport;
 import util.FileManage;
 
 /**
@@ -18,6 +19,8 @@ public class MainRacerGUI {
      * This button performs a search
      */
     private static final JButton searchBtn = new JButton("Поиск");
+    private static final JButton reportBtn = new JButton("Отчет");
+
     private static final JButton clearInputBtn = new JButton("Очистить");
     /**
      * This button saves changes
@@ -101,16 +104,20 @@ public class MainRacerGUI {
 
         searchBtn.setBackground(new Color(0xDFD9D9D9, false));
         clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
+        reportBtn.setBackground(new Color(0xDFD9D9D9, false));
 
         searchTeamField.addFocusListener(new TeamInputFocusListener());
         searchNameField.addFocusListener(new RacerInputFocusListener());
         searchBtn.addActionListener(new SearchEventListener());
+        reportBtn.addActionListener(new ReportEventListener());
+
         clearInputBtn.addActionListener(new ClearInputEventListener());
 
         filterPanel.add(searchNameField);
         filterPanel.add(searchTeamField);
         filterPanel.add(clearInputBtn);
         filterPanel.add(searchBtn);
+        filterPanel.add(reportBtn);
 
         fileBtn.setToolTipText("Открыть файл");
         fileBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -284,6 +291,16 @@ public class MainRacerGUI {
         public void actionPerformed(ActionEvent e) {
             String message = "Нажата кнопка удаления из таблицы";
             JOptionPane.showMessageDialog(null, message, "Delete Alert", JOptionPane.PLAIN_MESSAGE);
+        }
+    }
+
+    private static class ReportEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            CreateReport.printReport(racerTable);
         }
     }
 

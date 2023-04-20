@@ -93,7 +93,7 @@ public class FileManage {
             // Создание парсера документа
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             // Чтение документа из файла
-            Document doc = dBuilder.parse(new File("src/resources/data.xml"));
+            Document doc = dBuilder.parse(new File("data.xml"));
             // Нормализация документа
             doc.getDocumentElement().normalize();
             // Обработка ошибки парсера при чтении данных из XML-файла
@@ -138,9 +138,10 @@ public class FileManage {
             for (int i = 0; i < table.getRowCount(); i++) {
                 Element racer = doc.createElement("racer");
                 racerlist.appendChild(racer);
-                racer.setAttribute("author", (String) table.getValueAt(i, 0));
-                racer.setAttribute("title", (String) table.getValueAt(i, 1));
-                racer.setAttribute("have", (String) table.getValueAt(i, 2));
+                racer.setAttribute("name", (String) table.getValueAt(i, 0));
+                racer.setAttribute("age", (String) table.getValueAt(i, 1));
+                racer.setAttribute("team", (String) table.getValueAt(i, 2));
+                racer.setAttribute("points", (String) table.getValueAt(i, 3));
             }
             // Создание преобразователя документа
             Transformer trans = TransformerFactory.newInstance().newTransformer();

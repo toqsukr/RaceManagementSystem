@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<racerlist> 
-    <racer name="Фернандо Алонсо" age="27" team="Red Bull" points="1004"/>
-    <racer name="Александр Албон" age="41" team="Aston Martin" points="2038"/>
-    <racer name="Пьер Гасли" age="27" team="Renaul" points="336"/>
-    <racer name="Кевин Магнуссен" age="30" team="Ford" points="273"/>
-</racerlist>
