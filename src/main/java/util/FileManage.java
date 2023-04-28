@@ -88,40 +88,46 @@ public class FileManage {
         }
     }
 
-    public static void readRacerFromXmlFile(DefaultTableModel table) {
+    public static Document openXmlDocument(String path) {
         try {
             // Создание парсера документа
             DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             // Чтение документа из файла
-            Document doc = dBuilder.parse(new File("data.xml"));
+            Document doc = dBuilder.parse(new File(path));
             // Нормализация документа
             doc.getDocumentElement().normalize();
-            // Обработка ошибки парсера при чтении данных из XML-файла
-            // Получение списка элементов с именем book
-            NodeList nlRacers = doc.getElementsByTagName("racer");
-            int rows = table.getRowCount();
-            for (int i = 0; i < rows; i++)
-                table.removeRow(0); // Очистка таблицы
-            // Цикл просмотра списка элементов и запись данных в таблицу
-            for (int temp = 0; temp < nlRacers.getLength(); temp++) {
-                // Выбор очередного элемента списка
-                Node elem = nlRacers.item(temp);
-                // Получение списка атрибутов элемента
-                NamedNodeMap attrs = elem.getAttributes();
-                // Чтение атрибутов элемента
-                String name = attrs.getNamedItem("name").getNodeValue();
-                String age = attrs.getNamedItem("age").getNodeValue();
-                String team = attrs.getNamedItem("team").getNodeValue();
-                String points = attrs.getNamedItem("points").getNodeValue();
-                // Запись данных в таблицу
-                table.addRow(new String[] { name, age, team, points });
-            }
+            return doc;
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static void readRacerFromXmlFile(DefaultTableModel table) {
+        Document doc = openXmlDocument("etu/data.xml");
+        // Обработка ошибки парсера при чтении данных из XML-файла
+        // Получение списка элементов с именем book
+        NodeList nlRacers = doc.getElementsByTagName("racer");
+        int rows = table.getRowCount();
+        for (int i = 0; i < rows; i++)
+            table.removeRow(0); // Очистка таблицы
+        // Цикл просмотра списка элементов и запись данных в таблицу
+        for (int temp = 0; temp < nlRacers.getLength(); temp++) {
+            // Выбор очередного элемента списка
+            Node elem = nlRacers.item(temp);
+            // Получение списка атрибутов элемента
+            NamedNodeMap attrs = elem.getAttributes();
+            // Чтение атрибутов элемента
+            String name = attrs.getNamedItem("name").getNodeValue();
+            String age = attrs.getNamedItem("age").getNodeValue();
+            String team = attrs.getNamedItem("team").getNodeValue();
+            String points = attrs.getNamedItem("points").getNodeValue();
+            // Запись данных в таблицу
+            table.addRow(new String[] { name, age, team, points });
         }
     }
 
@@ -159,4 +165,5 @@ public class FileManage {
             e.printStackTrace();
         }
     }
+
 }

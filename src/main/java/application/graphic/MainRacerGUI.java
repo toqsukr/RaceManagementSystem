@@ -25,20 +25,20 @@ public class MainRacerGUI {
     /**
      * This button saves changes
      */
-    private static final JButton saveBtn = new JButton(new ImageIcon("src/img/save.png"));
+    private static final JButton saveBtn = new JButton(new ImageIcon("etu/src/img/save.png"));
     /**
      * This button adds new field into table
      */
-    private static final JButton addBtn = new JButton(new ImageIcon("src/img/add.png"));
+    private static final JButton addBtn = new JButton(new ImageIcon("etu/src/img/add.png"));
     /**
      * This button deletes selected field
      */
-    private static final JButton deleteBtn = new JButton(new ImageIcon("src/img/delete.png"));
+    private static final JButton deleteBtn = new JButton(new ImageIcon("etu/src/img/delete.png"));
     /**
      * This button allows you to edit selected field
      */
-    private static final JButton editBtn = new JButton(new ImageIcon("src/img/edit.png"));
-    private static final JButton fileBtn = new JButton(new ImageIcon("src/img/file.png"));
+    private static final JButton editBtn = new JButton(new ImageIcon("etu/src/img/edit.png"));
+    private static final JButton fileBtn = new JButton(new ImageIcon("etu/src/img/file.png"));
     /**
      * This input is used to search for an entry in the table by the name of the
      * racer
@@ -95,7 +95,7 @@ public class MainRacerGUI {
         mainRacerGUI.setBounds(200, 150, 800, 600);
         mainRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainRacerGUI.setResizable(false);
-        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("src/img/favicon.png"));
+        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
 
         racers.getTableHeader().setReorderingAllowed(false);
 

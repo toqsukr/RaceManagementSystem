@@ -1,1 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><racerlist><racer age="27" name="Fernando Alonso" points="84923" team="Red Bull"/><racer age="41" name="Alexander Albon" points="500" team="Aston Martin"/><racer age="27" name="Pier Gasly" points="3523" team="Renaul"/><racer age="31" name="Kevin Magnussen" points="100" team="Ford"/></racerlist>
+<?xml version="1.0" encoding="UTF-8"?>
+<racerlist>
+    <racer age="27" name="Fernando Alonso" points="84923" team="Red Bull" />
+    <racer age="41" name="Alexander Albon" points="500" team="Aston Martin" />
+    <racer age="60" name="Pier Gasly" points="3523" team="Renaul" />
+    <racer age="31" name="Kevin Magnussen" points="100" team="Ford" />
+</racerlist>

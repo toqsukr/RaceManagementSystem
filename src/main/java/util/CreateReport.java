@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
-
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.Element;
@@ -18,7 +17,15 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+/***
+ * This class generate pdf report from data
+ */
+
 public class CreateReport {
+    /***
+     * 
+     * @param table table containing data
+     */
     public static void printReport(DefaultTableModel table) {
         try {
             JFileChooser fileChooser = new JFileChooser();
