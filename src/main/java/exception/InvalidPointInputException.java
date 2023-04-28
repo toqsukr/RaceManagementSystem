@@ -1,10 +1,10 @@
 package exception;
 
-public class InvalidPointInputException extends InvalidInputException {
+public class InvalidPointInputException extends Exception {
     /***
      * InvalidPointInputException constructor
      */
     public InvalidPointInputException() {
-        super("Некорректные очки гонщика!");
+        super("Некорректно введены очки гонщика!");
     }
 }

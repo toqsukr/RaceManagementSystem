@@ -2,7 +2,7 @@ package util;
 
 public class Validation {
     public static boolean isValidName(String input) {
-        return input.matches("^([A-Za-z]{2,20})(\\s[A-Za-z]{0,30})?$");
+        return input.matches("^([А-Яа-яA-Za-z]{2,20})(\\s[А-Яа-яA-Za-z]{0,30})?$");
     }
 
     public static boolean isValidAge(String input) {
@@ -10,7 +10,7 @@ public class Validation {
     }
 
     public static boolean isValidTeam(String input) {
-        return input.matches("^[\\w\\s]{3,20}$");
+        return input.matches("^[А-Яа-я\\w\\s]{3,20}$");
     }
 
     public static boolean isValidPoint(String input) {

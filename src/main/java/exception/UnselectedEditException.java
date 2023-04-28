@@ -8,6 +8,6 @@ public class UnselectedEditException extends Exception {
      * UnselectedEditException constructor
      */
     public UnselectedEditException() {
-        super("Выберите запись для редактирования!");
+        super("Данные для редактирования не найдены!");
     }
 }

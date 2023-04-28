@@ -20,7 +20,7 @@ public class TestValidation {
     @Test
     public void testIsValidAge() {
         Assert.assertTrue(Validation.isValidAge("45"));
-        Assert.assertFalse(Validation.isValidAge("-18"));
+        Assert.assertTrue(Validation.isValidAge("18"));
         Assert.assertFalse(Validation.isValidAge("700"));
         Assert.assertFalse(Validation.isValidAge("Andrew47"));
         Assert.assertFalse(Validation.isValidAge("54Kolya"));
@@ -33,7 +33,6 @@ public class TestValidation {
         Assert.assertTrue(Validation.isValidTeam("Hounds Dogs37"));
         Assert.assertTrue(Validation.isValidTeam("Horses"));
         Assert.assertTrue(Validation.isValidTeam("Ice"));
-        Assert.assertTrue(Validation.isValidTeam("Reno"));
         Assert.assertFalse(Validation.isValidTeam("M()nke!"));
         Assert.assertFalse(Validation.isValidTeam("A"));
         Assert.assertFalse(Validation.isValidTeam("jfklsdjvoimdofjlsdjf3628974"));

@@ -1,10 +1,10 @@
 package exception;
 
-public class InvalidNameInputException extends InvalidInputException {
+public class InvalidNameInputException extends Exception {
     /***
      * InvalidNameInputException constructor
      */
     public InvalidNameInputException() {
-        super("Некорректное имя гонщика!");
+        super("Некорректно введено имя гонщика!");
     }
 }

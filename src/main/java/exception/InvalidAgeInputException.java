@@ -1,10 +1,10 @@
 package exception;
 
-public class InvalidAgeInputException extends InvalidInputException {
+public class InvalidAgeInputException extends Exception {
     /***
      * InvalidAgeInputException constructor
      */
     public InvalidAgeInputException() {
-        super("Некорректный возраст гонщика!");
+        super("Некорректный введён возраст гонщика!");
     }
 }

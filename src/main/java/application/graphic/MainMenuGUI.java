@@ -15,12 +15,13 @@ public class MainMenuGUI {
     private final JButton graphicBtn = new JButton("Расписание");
 
     private static JLabel title = new JLabel("Система управления автогонками");
+
     public void show() {
         mainMenuGUI.setVisible(true);
         mainMenuGUI.setBounds(650, 200, 300, 400);
         mainMenuGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainMenuGUI.setResizable(false);
-        mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("src/img/favicon.png"));
+        mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
 
         racerBtn.setBackground(new Color(0xDFD9D9D9, false));
         racerBtn.addActionListener(new RacerEventListener());
@@ -67,10 +68,9 @@ public class MainMenuGUI {
          *
          * @param e the event to be processed
          */
-        public void actionPerformed (ActionEvent e) {
+        public void actionPerformed(ActionEvent e) {
             MainRacerGUI racerWindow = new MainRacerGUI();
             racerWindow.show();
         }
     }
 }
-

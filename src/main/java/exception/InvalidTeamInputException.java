@@ -1,10 +1,10 @@
 package exception;
 
-public class InvalidTeamInputException extends InvalidInputException {
+public class InvalidTeamInputException extends Exception {
     /***
      * InvalidTeamInputException constructor
      */
     public InvalidTeamInputException() {
-        super("Некорректное название команды!");
+        super("Некорректно введено название команды!");
     }
 }

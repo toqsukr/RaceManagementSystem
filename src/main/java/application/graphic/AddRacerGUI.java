@@ -2,7 +2,6 @@ package application.graphic;
 
 import exception.EmptyAddInputException;
 import exception.InvalidAgeInputException;
-import exception.InvalidInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
@@ -15,7 +14,7 @@ import util.Validation;
 
 public class AddRacerGUI {
 
-    private static JFrame addRacerGUI = new JFrame("Добавление гонщика");
+    public static JFrame addRacerGUI = new JFrame("Добавление гонщика");
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -49,13 +48,17 @@ public class AddRacerGUI {
             public void windowClosing(WindowEvent e) {
                 MainRacerGUI.setRacerWindowEnable(true);
                 addRacerGUI.dispose();
+                inputNameField.setText("Имя гонщика");
+                inputAgeField.setText("Возраст");
+                inputTeamField.setText("Команда");
+                inputPointField.setText("Очки");
             }
         });
-        addRacerGUI.setVisible(true);
+        addRacerGUI.setVisible(false);
         addRacerGUI.setBounds(200, 150, 410, 300);
         addRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addRacerGUI.setResizable(false);
-        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("src/img/favicon.png"));
+        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
 
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -160,19 +163,19 @@ public class AddRacerGUI {
                 MainRacerGUI.setRacerWindowEnable(true);
                 MainRacerGUI.addRacer(racer);
             } catch (EmptyAddInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Add Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidNameInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Add Name Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidAgeInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Add Age Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTeamInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Add Team Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidPointInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Add Points Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }

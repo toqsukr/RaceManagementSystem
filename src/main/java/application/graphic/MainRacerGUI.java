@@ -39,6 +39,9 @@ public class MainRacerGUI {
      */
     private static final JButton editBtn = new JButton(new ImageIcon("etu/src/img/edit.png"));
     private static final JButton fileBtn = new JButton(new ImageIcon("etu/src/img/file.png"));
+    private static final JButton confirmBtn = new JButton(new ImageIcon("etu/src/img/confirm.png"));
+    private static final JButton cancelBtn = new JButton(new ImageIcon("etu/src/img/cancel.png"));
+
     /**
      * This input is used to search for an entry in the table by the name of the
      * racer
@@ -64,14 +67,16 @@ public class MainRacerGUI {
     /**
      * Generation of the default table
      */
-    private static final DefaultTableModel racerTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel racerTable = new DefaultTableModel(data, columns);
+
+    private static DefaultTableModel previousRacerTable = new DefaultTableModel(data, columns);
     /**
      * Create the table
      */
     private final JTable racers = new JTable(racerTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
-            return i == getRowToEdit() && getEditingPermit();
+            return getEditingPermit();
         }
     };
     /**
@@ -85,7 +90,7 @@ public class MainRacerGUI {
 
     private boolean editingPermit = false;
 
-    private int rowToEdit = -1;
+    private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
     /**
      * Constructor of GUI
@@ -96,6 +101,7 @@ public class MainRacerGUI {
         mainRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainRacerGUI.setResizable(false);
         mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
+        addRacerWindow.show();
 
         racers.getTableHeader().setReorderingAllowed(false);
 
@@ -139,11 +145,23 @@ public class MainRacerGUI {
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         addBtn.addActionListener(new AddEventListener());
 
+        confirmBtn.setVisible(false);
+        confirmBtn.setToolTipText("Ок");
+        confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
+        confirmBtn.addActionListener(new ConfirmEventListener());
+
+        cancelBtn.setVisible(false);
+        cancelBtn.setToolTipText("Отмена");
+        cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+        cancelBtn.addActionListener(new CancelEventListener());
+
         toolBar.add(fileBtn);
         toolBar.add(saveBtn);
         toolBar.add(addBtn);
         toolBar.add(deleteBtn);
         toolBar.add(editBtn);
+        toolBar.add(confirmBtn);
+        toolBar.add(cancelBtn);
 
         container.add(toolBar, BorderLayout.NORTH);
         container.add(scroll, BorderLayout.CENTER);
@@ -152,6 +170,44 @@ public class MainRacerGUI {
 
     public static void setRacerWindowEnable(boolean value) {
         mainRacerGUI.setEnabled(value);
+    }
+
+    private static void setConfirmbarVisible() {
+        fileBtn.setVisible(false);
+        saveBtn.setVisible(false);
+        addBtn.setVisible(false);
+        deleteBtn.setVisible(false);
+        editBtn.setVisible(false);
+        confirmBtn.setVisible(true);
+        cancelBtn.setVisible(true);
+    }
+
+    private static void setConfirmbarUnvisible() {
+        fileBtn.setVisible(true);
+        saveBtn.setVisible(true);
+        addBtn.setVisible(true);
+        deleteBtn.setVisible(true);
+        editBtn.setVisible(true);
+        confirmBtn.setVisible(false);
+        cancelBtn.setVisible(false);
+    }
+
+    private void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
+        clearTable(newTable);
+        for (int i = 0; i < table.getRowCount(); i++) {
+            String name = table.getValueAt(i, 0).toString();
+            String age = table.getValueAt(i, 1).toString();
+            String team = table.getValueAt(i, 2).toString();
+            String points = table.getValueAt(i, 3).toString();
+            newTable.addRow(new String[] { name, age, team, points }); // Запись строки в таблицу
+        }
+    }
+
+    private void clearTable(DefaultTableModel table) {
+        int n = table.getRowCount();
+        for (int i = 0; i < n; i++) {
+            table.removeRow(n - i - 1);
+        }
     }
 
     /**
@@ -169,6 +225,51 @@ public class MainRacerGUI {
     }
 
     /**
+     * Сlass for implementing a open button listener
+     */
+    private class ConfirmEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Sure? You want to exit?", "Swing Tester",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    setConfirmbarUnvisible();
+                    changeEditingPermit();
+                }
+
+            } catch (UnselectedEditException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    /**
+     * Сlass for implementing a open button listener
+     */
+    private class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                copyTable(previousRacerTable, racerTable);
+                changeEditingPermit();
+                setConfirmbarUnvisible();
+            } catch (UnselectedEditException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    /**
      * Сlass for implementing a edit button listener
      */
     private class EditEventListener implements ActionListener {
@@ -178,22 +279,15 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                copyTable(racerTable, previousRacerTable);
                 changeEditingPermit();
-                setRowToEdit(racers.getSelectedRow());
+                setConfirmbarVisible();
+
             } catch (UnselectedEditException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Edit Alert", JOptionPane.PLAIN_MESSAGE);
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
-    }
-
-    private int getRowToEdit() {
-        return rowToEdit;
-    }
-
-    private void setRowToEdit(int row) throws UnselectedEditException {
-        if (row < 0)
-            throw new UnselectedEditException();
-        rowToEdit = row;
     }
 
     public static void addRacer(Racer racer) {
@@ -205,7 +299,9 @@ public class MainRacerGUI {
         return editingPermit;
     }
 
-    private void changeEditingPermit() {
+    private void changeEditingPermit() throws UnselectedEditException {
+        if (racerTable.getRowCount() == 0)
+            throw new UnselectedEditException();
         editingPermit = !editingPermit;
     }
 
@@ -273,9 +369,8 @@ public class MainRacerGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            AddRacerGUI addRacerWindow = new AddRacerGUI();
             mainRacerGUI.setEnabled(false);
-            addRacerWindow.show();
+            addRacerWindow.addRacerGUI.setVisible(true);
         }
     }
 
@@ -290,7 +385,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             String message = "Нажата кнопка удаления из таблицы";
-            JOptionPane.showMessageDialog(null, message, "Delete Alert", JOptionPane.PLAIN_MESSAGE);
+            JOptionPane.showMessageDialog(null, message, "Успешное удаление", JOptionPane.PLAIN_MESSAGE);
         }
     }
 
@@ -321,10 +416,10 @@ public class MainRacerGUI {
                     throw new EmptySearchInputException();
                 else {
                     String message = "Поиск успешно выполнен!";
-                    JOptionPane.showMessageDialog(null, message, "Search Success Alert", JOptionPane.PLAIN_MESSAGE);
+                    JOptionPane.showMessageDialog(null, message, "Успешный поиск", JOptionPane.PLAIN_MESSAGE);
                 }
             } catch (EmptySearchInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Search Error Alert",
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
