@@ -11,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 import exception.*;
 import util.CreateReport;
 import util.FileManage;
+import util.Validation;
 
 /**
  * GUI of Race Management System
@@ -216,6 +217,25 @@ public class MainRacerGUI {
         }
     }
 
+    private void checkDeleteSelect() throws UnselectedDeleteException {
+        if (racers.getSelectedRow() == -1)
+            throw new UnselectedDeleteException();
+    }
+
+    private static void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
+            InvalidTeamInputException, InvalidPointInputException {
+        for (int i = 0; i < racerTable.getRowCount(); i++) {
+            if (!Validation.isValidName(racerTable.getValueAt(i, 0).toString()))
+                throw new InvalidNameInputException(i + 1);
+            if (!Validation.isValidAge(racerTable.getValueAt(i, 1).toString()))
+                throw new InvalidAgeInputException(i + 1);
+            if (!Validation.isValidTeam(racerTable.getValueAt(i, 2).toString()))
+                throw new InvalidTeamInputException(i + 1);
+            if (!Validation.isValidPoint(racerTable.getValueAt(i, 3).toString()))
+                throw new InvalidPointInputException(i + 1);
+        }
+    }
+
     /**
      * Сlass for implementing a open button listener
      */
@@ -240,18 +260,31 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                checkEditedData();
                 int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
                         "Подтверждение действия",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
-                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
 
             } catch (UnselectedEditException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidNameInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidAgeInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTeamInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidPointInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -273,7 +306,7 @@ public class MainRacerGUI {
                 changeEditingPermit();
                 setConfirmbarUnvisible();
             } catch (UnselectedEditException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -294,7 +327,7 @@ public class MainRacerGUI {
                 setConfirmbarVisible();
 
             } catch (UnselectedEditException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка редактирования",
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -396,15 +429,27 @@ public class MainRacerGUI {
     /**
      * Сlass for implementing a delete button listener
      */
-    private static class DeleteEventListener implements ActionListener {
+    private class DeleteEventListener implements ActionListener {
 
         /***
          *
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            String message = "Нажата кнопка удаления из таблицы";
-            JOptionPane.showMessageDialog(null, message, "Успешное удаление", JOptionPane.PLAIN_MESSAGE);
+            try {
+                checkDeleteSelect();
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                        "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    racerTable.removeRow(racers.getSelectedRow());
+                }
+            } catch (UnselectedDeleteException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

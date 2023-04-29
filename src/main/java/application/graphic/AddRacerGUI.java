@@ -140,7 +140,7 @@ public class AddRacerGUI {
             throw new EmptyAddInputException();
     }
 
-    private static void checkRacerDate() throws InvalidNameInputException, InvalidAgeInputException,
+    private static void checkRacerInputDate() throws InvalidNameInputException, InvalidAgeInputException,
             InvalidTeamInputException, InvalidPointInputException {
         if (!Validation.isValidName(inputNameField.getText()))
             throw new InvalidNameInputException();
@@ -161,7 +161,7 @@ public class AddRacerGUI {
         public void actionPerformed(ActionEvent e) {
             try {
                 checkEmptyInputs();
-                checkRacerDate();
+                checkRacerInputDate();
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()),
                         inputTeamField.getText(), Integer.parseInt(inputPointField.getText()));

@@ -17,7 +17,6 @@ public class MainMenuGUI {
     private static JLabel title = new JLabel("Система управления автогонками");
 
     public void show() {
-        mainMenuGUI.setVisible(true);
         mainMenuGUI.setBounds(650, 200, 300, 400);
         mainMenuGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         mainMenuGUI.setResizable(false);
@@ -27,6 +26,7 @@ public class MainMenuGUI {
         racerBtn.addActionListener(new RacerEventListener());
         trackBtn.setBackground(new Color(0xDFD9D9D9, false));
         graphicBtn.setBackground(new Color(0xDFD9D9D9, false));
+        mainMenuGUI.setVisible(true);
 
         Box leftBox = Box.createVerticalBox();
         Box centerBox = Box.createVerticalBox();

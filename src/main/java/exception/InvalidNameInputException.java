@@ -7,4 +7,8 @@ public class InvalidNameInputException extends Exception {
     public InvalidNameInputException() {
         super("Некорректно введено имя гонщика!");
     }
+
+    public InvalidNameInputException(int strNumber) {
+        super("Некорректно введено имя гонщика в строке №" + strNumber + " !");
+    }
 }

@@ -7,4 +7,8 @@ public class InvalidAgeInputException extends Exception {
     public InvalidAgeInputException() {
         super("Некорректный введён возраст гонщика!");
     }
+
+    public InvalidAgeInputException(int strNumber) {
+        super("Некорректный введён возраст гонщика в строке №" + strNumber + " !");
+    }
 }
