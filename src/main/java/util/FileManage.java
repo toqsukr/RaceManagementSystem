@@ -3,6 +3,8 @@ package util;
 import java.io.*;
 
 import javax.swing.table.DefaultTableModel;
+
+import org.codehaus.groovy.syntax.ReadException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -27,11 +29,12 @@ import javax.xml.parsers.ParserConfigurationException;
 public class FileManage {
     /***
      * Reading data from a file and entering it into a table
+     * \
      * 
-     * @param parent jframe type object that opens the file
-     * @param table  the table in which the data will be entered
+     * @param table    the table in which the data will be entered
+     * @param filename path of the file is to be opened
      */
-    public static void readRacerFromTextFile(DefaultTableModel table, String fileName) {
+    public static void readRacerFromTextFile(DefaultTableModel table, String fileName) throws ReadException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             int rows = table.getRowCount();
@@ -45,13 +48,13 @@ public class FileManage {
                     String team = reader.readLine();
                     String points = reader.readLine();
                     table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
+                } else {
+                    reader.close();
+                    throw new ReadException("Ошибка при чтении файла!", null);
                 }
             } while (racer != null);
             reader.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } // файл не найден
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -59,8 +62,9 @@ public class FileManage {
     /***
      * Writing data from a table to a file
      * 
-     * @param parent jframe type object that opens the file
-     * @param table  the table in which the data will be entered
+     * @param parent   jframe type object that opens the file
+     * @param filename path of the file is to be opened
+     * 
      */
     public static void writeRacerToTextFile(DefaultTableModel table, String filename) {
         try {
@@ -97,7 +101,7 @@ public class FileManage {
         return null;
     }
 
-    public static void readRacerFromXmlFile(DefaultTableModel table, String filename) {
+    public static void readRacerFromXmlFile(DefaultTableModel table, String filename) throws ReadException {
         Document doc = openXmlDocument(filename);
         // Обработка ошибки парсера при чтении данных из XML-файла
         // Получение списка элементов с именем book
@@ -112,6 +116,9 @@ public class FileManage {
             // Получение списка атрибутов элемента
             NamedNodeMap attrs = elem.getAttributes();
             // Чтение атрибутов элемента
+            if (attrs.getNamedItem("name") == null || attrs.getNamedItem("age") == null
+                    || attrs.getNamedItem("team") == null || attrs.getNamedItem("points") == null)
+                throw new ReadException("Ошибка чтения файла!", null);
             String name = attrs.getNamedItem("name").getNodeValue();
             String age = attrs.getNamedItem("age").getNodeValue();
             String team = attrs.getNamedItem("team").getNodeValue();

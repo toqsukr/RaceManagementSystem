@@ -3,11 +3,11 @@ package exception;
 /***
  * Exception controls whether an entry is selected when the button is pressed.
  */
-public class UnselectedEditException extends Exception {
+public class NothingDataException extends Exception {
     /***
-     * UnselectedEditException constructor
+     * NothingDataException constructor
      */
-    public UnselectedEditException() {
+    public NothingDataException() {
         super("Данные для редактирования не найдены!");
     }
 }

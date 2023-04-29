@@ -9,6 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -20,6 +24,8 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
+import org.codehaus.groovy.syntax.ReadException;
+
 import com.mysql.cj.exceptions.DataReadException;
 
 import exception.EmptySearchInputException;
@@ -28,7 +34,7 @@ import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
-import exception.UnselectedEditException;
+import exception.NothingDataException;
 import race.system.Racer;
 import util.CreateReport;
 import util.FileManage;
@@ -117,8 +123,36 @@ public class MainRacerGUI {
     private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
     public void show() {
+        mainRacerGUI.addWindowListener((WindowListener) new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    if (racers.getSelectedRow() != -1)
+                        racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                    checkEditedData();
+                    saveBeforeClose("Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+                    setConfirmbarUnvisible();
+                    if (editingPermit == true)
+                        changeEditingPermit();
+                    clearTable(racerTable);
+                    mainRacerGUI.dispose();
+                } catch (Exception exception) {
+                    int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
+                            "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                            "Предупреждение",
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (confirm == JOptionPane.OK_OPTION) {
+                        setConfirmbarUnvisible();
+                        if (editingPermit == true)
+                            changeEditingPermit();
+                        clearTable(racerTable);
+                        mainRacerGUI.dispose();
+                    }
+                }
+            }
+        });
         mainRacerGUI.setBounds(200, 150, 800, 600);
-        mainRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        mainRacerGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainRacerGUI.setResizable(false);
         mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
         addRacerWindow.show();
@@ -192,6 +226,19 @@ public class MainRacerGUI {
         container.add(filterPanel, BorderLayout.SOUTH);
     }
 
+    private static void saveBeforeClose(String message) {
+        if (racerTable.getRowCount() > 0) {
+            int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                    message,
+                    "Подтверждение действия",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (result == JOptionPane.YES_OPTION) {
+                saveBtn.doClick();
+            }
+        }
+    }
+
     private static void setConfirmbarVisible() {
         fileBtn.setVisible(false);
         saveBtn.setVisible(false);
@@ -259,6 +306,8 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                saveBeforeClose(
+                        "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
                 FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
                         FileDialog.LOAD);
                 load.setFile("data.xml");
@@ -274,6 +323,10 @@ public class MainRacerGUI {
 
             } catch (DataReadException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (ReadException exception) {
+                clearTable(racerTable);
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -294,6 +347,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData();
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 checkEditedData();
@@ -306,7 +360,7 @@ public class MainRacerGUI {
                     changeEditingPermit();
                 }
 
-            } catch (UnselectedEditException exception) {
+            } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidNameInputException exception) {
@@ -336,12 +390,13 @@ public class MainRacerGUI {
 
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData();
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 copyTable(previousRacerTable, racerTable);
                 changeEditingPermit();
                 setConfirmbarUnvisible();
-            } catch (UnselectedEditException exception) {
+            } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -358,16 +413,22 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData();
                 copyTable(racerTable, previousRacerTable);
                 changeEditingPermit();
                 setConfirmbarVisible();
 
-            } catch (UnselectedEditException exception) {
+            } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
 
+    }
+
+    private void checkEmptyData() throws NothingDataException {
+        if (racerTable.getRowCount() == 0)
+            throw new NothingDataException();
     }
 
     public static void addRacer(Racer racer) {
@@ -379,9 +440,8 @@ public class MainRacerGUI {
         return editingPermit;
     }
 
-    private void changeEditingPermit() throws UnselectedEditException {
-        if (racerTable.getRowCount() == 0)
-            throw new UnselectedEditException();
+    private void changeEditingPermit() {
+
         editingPermit = !editingPermit;
     }
 
@@ -523,7 +583,12 @@ public class MainRacerGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            CreateReport.printReport(racerTable);
+            try {
+                CreateReport.printReport(racerTable);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка формирования отчета",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -547,7 +612,7 @@ public class MainRacerGUI {
                     JOptionPane.showMessageDialog(null, message, "Успешный поиск", JOptionPane.PLAIN_MESSAGE);
                 }
             } catch (EmptySearchInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка поиска",
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
