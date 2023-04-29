@@ -99,19 +99,11 @@ public class MainRacerGUI {
      * Constructor of GUI
      */
     public void show() {
-        mainRacerGUI.setVisible(true);
         mainRacerGUI.setBounds(200, 150, 800, 600);
         mainRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         mainRacerGUI.setResizable(false);
         mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
         addRacerWindow.show();
-
-        racerTable.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-
-            }
-        });
 
         toolBar.setFloatable(false);
         racers.getTableHeader().setReorderingAllowed(false);
@@ -260,7 +252,8 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                if (racers.getSelectedRow() != -1)
+                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 checkEditedData();
                 int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
                         "Подтверждение действия",
@@ -301,7 +294,8 @@ public class MainRacerGUI {
 
         public void actionPerformed(ActionEvent e) {
             try {
-                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                if (racers.getSelectedRow() != -1)
+                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 copyTable(previousRacerTable, racerTable);
                 changeEditingPermit();
                 setConfirmbarUnvisible();
@@ -438,13 +432,27 @@ public class MainRacerGUI {
         public void actionPerformed(ActionEvent e) {
             try {
                 checkDeleteSelect();
+                String message = racers.getSelectedRows().length == 1
+                        ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет невозможно!";
                 int result = JOptionPane.showConfirmDialog(mainRacerGUI,
-                        "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!",
+                        message,
                         "Подтверждение действия",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
-                    racerTable.removeRow(racers.getSelectedRow());
+                    int i = racers.getSelectedRows().length - 1;
+                    while (racers.getSelectedRows().length > 0) {
+                        int j = racers.getRowCount() - 1;
+                        while (j > -1) {
+                            if (j == racers.getSelectedRows()[i]) {
+                                racerTable.removeRow(racers.getSelectedRows()[i]);
+                                break;
+                            }
+                            j--;
+                        }
+                        i--;
+                    }
                 }
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка удаления",
@@ -487,6 +495,10 @@ public class MainRacerGUI {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    public void setVisible(boolean value) {
+        mainRacerGUI.setVisible(value);
     }
 
 }
