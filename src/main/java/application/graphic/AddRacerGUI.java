@@ -14,7 +14,7 @@ import util.Validation;
 
 public class AddRacerGUI {
 
-    public static JFrame addRacerGUI = new JFrame("Добавление гонщика");
+    public JFrame addRacerGUI = new JFrame("Добавление гонщика");
 
     /**
      * This input is used to search for an entry in the table by the name of the

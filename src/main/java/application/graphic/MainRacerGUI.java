@@ -1,14 +1,35 @@
 package application.graphic;
 
-import race.system.Racer;
-
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.FileDialog;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
-import exception.*;
+
+import com.mysql.cj.exceptions.DataReadException;
+
+import exception.EmptySearchInputException;
+import exception.InvalidAgeInputException;
+import exception.InvalidNameInputException;
+import exception.InvalidPointInputException;
+import exception.InvalidTeamInputException;
+import exception.UnselectedDeleteException;
+import exception.UnselectedEditException;
+import race.system.Racer;
 import util.CreateReport;
 import util.FileManage;
 import util.Validation;
@@ -95,9 +116,6 @@ public class MainRacerGUI {
 
     private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
-    /**
-     * Constructor of GUI
-     */
     public void show() {
         mainRacerGUI.setBounds(200, 150, 800, 600);
         mainRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -127,6 +145,9 @@ public class MainRacerGUI {
         filterPanel.add(clearInputBtn);
         filterPanel.add(searchBtn);
         filterPanel.add(reportBtn);
+
+        // FlatSVGIcon svgIcon = new FlatSVGIcon("etu/src/img/close.svg", 50, 50);
+        // fileBtn.setIcon(svgIcon);
 
         fileBtn.setToolTipText("Открыть файл");
         fileBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -237,9 +258,30 @@ public class MainRacerGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // FileManage.readRacerFromTextFile(mainRacerGUI, racerTable);
-            FileManage.readRacerFromXmlFile(racerTable);
+            try {
+                FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
+                        FileDialog.LOAD);
+                load.setFile("data.xml");
+                load.setVisible(true);
+                if (load.getFile() != null) {
+                    checkFileFormat(load);
+                    String filename = load.getDirectory() + load.getFile();
+                    if (load.getFile().endsWith("txt"))
+                        FileManage.readRacerFromTextFile(racerTable, filename);
+                    else
+                        FileManage.readRacerFromXmlFile(racerTable, filename);
+                }
+
+            } catch (DataReadException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
+    }
+
+    private void checkFileFormat(FileDialog file) throws DataReadException {
+        if (!file.getFile().endsWith(".txt") && !file.getFile().endsWith(".xml"))
+            throw new DataReadException("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
     }
 
     /**
@@ -393,15 +435,29 @@ public class MainRacerGUI {
     /**
      * Сlass for implementing a save button listener
      */
-    private static class SaveEventListener implements ActionListener {
+    private class SaveEventListener implements ActionListener {
 
         /***
          *
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // FileManage.writeRacerToTextFile(mainRacerGUI, racerTable);
-            FileManage.writeRacerToXmlFile(racerTable);
+            try {
+                FileDialog save = new FileDialog(mainRacerGUI, "Сохранение данных", FileDialog.SAVE);
+                save.setFile("data.xml");
+                save.setVisible(true);
+                if (save.getFile() != null) {
+                    checkFileFormat(save);
+                    String filename = save.getDirectory() + save.getFile();
+                    if (filename.endsWith("txt"))
+                        FileManage.writeRacerToTextFile(racerTable, filename);
+                    else
+                        FileManage.writeRacerToXmlFile(racerTable, filename);
+                }
+            } catch (DataReadException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

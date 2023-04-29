@@ -1,9 +1,7 @@
 package util;
 
-import java.awt.*;
 import java.io.*;
 
-import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,11 +31,7 @@ public class FileManage {
      * @param parent jframe type object that opens the file
      * @param table  the table in which the data will be entered
      */
-    public static void readRacerFromTextFile(JFrame parent, DefaultTableModel table) {
-        FileDialog load = new FileDialog(parent, "Загрузка данных", FileDialog.LOAD);
-        load.setFile("*.txt");
-        load.setVisible(true);
-        String fileName = load.getDirectory() + load.getFile();
+    public static void readRacerFromTextFile(DefaultTableModel table, String fileName) {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             int rows = table.getRowCount();
@@ -68,13 +62,9 @@ public class FileManage {
      * @param parent jframe type object that opens the file
      * @param table  the table in which the data will be entered
      */
-    public static void writeRacerToTextFile(JFrame parent, DefaultTableModel table) {
-        FileDialog save = new FileDialog(parent, "Сохранение данных", FileDialog.SAVE);
-        save.setFile("*.txt");
-        save.setVisible(true);
-        String fileName = save.getDirectory() + save.getFile();
+    public static void writeRacerToTextFile(DefaultTableModel table, String filename) {
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filename));
             for (int i = 0; i < table.getRowCount(); i++) // Для всех строк
                 for (int j = 0; j < table.getColumnCount(); j++) // Для всех столбцов
                 {
@@ -107,8 +97,8 @@ public class FileManage {
         return null;
     }
 
-    public static void readRacerFromXmlFile(DefaultTableModel table) {
-        Document doc = openXmlDocument("etu/data.xml");
+    public static void readRacerFromXmlFile(DefaultTableModel table, String filename) {
+        Document doc = openXmlDocument(filename);
         // Обработка ошибки парсера при чтении данных из XML-файла
         // Получение списка элементов с именем book
         NodeList nlRacers = doc.getElementsByTagName("racer");
@@ -131,7 +121,7 @@ public class FileManage {
         }
     }
 
-    public static void writeRacerToXmlFile(DefaultTableModel table) {
+    public static void writeRacerToXmlFile(DefaultTableModel table, String filename) {
         try {
             // Создание парсера документа
             DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -152,7 +142,7 @@ public class FileManage {
             // Создание преобразователя документа
             Transformer trans = TransformerFactory.newInstance().newTransformer();
             // Создание файла с именем data.xml для записи документа
-            java.io.FileWriter fw = new FileWriter("etu/data.xml");
+            java.io.FileWriter fw = new FileWriter(filename);
             // Запись документа в файл
             trans.transform(new DOMSource(doc), new StreamResult(fw));
         } catch (ParserConfigurationException e) {
