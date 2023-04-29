@@ -5,6 +5,8 @@ import race.system.Racer;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import exception.*;
 import util.CreateReport;
@@ -103,6 +105,14 @@ public class MainRacerGUI {
         mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
         addRacerWindow.show();
 
+        racerTable.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+
+            }
+        });
+
+        toolBar.setFloatable(false);
         racers.getTableHeader().setReorderingAllowed(false);
 
         Container container = mainRacerGUI.getContentPane();
@@ -168,10 +178,6 @@ public class MainRacerGUI {
         container.add(filterPanel, BorderLayout.SOUTH);
     }
 
-    public static void setRacerWindowEnable(boolean value) {
-        mainRacerGUI.setEnabled(value);
-    }
-
     private static void setConfirmbarVisible() {
         fileBtn.setVisible(false);
         saveBtn.setVisible(false);
@@ -234,10 +240,12 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Sure? You want to exit?", "Swing Tester",
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
+                        "Подтверждение действия",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
+                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
@@ -257,8 +265,10 @@ public class MainRacerGUI {
          *
          * @param e the event to be processed
          */
+
         public void actionPerformed(ActionEvent e) {
             try {
+                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 copyTable(previousRacerTable, racerTable);
                 changeEditingPermit();
                 setConfirmbarUnvisible();
@@ -288,6 +298,7 @@ public class MainRacerGUI {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+
     }
 
     public static void addRacer(Racer racer) {
@@ -307,6 +318,14 @@ public class MainRacerGUI {
 
     public static void setInput(JTextField input, String text) {
         input.setText(text);
+    }
+
+    public static void setAddRacerVisible(boolean value) {
+        addRacerWindow.addRacerGUI.setVisible(value);
+    }
+
+    public static void setMainRacerEnable(boolean value) {
+        mainRacerGUI.setEnabled(value);
     }
 
     private static class ClearInputEventListener implements ActionListener {
@@ -369,8 +388,8 @@ public class MainRacerGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            mainRacerGUI.setEnabled(false);
-            addRacerWindow.addRacerGUI.setVisible(true);
+            setMainRacerEnable(false);
+            setAddRacerVisible(true);
         }
     }
 

@@ -42,16 +42,13 @@ public class AddRacerGUI {
     /**
      * Constructor of GUI
      */
-    public static void show() {
+    public void show() {
         addRacerGUI.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                MainRacerGUI.setRacerWindowEnable(true);
+                MainRacerGUI.setMainRacerEnable(true);
                 addRacerGUI.dispose();
-                inputNameField.setText("Имя гонщика");
-                inputAgeField.setText("Возраст");
-                inputTeamField.setText("Команда");
-                inputPointField.setText("Очки");
+                clearInputs();
             }
         });
         addRacerGUI.setVisible(false);
@@ -75,6 +72,7 @@ public class AddRacerGUI {
         Box pointBox = Box.createHorizontalBox();
 
         addBtn.addActionListener(new AddEventListener());
+        cancelBtn.addActionListener(new CancelEventListener());
 
         Container container = addRacerGUI.getContentPane();
         container.setLayout(new BorderLayout());
@@ -129,6 +127,13 @@ public class AddRacerGUI {
         container.add(rightBox, BorderLayout.EAST);
     }
 
+    private static void clearInputs() {
+        inputNameField.setText("Имя гонщика");
+        inputAgeField.setText("Возраст");
+        inputTeamField.setText("Команда");
+        inputPointField.setText("Очки");
+    }
+
     private static void checkEmptyInputs() throws EmptyAddInputException {
         if (inputNameField.getText().equals("Имя гонщика") | inputAgeField.getText().equals("Возраст")
                 | inputTeamField.getText().equals("Команда") | inputPointField.getText().equals("Очки"))
@@ -160,7 +165,8 @@ public class AddRacerGUI {
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()),
                         inputTeamField.getText(), Integer.parseInt(inputPointField.getText()));
-                MainRacerGUI.setRacerWindowEnable(true);
+                clearInputs();
+                MainRacerGUI.setMainRacerEnable(true);
                 MainRacerGUI.addRacer(racer);
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
@@ -178,6 +184,18 @@ public class AddRacerGUI {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             }
+        }
+    }
+
+    private static class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            clearInputs();
+            MainRacerGUI.setMainRacerEnable(true);
+            MainRacerGUI.setAddRacerVisible(false);
         }
     }
 

@@ -152,7 +152,7 @@ public class FileManage {
             // Создание преобразователя документа
             Transformer trans = TransformerFactory.newInstance().newTransformer();
             // Создание файла с именем data.xml для записи документа
-            java.io.FileWriter fw = new FileWriter("data.xml");
+            java.io.FileWriter fw = new FileWriter("etu/data.xml");
             // Запись документа в файл
             trans.transform(new DOMSource(doc), new StreamResult(fw));
         } catch (ParserConfigurationException e) {
