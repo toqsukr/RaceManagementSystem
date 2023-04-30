@@ -31,7 +31,7 @@ public class CreateReport {
 
         if (table.getRowCount() == 0)
             throw new Exception("Нет данных для отчета!");
-        FileDialog save = new FileDialog(parent, "Сохранение данных", FileDialog.SAVE);
+        FileDialog save = new FileDialog(parent, "Сохранение отчета", FileDialog.SAVE);
         save.setFile("report_racer.pdf");
         save.setVisible(true);
         if (save.getFile() != null) {
@@ -44,7 +44,7 @@ public class CreateReport {
             PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
             Paragraph head = new Paragraph(
-                    new Phrase(6f, "Отчет по списку гонщиков\n\n\n\n\n",
+                    new Phrase(4f, "Отчет по списку гонщиков\n\n\n\n\n",
                             FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans-Bold.ttf", "cp1251", 18)));
             head.setAlignment(Element.ALIGN_CENTER);
             document.add(head);

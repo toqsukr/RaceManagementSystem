@@ -136,6 +136,7 @@ public class MainRacerGUI {
                     if (editingPermit == true)
                         changeEditingPermit();
                     clearTable(racerTable);
+                    mainRacerGUI.setTitle("Список гонщиков");
                     mainRacerGUI.dispose();
                 } catch (Exception exception) {
                     int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
@@ -147,6 +148,7 @@ public class MainRacerGUI {
                         if (editingPermit == true)
                             changeEditingPermit();
                         clearTable(racerTable);
+                        mainRacerGUI.setTitle("Список гонщиков");
                         mainRacerGUI.dispose();
                     }
                 }
@@ -316,10 +318,12 @@ public class MainRacerGUI {
                 if (load.getFile() != null) {
                     checkFileFormat(load);
                     String filename = load.getDirectory() + load.getFile();
+                    mainRacerGUI.setTitle("Список гонщиков");
                     if (load.getFile().endsWith("txt"))
                         FileManage.readRacerFromTextFile(racerTable, filename);
                     else
                         FileManage.readRacerFromXmlFile(racerTable, filename);
+                    mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                 }
 
             } catch (FileNotFoundException exception) {

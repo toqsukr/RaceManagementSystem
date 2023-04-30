@@ -114,6 +114,8 @@ public class FileManage {
         for (int i = 0; i < rows; i++)
             table.removeRow(0); // Очистка таблицы
         // Цикл просмотра списка элементов и запись данных в таблицу
+        if (nlRacers.getLength() == 0)
+            throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
         for (int temp = 0; temp < nlRacers.getLength(); temp++) {
             // Выбор очередного элемента списка
             Node elem = nlRacers.item(temp);
@@ -122,7 +124,7 @@ public class FileManage {
             // Чтение атрибутов элемента
             if (attrs.getNamedItem("name") == null || attrs.getNamedItem("age") == null
                     || attrs.getNamedItem("team") == null || attrs.getNamedItem("points") == null)
-                throw new ReadException("Ошибка чтения файла!", null);
+                throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
             String name = attrs.getNamedItem("name").getNodeValue();
             String age = attrs.getNamedItem("age").getNodeValue();
             String team = attrs.getNamedItem("team").getNodeValue();
