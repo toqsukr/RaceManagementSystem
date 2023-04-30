@@ -7,7 +7,7 @@ public class NothingDataException extends Exception {
     /***
      * NothingDataException constructor
      */
-    public NothingDataException() {
-        super("Данные для редактирования не найдены!");
+    public NothingDataException(String msg) {
+        super(msg);
     }
 }

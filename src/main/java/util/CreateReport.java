@@ -1,9 +1,9 @@
 package util;
 
-import java.io.File;
+import java.awt.FileDialog;
 import java.io.FileOutputStream;
 
-import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -27,25 +27,21 @@ public class CreateReport {
      * 
      * @param table table containing data
      */
-    public static void printReport(DefaultTableModel table) throws Exception {
+    public static void printReport(DefaultTableModel table, JFrame parent) throws Exception {
 
         if (table.getRowCount() == 0)
             throw new Exception("Нет данных для отчета!");
-        JFileChooser fileChooser = new JFileChooser();
-        // Set default folder to current directory
-        fileChooser.setCurrentDirectory(new File("."));
-        // Set default file name
-        fileChooser.setSelectedFile(new File("race_report.pdf"));
-        int result = fileChooser.showSaveDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
-            String fileName = selectedFile.getAbsolutePath();
+        FileDialog save = new FileDialog(parent, "Сохранение данных", FileDialog.SAVE);
+        save.setFile("report_racer.pdf");
+        save.setVisible(true);
+        if (save.getFile() != null) {
+            String filename = save.getDirectory() + save.getFile();
             // Append .pdf extension if necessary
-            if (!fileName.endsWith(".pdf")) {
-                fileName += ".pdf";
+            if (!filename.endsWith(".pdf")) {
+                filename += ".pdf";
             }
             Document document = new Document();
-            PdfWriter.getInstance(document, new FileOutputStream(fileName));
+            PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
             Paragraph head = new Paragraph(
                     new Phrase(5f, "Laboratory work report\n\n\n\n\n",
@@ -87,7 +83,8 @@ public class CreateReport {
             }
             document.add(pdfTable);
             document.close();
-            JOptionPane.showMessageDialog(null, "Данные сохранены в " + fileName);
+            JOptionPane.showMessageDialog(null, "Данные сохранены в " + filename);
+
         }
     }
 }

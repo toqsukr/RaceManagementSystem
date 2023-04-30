@@ -12,6 +12,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.FileNotFoundException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -321,12 +322,15 @@ public class MainRacerGUI {
                         FileManage.readRacerFromXmlFile(racerTable, filename);
                 }
 
-            } catch (DataReadException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
+            } catch (FileNotFoundException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (ReadException exception) {
                 clearTable(racerTable);
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -347,7 +351,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData();
+                checkEmptyData("Данные для редактирования не найдены!");
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 if (!isEqualTable(racerTable, previousRacerTable)) {
@@ -395,7 +399,7 @@ public class MainRacerGUI {
 
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData();
+                checkEmptyData("Данные для редактирования не найдены!");
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 copyTable(previousRacerTable, racerTable);
@@ -418,7 +422,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData();
+                checkEmptyData("Данные для редактирования не найдены!");
                 copyTable(racerTable, previousRacerTable);
                 changeEditingPermit();
                 setConfirmbarVisible();
@@ -449,9 +453,9 @@ public class MainRacerGUI {
         return isEqual;
     }
 
-    private void checkEmptyData() throws NothingDataException {
+    private void checkEmptyData(String msg) throws NothingDataException {
         if (racerTable.getRowCount() == 0)
-            throw new NothingDataException();
+            throw new NothingDataException(msg);
     }
 
     public static void addRacer(Racer racer) {
@@ -526,12 +530,15 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData("Данные для сохранения не найдены!");
                 FileDialog save = new FileDialog(mainRacerGUI, "Сохранение данных", FileDialog.SAVE);
                 save.setFile("data.xml");
                 save.setVisible(true);
                 if (save.getFile() != null) {
-                    checkFileFormat(save);
                     String filename = save.getDirectory() + save.getFile();
+                    if (!filename.endsWith(".xml") && !filename.endsWith(".txt")) {
+                        filename += ".xml";
+                    }
                     if (filename.endsWith("txt"))
                         FileManage.writeRacerToTextFile(racerTable, filename);
                     else
@@ -539,6 +546,9 @@ public class MainRacerGUI {
                 }
             } catch (DataReadException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -570,6 +580,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData("Данные для удаления не найдены!");
                 checkDeleteSelect();
                 String message = racers.getSelectedRows().length == 1
                         ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
@@ -596,6 +607,9 @@ public class MainRacerGUI {
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка удаления",
                         JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
     }
@@ -607,7 +621,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                CreateReport.printReport(racerTable);
+                CreateReport.printReport(racerTable, mainRacerGUI);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка формирования отчета",
                         JOptionPane.PLAIN_MESSAGE);

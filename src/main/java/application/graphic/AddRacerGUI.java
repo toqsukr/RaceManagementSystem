@@ -20,15 +20,15 @@ public class AddRacerGUI {
      * This input is used to search for an entry in the table by the name of the
      * racer
      */
-    private static final JTextField inputNameField = new JTextField("Имя гонщика", 10);
-    private static final JTextField inputAgeField = new JTextField("Возраст", 5);
+    private static final JTextField inputNameField = new JTextField("", 10);
+    private static final JTextField inputAgeField = new JTextField("", 5);
 
     /**
      * This input is used to search for an entry in the table by the team of the
      * racer
      */
-    private static final JTextField inputTeamField = new JTextField("Команда", 10);
-    private static final JTextField inputPointField = new JTextField("Очки", 5);
+    private static final JTextField inputTeamField = new JTextField("", 10);
+    private static final JTextField inputPointField = new JTextField("", 5);
 
     private static final JButton addBtn = new JButton("Добавить");
 
@@ -77,11 +77,6 @@ public class AddRacerGUI {
         Container container = addRacerGUI.getContentPane();
         container.setLayout(new BorderLayout());
 
-        inputNameField.addFocusListener(new RacerInputFocusListener());
-        inputAgeField.addFocusListener(new AgeInputFocusListener());
-        inputTeamField.addFocusListener(new TeamInputFocusListener());
-        inputPointField.addFocusListener(new PointInputFocusListener());
-
         toolBox.add(Box.createRigidArea(new Dimension(40, 0)));
         toolBox.add(addBtn);
         toolBox.add(Box.createRigidArea(new Dimension(20, 0)));
@@ -128,15 +123,15 @@ public class AddRacerGUI {
     }
 
     private static void clearInputs() {
-        inputNameField.setText("Имя гонщика");
-        inputAgeField.setText("Возраст");
-        inputTeamField.setText("Команда");
-        inputPointField.setText("Очки");
+        inputNameField.setText("");
+        inputAgeField.setText("");
+        inputTeamField.setText("");
+        inputPointField.setText("");
     }
 
     private static void checkEmptyInputs() throws EmptyAddInputException {
-        if (inputNameField.getText().equals("Имя гонщика") | inputAgeField.getText().equals("Возраст")
-                | inputTeamField.getText().equals("Команда") | inputPointField.getText().equals("Очки"))
+        if (inputNameField.getText().equals("") | inputAgeField.getText().equals("")
+                | inputTeamField.getText().equals("") | inputPointField.getText().equals(""))
             throw new EmptyAddInputException();
     }
 
@@ -199,57 +194,4 @@ public class AddRacerGUI {
         }
     }
 
-    public static class RacerInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (inputNameField.getText().equals("Имя гонщика"))
-                MainRacerGUI.setInput(inputNameField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (inputNameField.getText().equals(""))
-                MainRacerGUI.setInput(inputNameField, "Имя гонщика");
-        }
-
-    }
-
-    public static class TeamInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (inputTeamField.getText().equals("Команда"))
-                MainRacerGUI.setInput(inputTeamField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (inputTeamField.getText().equals(""))
-                MainRacerGUI.setInput(inputTeamField, "Команда");
-        }
-
-    }
-
-    private static class AgeInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (inputAgeField.getText().equals("Возраст"))
-                MainRacerGUI.setInput(inputAgeField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (inputAgeField.getText().equals(""))
-                MainRacerGUI.setInput(inputAgeField, "Возраст");
-        }
-    }
-
-    private static class PointInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (inputPointField.getText().equals("Очки"))
-                MainRacerGUI.setInput(inputPointField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (inputPointField.getText().equals(""))
-                MainRacerGUI.setInput(inputPointField, "Очки");
-        }
-    }
 }

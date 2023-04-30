@@ -4,7 +4,14 @@ import org.junit.*;
 
 import util.Validation;
 
+/***
+ * This class is responsible for testing the methods of the Validation class
+ */
+
 public class TestValidation {
+    /***
+     * This method tests isValidName method of Validation class
+     */
     @Test
     public void testIsValidName() {
         Assert.assertTrue(Validation.isValidName("Andrew Petrovich"));
@@ -17,6 +24,9 @@ public class TestValidation {
         Assert.assertFalse(Validation.isValidName(""));
     }
 
+    /***
+     * This method tests isValidAge method of Validation class
+     */
     @Test
     public void testIsValidAge() {
         Assert.assertTrue(Validation.isValidAge("45"));
@@ -28,6 +38,9 @@ public class TestValidation {
         Assert.assertFalse(Validation.isValidAge(""));
     }
 
+    /***
+     * This method tests isValidTeam method of Validation class
+     */
     @Test
     public void testIsValidTeam() {
         Assert.assertTrue(Validation.isValidTeam("Hounds Dogs37"));
@@ -39,6 +52,9 @@ public class TestValidation {
 
     }
 
+    /***
+     * This method tests isValidPoint method of Validation class
+     */
     @Test
     public void testIsValidPoint() {
         Assert.assertTrue(Validation.isValidPoint("53824"));
@@ -48,26 +64,6 @@ public class TestValidation {
         Assert.assertFalse(Validation.isValidPoint("573fj943"));
         Assert.assertFalse(Validation.isValidPoint("1000000"));
         Assert.assertFalse(Validation.isValidPoint(""));
-    }
-
-    @BeforeClass // Фиксируем начало тестирования
-    public static void allTestsStarted() {
-        System.out.println("Test begining");
-    }
-
-    @AfterClass // Фиксируем конец тестирования
-    public static void allTestsFinished() {
-        System.out.println("Test ending");
-    }
-
-    @Before // Фиксируем запуск теста
-    public void testStarted() {
-        System.out.println("Test start");
-    }
-
-    @After // Фиксируем завершение теста
-    public void testFinished() {
-        System.out.println("Test finish");
     }
 
 }

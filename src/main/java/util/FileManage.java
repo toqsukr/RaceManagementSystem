@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
 import javax.xml.parsers.ParserConfigurationException;
 
 /***
@@ -34,7 +33,8 @@ public class FileManage {
      * @param table    the table in which the data will be entered
      * @param filename path of the file is to be opened
      */
-    public static void readRacerFromTextFile(DefaultTableModel table, String fileName) throws ReadException {
+    public static void readRacerFromTextFile(DefaultTableModel table, String fileName)
+            throws FileNotFoundException, ReadException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(fileName));
             int rows = table.getRowCount();
@@ -101,7 +101,10 @@ public class FileManage {
         return null;
     }
 
-    public static void readRacerFromXmlFile(DefaultTableModel table, String filename) throws ReadException {
+    public static void readRacerFromXmlFile(DefaultTableModel table, String filename)
+            throws FileNotFoundException, ReadException {
+        if (!new File(filename).exists())
+            throw new FileNotFoundException("Файл " + filename + " не найден!");
         Document doc = openXmlDocument(filename);
         // Обработка ошибки парсера при чтении данных из XML-файла
         // Получение списка элементов с именем book
