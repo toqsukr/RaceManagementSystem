@@ -350,12 +350,17 @@ public class MainRacerGUI {
                 checkEmptyData();
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
-                checkEditedData();
-                int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
-                        "Подтверждение действия",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
+                if (!isEqualTable(racerTable, previousRacerTable)) {
+                    checkEditedData();
+                    int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        setConfirmbarUnvisible();
+                        changeEditingPermit();
+                    }
+                } else {
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
@@ -423,7 +428,25 @@ public class MainRacerGUI {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
 
+    private boolean isEqualTable(DefaultTableModel table, DefaultTableModel prevTable) {
+        boolean isEqual = true;
+        if (table.getRowCount() != prevTable.getRowCount() || table.getColumnCount() != prevTable.getColumnCount())
+            isEqual = false;
+        else {
+            for (int i = 0; i < table.getRowCount(); i++) {
+                for (int j = 0; j < table.getColumnCount(); j++) {
+                    if (!table.getValueAt(i, j).equals(prevTable.getValueAt(i, j))) {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                if (!isEqual)
+                    break;
+            }
+        }
+        return isEqual;
     }
 
     private void checkEmptyData() throws NothingDataException {
