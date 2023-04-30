@@ -44,15 +44,15 @@ public class CreateReport {
             PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
             Paragraph head = new Paragraph(
-                    new Phrase(5f, "Laboratory work report\n\n\n\n\n",
-                            FontFactory.getFont(FontFactory.COURIER, 18f)));
+                    new Phrase(6f, "Отчет по списку гонщиков\n\n\n\n\n",
+                            FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans-Bold.ttf", "cp1251", 18)));
             head.setAlignment(Element.ALIGN_CENTER);
             document.add(head);
             PdfPTable pdfTable = new PdfPTable(table.getColumnCount());
 
             // Create font for table headers
-            Font headerFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, BaseColor.BLACK);
-            String[] headersPdfExport = { "\nName\n\n", "\nAge", "\nTeam", "\nPoints" };
+            Font headerFont = FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans-Bold.ttf", "cp1251", 12);
+            String[] headersPdfExport = { "\nИмя гонщика\n\n", "\nВозраст", "\nКоманда", "\nОчки" };
 
             // Set column headers
             for (int i = 0; i < table.getColumnCount(); i++) {
@@ -65,16 +65,17 @@ public class CreateReport {
             }
 
             // Create font for table data
-            Font dataFont = FontFactory.getFont(FontFactory.HELVETICA, 10, BaseColor.BLACK);
+            Font dataFont = FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans.ttf", "cp1251", 10);
 
             // Set custom widths for each row
-            float[] columnWidths = { 0.2f, 0.2f, 0.2f, 0.2f };
+            float[] columnWidths = { 1f, 0.6f, 0.8f, 0.6f };
             pdfTable.setWidths(columnWidths);
 
             // Add table data
             for (int i = 0; i < table.getRowCount(); i++) {
                 for (int j = 0; j < table.getColumnCount(); j++) {
                     PdfPCell data = new PdfPCell(new Phrase(table.getValueAt(i, j).toString(), dataFont));
+                    data.setMinimumHeight(20);
                     data.setBackgroundColor(BaseColor.WHITE);
                     data.setBorderWidth(1);
                     data.setHorizontalAlignment(Element.ALIGN_LEFT);
@@ -83,7 +84,7 @@ public class CreateReport {
             }
             document.add(pdfTable);
             document.close();
-            JOptionPane.showMessageDialog(null, "Данные сохранены в " + filename);
+            JOptionPane.showMessageDialog(parent, "Данные сохранены в " + filename);
 
         }
     }

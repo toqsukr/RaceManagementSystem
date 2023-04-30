@@ -34,29 +34,30 @@ public class FileManage {
      * @param filename path of the file is to be opened
      */
     public static void readRacerFromTextFile(DefaultTableModel table, String fileName)
-            throws FileNotFoundException, ReadException {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(fileName));
-            int rows = table.getRowCount();
-            for (int i = 0; i < rows; i++)
-                table.removeRow(0); // Очистка таблицы
-            String racer;
-            do {
-                racer = reader.readLine();
-                if (racer != null) {
-                    String age = reader.readLine();
-                    String team = reader.readLine();
-                    String points = reader.readLine();
-                    table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
-                } else {
+            throws FileNotFoundException, IOException, ReadException {
+        if (!new File(fileName).exists())
+            throw new FileNotFoundException("Файл " + fileName + " не найден!");
+        BufferedReader reader = new BufferedReader(new FileReader(fileName));
+        int rows = table.getRowCount();
+        for (int i = 0; i < rows; i++)
+            table.removeRow(0); // Очистка таблицы
+        String racer;
+        do {
+            racer = reader.readLine();
+            if (racer != null) {
+                String age = reader.readLine();
+                String team = reader.readLine();
+                String points = reader.readLine();
+                if (!Validation.isValidName(racer) || !Validation.isValidAge(age) || !Validation.isValidTeam(team)
+                        || !Validation.isValidPoint(points)) {
                     reader.close();
-                    throw new ReadException("Ошибка при чтении файла!", null);
+                    throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
                 }
-            } while (racer != null);
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+                table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
+            }
+
+        } while (racer != null);
+        reader.close();
     }
 
     /***
