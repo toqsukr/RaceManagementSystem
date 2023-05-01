@@ -14,6 +14,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.FileNotFoundException;
+import java.net.URL;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,10 +27,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import org.codehaus.groovy.syntax.ReadException;
-
-import com.mysql.cj.exceptions.DataReadException;
-
 import exception.EmptySearchInputException;
 import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
@@ -37,6 +34,7 @@ import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
 import exception.NothingDataException;
+import exception.ReadFileException;
 import race.system.Racer;
 import util.CreateReport;
 import util.FileManage;
@@ -57,31 +55,23 @@ public class MainRacerGUI extends JFrame {
     /**
      * This button saves changes
      */
-    private static final JButton saveBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/save.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton saveBtn = new JButton();
     /**
      * This button adds new field into table
      */
-    private static final JButton addBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/add.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton addBtn = new JButton();
     /**
      * This button deletes selected field
      */
-    private static final JButton deleteBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/delete.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton deleteBtn = new JButton();
     /**
      * This button allows you to edit selected field
      */
-    private static final JButton fileBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/file.png").getImage().getScaledInstance(50, 50, 4)));
-    private static final JButton editBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/edit.png").getImage().getScaledInstance(50, 50, 4)));
-    private static final JButton confirmBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/confirm.png").getImage().getScaledInstance(50, 50, 4)));
-    private static final JButton cancelBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/cancel.png").getImage().getScaledInstance(50, 50, 4)));
-    private static final JButton reportBtn = new JButton(
-            new ImageIcon(new ImageIcon("etu/src/img/report.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton fileBtn = new JButton();
+    private static final JButton editBtn = new JButton();
+    private static final JButton confirmBtn = new JButton();
+    private static final JButton cancelBtn = new JButton();
+    private static final JButton reportBtn = new JButton();
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -165,10 +155,12 @@ public class MainRacerGUI extends JFrame {
                 }
             }
         });
+
         mainRacerGUI.setBounds(200, 150, 800, 600);
         mainRacerGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainRacerGUI.setResizable(false);
-        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/racer.png"));
+        URL mainRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
+        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
         addRacerWindow.show();
 
         toolBar.setFloatable(false);
@@ -206,42 +198,58 @@ public class MainRacerGUI extends JFrame {
         // FlatSVGIcon svgIcon = new FlatSVGIcon("etu/src/img/close.svg", 50, 50);
         // fileBtn.setIcon(svgIcon);
 
+        URL fileIcon = this.getClass().getClassLoader().getResource("img/file.png");
+        fileBtn.setIcon(new ImageIcon(new ImageIcon(fileIcon).getImage().getScaledInstance(50, 50, 4)));
         fileBtn.setToolTipText("Открыть файл");
         fileBtn.setBackground(new Color(0xDFD9D9D9, false));
         fileBtn.addActionListener(new FileEventListener());
         fileBtn.setFocusable(false);
 
+        URL saveIcon = this.getClass().getClassLoader().getResource("img/save.png");
+        saveBtn.setIcon(new ImageIcon(new ImageIcon(saveIcon).getImage().getScaledInstance(50, 50, 4)));
         saveBtn.setToolTipText("Сохранить файл");
         saveBtn.setBackground(new Color(0xDFD9D9D9, false));
         saveBtn.addActionListener(new SaveEventListener());
         saveBtn.setFocusable(false);
 
+        URL addIcon = this.getClass().getClassLoader().getResource("img/add.png");
+        addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
         addBtn.setToolTipText("Добавить гонщика");
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         addBtn.addActionListener(new AddEventListener());
         addBtn.setFocusable(false);
 
+        URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete.png");
+        deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
         deleteBtn.setToolTipText("Удалить гонщика");
         deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
         deleteBtn.addActionListener(new DeleteEventListener());
         deleteBtn.setFocusable(false);
 
+        URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
+        editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
         editBtn.setToolTipText("Редактировать запись");
         editBtn.setBackground(new Color(0xDFD9D9D9, false));
         editBtn.addActionListener(new EditEventListener());
         editBtn.setFocusable(false);
 
+        URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
+        reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
         reportBtn.setToolTipText("Сформировать отчет");
         reportBtn.setBackground(new Color(0xDFD9D9D9, false));
         reportBtn.addActionListener(new ReportEventListener());
         reportBtn.setFocusable(false);
 
+        URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
+        confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
         confirmBtn.setVisible(false);
         confirmBtn.setToolTipText("Ок");
         confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
         confirmBtn.addActionListener(new ConfirmEventListener());
         confirmBtn.setFocusable(false);
 
+        URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
+        cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
         cancelBtn.setVisible(false);
         cancelBtn.setToolTipText("Отмена");
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -380,7 +388,7 @@ public class MainRacerGUI extends JFrame {
             } catch (FileNotFoundException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
                         JOptionPane.PLAIN_MESSAGE);
-            } catch (ReadException exception) {
+            } catch (ReadFileException exception) {
                 clearTable(racerTable);
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
                         JOptionPane.PLAIN_MESSAGE);
@@ -391,9 +399,9 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
-    private void checkFileFormat(FileDialog file) throws DataReadException {
+    private void checkFileFormat(FileDialog file) throws Exception {
         if (!file.getFile().endsWith(".txt") && !file.getFile().endsWith(".xml"))
-            throw new DataReadException("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
+            throw new Exception("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
     }
 
     private void additionalSearchEdit() {
@@ -616,11 +624,11 @@ public class MainRacerGUI extends JFrame {
                     else
                         FileManage.writeRacerToXmlFile(fullSearchTable, filename);
                 }
-            } catch (DataReadException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
-                        JOptionPane.PLAIN_MESSAGE);
             } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -711,7 +719,11 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                CreateReport.printReport(fullSearchTable, mainRacerGUI);
+                URL boldFontPath = this.getClass().getClassLoader()
+                        .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
+                CreateReport.printReport(fullSearchTable, mainRacerGUI, "Отчет по списку гонщиков\n\n\n\n\n",
+                        new float[] { 1f, 0.6f, 1f, 0.4f },
+                        new String[] { "\nИмя гонщика\n\n", "\nВозраст", "\nКоманда", "\nОчки" }, boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка формирования отчета",
                         JOptionPane.PLAIN_MESSAGE);

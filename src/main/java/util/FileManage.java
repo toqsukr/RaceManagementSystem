@@ -4,13 +4,14 @@ import java.io.*;
 
 import javax.swing.table.DefaultTableModel;
 
-import org.codehaus.groovy.syntax.ReadException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import exception.ReadFileException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -34,7 +35,7 @@ public class FileManage {
      * @param filename path of the file is to be opened
      */
     public static void readRacerFromTextFile(DefaultTableModel table, String fileName)
-            throws FileNotFoundException, IOException, ReadException {
+            throws FileNotFoundException, IOException, ReadFileException {
         if (!new File(fileName).exists())
             throw new FileNotFoundException("Файл " + fileName + " не найден!");
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
@@ -51,7 +52,7 @@ public class FileManage {
                 if (!Validation.isValidName(racer) || !Validation.isValidAge(age) || !Validation.isValidTeam(team)
                         || !Validation.isValidPoint(points)) {
                     reader.close();
-                    throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
+                    throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
                 }
                 table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
             }
@@ -103,7 +104,7 @@ public class FileManage {
     }
 
     public static void readRacerFromXmlFile(DefaultTableModel table, String filename)
-            throws FileNotFoundException, ReadException {
+            throws FileNotFoundException, ReadFileException {
         if (!new File(filename).exists())
             throw new FileNotFoundException("Файл " + filename + " не найден!");
         Document doc = openXmlDocument(filename);
@@ -115,7 +116,7 @@ public class FileManage {
             table.removeRow(0); // Очистка таблицы
         // Цикл просмотра списка элементов и запись данных в таблицу
         if (nlRacers.getLength() == 0)
-            throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
+            throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
         for (int temp = 0; temp < nlRacers.getLength(); temp++) {
             // Выбор очередного элемента списка
             Node elem = nlRacers.item(temp);
@@ -124,7 +125,7 @@ public class FileManage {
             // Чтение атрибутов элемента
             if (attrs.getNamedItem("name") == null || attrs.getNamedItem("age") == null
                     || attrs.getNamedItem("team") == null || attrs.getNamedItem("points") == null)
-                throw new ReadException("Ошибка чтения файла!\nПроверьте корректность данных!", null);
+                throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
             String name = attrs.getNamedItem("name").getNodeValue();
             String age = attrs.getNamedItem("age").getNodeValue();
             String team = attrs.getNamedItem("team").getNodeValue();

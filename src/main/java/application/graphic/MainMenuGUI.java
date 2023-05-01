@@ -7,24 +7,20 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.net.URL;
 
 public class MainMenuGUI {
     private static JFrame mainMenuGUI = new JFrame("Главное меню");
 
-    private final JButton racerBtn = new JButton("       Гонщики   ",
-            new ImageIcon(new ImageIcon("etu/src/img/racer.png").getImage().getScaledInstance(25, 25, 4)));
+    private final JButton racerBtn = new JButton("       Гонщики   ");
 
-    private final JButton trackBtn = new JButton("       Трассы     ",
-            new ImageIcon(new ImageIcon("etu/src/img/track.png").getImage().getScaledInstance(25, 25, 4)));
+    private final JButton trackBtn = new JButton("       Трассы     ");
 
-    private final JButton graphicBtn = new JButton("   Расписание  ",
-            new ImageIcon(new ImageIcon("etu/src/img/graphic.png").getImage().getScaledInstance(25, 25, 4)));
+    private final JButton graphicBtn = new JButton("   Расписание  ");
 
-    private final JButton infoBtn = new JButton("  О программе  ",
-            new ImageIcon(new ImageIcon("etu/src/img/info.png").getImage().getScaledInstance(25, 25, 4)));
+    private final JButton infoBtn = new JButton("  О программе  ");
 
-    private final JButton exitBtn = new JButton("        Выход       ",
-            new ImageIcon(new ImageIcon("etu/src/img/exit.png").getImage().getScaledInstance(25, 25, 4)));
+    private final JButton exitBtn = new JButton("        Выход       ");
 
     private static JLabel title = new JLabel("Система управления автогонками");
 
@@ -42,26 +38,37 @@ public class MainMenuGUI {
         mainMenuGUI.setBounds(650, 200, 300, 380);
         mainMenuGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainMenuGUI.setResizable(false);
-        mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
+        URL mainMenuIcon = this.getClass().getClassLoader().getResource("img/favicon.png");
+        mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainMenuIcon));
         mainRacerWindow.show();
 
+        URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
+        racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(25, 25, 4)));
         racerBtn.setBackground(new Color(0xDFD9D9D9, false));
         racerBtn.addActionListener(new RacerEventListener());
         racerBtn.setFocusable(false);
         racerBtn.setMargin(new Insets(1, 2, 1, 10));
 
+        URL trackIcon = this.getClass().getClassLoader().getResource("img/track.png");
+        trackBtn.setIcon(new ImageIcon(new ImageIcon(trackIcon).getImage().getScaledInstance(25, 25, 4)));
         trackBtn.setBackground(new Color(0xDFD9D9D9, false));
         trackBtn.setFocusable(false);
         trackBtn.setMargin(new Insets(1, 4, 1, 10));
 
+        URL graphicIcon = this.getClass().getClassLoader().getResource("img/graphic.png");
+        graphicBtn.setIcon(new ImageIcon(new ImageIcon(graphicIcon).getImage().getScaledInstance(25, 25, 4)));
         graphicBtn.setBackground(new Color(0xDFD9D9D9, false));
         graphicBtn.setFocusable(false);
         graphicBtn.setMargin(new Insets(1, 4, 1, 8));
 
+        URL infoIcon = this.getClass().getClassLoader().getResource("img/info.png");
+        infoBtn.setIcon(new ImageIcon(new ImageIcon(infoIcon).getImage().getScaledInstance(25, 25, 4)));
         infoBtn.setBackground(new Color(0xDFD9D9D9, false));
         infoBtn.setFocusable(false);
         infoBtn.setMargin(new Insets(1, 4, 1, 6));
 
+        URL exitIcon = this.getClass().getClassLoader().getResource("img/exit.png");
+        exitBtn.setIcon(new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance(25, 25, 4)));
         exitBtn.setBackground(new Color(0xDFD9D9D9, false));
         exitBtn.addActionListener(new ExitEventListener());
         exitBtn.setFocusable(false);

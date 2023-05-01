@@ -2,6 +2,7 @@ package util;
 
 import java.awt.FileDialog;
 import java.io.FileOutputStream;
+import java.net.URL;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -27,12 +28,13 @@ public class CreateReport {
      * 
      * @param table table containing data
      */
-    public static void printReport(DefaultTableModel table, JFrame parent) throws Exception {
+    public static void printReport(DefaultTableModel table, JFrame parent, String title, float[] columnWidths,
+            String[] headersPdfExport, URL fontPath) throws Exception {
 
         if (table.getRowCount() == 0)
             throw new Exception("Нет данных для отчета!");
         FileDialog save = new FileDialog(parent, "Сохранение отчета", FileDialog.SAVE);
-        save.setFile("report_racer.pdf");
+        save.setFile("race_report.pdf");
         save.setVisible(true);
         if (save.getFile() != null) {
             String filename = save.getDirectory() + save.getFile();
@@ -43,16 +45,16 @@ public class CreateReport {
             Document document = new Document();
             PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
+
             Paragraph head = new Paragraph(
-                    new Phrase(4f, "Отчет по списку гонщиков\n\n\n\n\n",
-                            FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans-Bold.ttf", "cp1251", 18)));
+                    new Phrase(4f, title,
+                            FontFactory.getFont(fontPath.toString(), "cp1251", 18)));
             head.setAlignment(Element.ALIGN_CENTER);
             document.add(head);
             PdfPTable pdfTable = new PdfPTable(table.getColumnCount());
 
             // Create font for table headers
-            Font headerFont = FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans-Bold.ttf", "cp1251", 12);
-            String[] headersPdfExport = { "\nИмя гонщика\n\n", "\nВозраст", "\nКоманда", "\nОчки" };
+            Font headerFont = FontFactory.getFont(fontPath.toString(), "cp1251", 12);
 
             // Set column headers
             for (int i = 0; i < table.getColumnCount(); i++) {
@@ -65,10 +67,8 @@ public class CreateReport {
             }
 
             // Create font for table data
-            Font dataFont = FontFactory.getFont("etu/src/fonts/DejaVuSans/DejaVuSans.ttf", "cp1251", 10);
+            Font dataFont = FontFactory.getFont(fontPath.toString(), "cp1251", 10);
 
-            // Set custom widths for each row
-            float[] columnWidths = { 1f, 0.6f, 0.8f, 0.6f };
             pdfTable.setWidths(columnWidths);
 
             // Add table data

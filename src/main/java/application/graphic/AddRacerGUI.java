@@ -9,6 +9,8 @@ import race.system.Racer;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
+
 import javax.swing.*;
 import util.Validation;
 
@@ -55,7 +57,8 @@ public class AddRacerGUI {
         addRacerGUI.setBounds(200, 150, 410, 300);
         addRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addRacerGUI.setResizable(false);
-        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/racer.png"));
+        URL addRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
+        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
