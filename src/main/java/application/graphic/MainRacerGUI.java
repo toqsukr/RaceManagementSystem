@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.FileDialog;
+import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -49,40 +50,49 @@ public class MainRacerGUI {
     /**
      * This button performs a search
      */
-    private static final JButton searchBtn = new JButton("Поиск");
-    private static final JButton reportBtn = new JButton("Отчет");
-
+    private static final JButton searchBtn = new JButton("Искать");
     private static final JButton clearInputBtn = new JButton("Очистить");
+    private static final JButton disruptInputBtn = new JButton("Сбросить фильтр");
+
     /**
      * This button saves changes
      */
-    private static final JButton saveBtn = new JButton(new ImageIcon("etu/src/img/save.png"));
+    private static final JButton saveBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/save.png").getImage().getScaledInstance(50, 50, 4)));
     /**
      * This button adds new field into table
      */
-    private static final JButton addBtn = new JButton(new ImageIcon("etu/src/img/add.png"));
+    private static final JButton addBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/add.png").getImage().getScaledInstance(50, 50, 4)));
     /**
      * This button deletes selected field
      */
-    private static final JButton deleteBtn = new JButton(new ImageIcon("etu/src/img/delete.png"));
+    private static final JButton deleteBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/delete.png").getImage().getScaledInstance(50, 50, 4)));
     /**
      * This button allows you to edit selected field
      */
-    private static final JButton editBtn = new JButton(new ImageIcon("etu/src/img/edit.png"));
-    private static final JButton fileBtn = new JButton(new ImageIcon("etu/src/img/file.png"));
-    private static final JButton confirmBtn = new JButton(new ImageIcon("etu/src/img/confirm.png"));
-    private static final JButton cancelBtn = new JButton(new ImageIcon("etu/src/img/cancel.png"));
+    private static final JButton fileBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/file.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton editBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/edit.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton confirmBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/confirm.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton cancelBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/cancel.png").getImage().getScaledInstance(50, 50, 4)));
+    private static final JButton reportBtn = new JButton(
+            new ImageIcon(new ImageIcon("etu/src/img/report.png").getImage().getScaledInstance(50, 50, 4)));
 
     /**
      * This input is used to search for an entry in the table by the name of the
      * racer
      */
-    private static final JTextField searchNameField = new JTextField("Имя гонщика", 10);
+    private static final JTextField searchNameField = new JTextField("Имя гонщика", 17);
     /**
      * This input is used to search for an entry in the table by the team of the
      * racer
      */
-    private static final JTextField searchTeamField = new JTextField("Команда", 10);
+    private static final JTextField searchTeamField = new JTextField("Команда", 15);
     /**
      * This bar is used to store buttons
      */
@@ -159,7 +169,7 @@ public class MainRacerGUI {
         mainRacerGUI.setBounds(200, 150, 800, 600);
         mainRacerGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainRacerGUI.setResizable(false);
-        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
+        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/racer.png"));
         addRacerWindow.show();
 
         toolBar.setFloatable(false);
@@ -170,20 +180,29 @@ public class MainRacerGUI {
 
         searchBtn.setBackground(new Color(0xDFD9D9D9, false));
         clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
-        reportBtn.setBackground(new Color(0xDFD9D9D9, false));
+        disruptInputBtn.setBackground(new Color(0xDFD9D9D9, false));
 
         searchTeamField.addFocusListener(new TeamInputFocusListener());
+
         searchNameField.addFocusListener(new RacerInputFocusListener());
+
+        searchNameField.setMargin(new Insets(2, 2, 3, 0));
+        searchTeamField.setMargin(new Insets(2, 2, 3, 0));
+
         searchBtn.addActionListener(new SearchEventListener());
-        reportBtn.addActionListener(new ReportEventListener());
+        searchBtn.setMargin(new Insets(1, 6, 1, 6));
+
+        disruptInputBtn.addActionListener(new DisruptEventListener());
+        disruptInputBtn.setMargin(new Insets(1, 6, 1, 6));
 
         clearInputBtn.addActionListener(new ClearInputEventListener());
+        clearInputBtn.setMargin(new Insets(1, 6, 1, 6));
 
         filterPanel.add(searchNameField);
         filterPanel.add(searchTeamField);
-        filterPanel.add(clearInputBtn);
         filterPanel.add(searchBtn);
-        filterPanel.add(reportBtn);
+        filterPanel.add(clearInputBtn);
+        filterPanel.add(disruptInputBtn);
 
         // FlatSVGIcon svgIcon = new FlatSVGIcon("etu/src/img/close.svg", 50, 50);
         // fileBtn.setIcon(svgIcon);
@@ -191,32 +210,44 @@ public class MainRacerGUI {
         fileBtn.setToolTipText("Открыть файл");
         fileBtn.setBackground(new Color(0xDFD9D9D9, false));
         fileBtn.addActionListener(new FileEventListener());
+        fileBtn.setFocusable(false);
 
-        saveBtn.setToolTipText("Сохранить изменения");
+        saveBtn.setToolTipText("Сохранить файл");
         saveBtn.setBackground(new Color(0xDFD9D9D9, false));
         saveBtn.addActionListener(new SaveEventListener());
+        saveBtn.setFocusable(false);
+
+        addBtn.setToolTipText("Добавить гонщика");
+        addBtn.setBackground(new Color(0xDFD9D9D9, false));
+        addBtn.addActionListener(new AddEventListener());
+        addBtn.setFocusable(false);
+
+        deleteBtn.setToolTipText("Удалить гонщика");
+        deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
+        deleteBtn.addActionListener(new DeleteEventListener());
+        deleteBtn.setFocusable(false);
 
         editBtn.setToolTipText("Редактировать запись");
         editBtn.setBackground(new Color(0xDFD9D9D9, false));
         editBtn.addActionListener(new EditEventListener());
+        editBtn.setFocusable(false);
 
-        deleteBtn.setToolTipText("Удалить запись");
-        deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
-        deleteBtn.addActionListener(new DeleteEventListener());
-
-        addBtn.setToolTipText("Добавить запись");
-        addBtn.setBackground(new Color(0xDFD9D9D9, false));
-        addBtn.addActionListener(new AddEventListener());
+        reportBtn.setToolTipText("Сформировать отчет");
+        reportBtn.setBackground(new Color(0xDFD9D9D9, false));
+        reportBtn.addActionListener(new ReportEventListener());
+        reportBtn.setFocusable(false);
 
         confirmBtn.setVisible(false);
         confirmBtn.setToolTipText("Ок");
         confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
         confirmBtn.addActionListener(new ConfirmEventListener());
+        confirmBtn.setFocusable(false);
 
         cancelBtn.setVisible(false);
         cancelBtn.setToolTipText("Отмена");
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.addActionListener(new CancelEventListener());
+        cancelBtn.setFocusable(false);
 
         toolBar.add(fileBtn);
         toolBar.add(saveBtn);
@@ -225,6 +256,7 @@ public class MainRacerGUI {
         toolBar.add(editBtn);
         toolBar.add(confirmBtn);
         toolBar.add(cancelBtn);
+        toolBar.add(reportBtn);
 
         container.add(toolBar, BorderLayout.NORTH);
         container.add(scroll, BorderLayout.CENTER);
@@ -250,6 +282,7 @@ public class MainRacerGUI {
         addBtn.setVisible(false);
         deleteBtn.setVisible(false);
         editBtn.setVisible(false);
+        reportBtn.setVisible(false);
         confirmBtn.setVisible(true);
         cancelBtn.setVisible(true);
     }
@@ -260,6 +293,7 @@ public class MainRacerGUI {
         addBtn.setVisible(true);
         deleteBtn.setVisible(true);
         editBtn.setVisible(true);
+        reportBtn.setVisible(true);
         confirmBtn.setVisible(false);
         cancelBtn.setVisible(false);
     }
@@ -298,6 +332,16 @@ public class MainRacerGUI {
                 throw new InvalidTeamInputException(i + 1);
             if (!Validation.isValidPoint(racerTable.getValueAt(i, 3).toString()))
                 throw new InvalidPointInputException(i + 1);
+        }
+    }
+
+    private class DisruptEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            copyTable(fullSearchTable, racerTable);
         }
     }
 
@@ -387,8 +431,12 @@ public class MainRacerGUI {
                         additionalSearchEdit();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
+                        mainRacerGUI
+                                .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                     }
                 } else {
+                    mainRacerGUI
+                            .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
@@ -423,6 +471,7 @@ public class MainRacerGUI {
             copyTable(previousRacerTable, racerTable);
             changeEditingPermit();
             setConfirmbarUnvisible();
+            mainRacerGUI.setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
         }
     }
 
@@ -436,7 +485,8 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData("Данные для редактирования не найдены!");
+                checkEmptyData("Данные для редактирования не найдены!", fullSearchTable);
+                mainRacerGUI.setTitle(mainRacerGUI.getTitle() + " - Режим редактирования");
                 copyTable(racerTable, previousRacerTable);
                 changeEditingPermit();
                 setConfirmbarVisible();
@@ -467,8 +517,8 @@ public class MainRacerGUI {
         return isEqual;
     }
 
-    private void checkEmptyData(String msg) throws NothingDataException {
-        if (racerTable.getRowCount() == 0)
+    private void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
+        if (table.getRowCount() == 0)
             throw new NothingDataException(msg);
     }
 
@@ -502,7 +552,6 @@ public class MainRacerGUI {
 
     private class ClearInputEventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            copyTable(fullSearchTable, racerTable);
             setInput(searchTeamField, "Команда");
             setInput(searchNameField, "Имя гонщика");
         }
@@ -547,7 +596,9 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData("Данные для сохранения не найдены!");
+                checkEmptyData("Данные для сохранения не найдены!", fullSearchTable);
+                copyTable(fullSearchTable, racerTable);
+                clearInputBtn.doClick();
                 FileDialog save = new FileDialog(mainRacerGUI, "Сохранение данных", FileDialog.SAVE);
                 save.setFile("data.xml");
                 save.setVisible(true);
@@ -598,7 +649,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData("Данные для удаления не найдены!");
+                checkEmptyData("Данные для удаления не найдены!", fullSearchTable);
                 checkDeleteSelect();
                 String message = racers.getSelectedRows().length == 1
                         ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
@@ -675,6 +726,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkEmptyData("Данные для поиска не найдены!", fullSearchTable);
                 if (getEditingPermit())
                     confirmBtn.doClick();
                 copyTable(fullSearchTable, racerTable);
@@ -693,6 +745,9 @@ public class MainRacerGUI {
                 }
 
             } catch (EmptySearchInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             }

@@ -72,7 +72,10 @@ public class AddRacerGUI {
         Box pointBox = Box.createHorizontalBox();
 
         addBtn.addActionListener(new AddEventListener());
+        addBtn.setFocusable(false);
+
         cancelBtn.addActionListener(new CancelEventListener());
+        cancelBtn.setFocusable(false);
 
         Container container = addRacerGUI.getContentPane();
         container.setLayout(new BorderLayout());
