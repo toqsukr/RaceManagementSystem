@@ -101,6 +101,8 @@ public class MainRacerGUI {
     private static DefaultTableModel racerTable = new DefaultTableModel(data, columns);
 
     private static DefaultTableModel previousRacerTable = new DefaultTableModel(data, columns);
+
+    private static DefaultTableModel fullSearchTable = new DefaultTableModel(data, columns);
     /**
      * Create the table
      */
@@ -323,6 +325,7 @@ public class MainRacerGUI {
                         FileManage.readRacerFromTextFile(racerTable, filename);
                     else
                         FileManage.readRacerFromXmlFile(racerTable, filename);
+                    copyTable(racerTable, fullSearchTable);
                     mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                 }
 
@@ -345,6 +348,23 @@ public class MainRacerGUI {
             throw new DataReadException("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
     }
 
+    private void additionalSearchEdit() {
+        for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
+            for (int j = 0; j < previousRacerTable.getRowCount(); j++) {
+                if (fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))) {
+                    for (int k = 0; k < fullSearchTable.getColumnCount(); k++) {
+                        fullSearchTable.setValueAt(racerTable.getValueAt(j, k), i, k);
+
+                    }
+
+                }
+            }
+        }
+    }
+
     /**
      * Сlass for implementing a open button listener
      */
@@ -355,7 +375,6 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                checkEmptyData("Данные для редактирования не найдены!");
                 if (racers.getSelectedRow() != -1)
                     racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
                 if (!isEqualTable(racerTable, previousRacerTable)) {
@@ -365,6 +384,7 @@ public class MainRacerGUI {
                             JOptionPane.YES_NO_OPTION,
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
+                        additionalSearchEdit();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                     }
@@ -372,10 +392,6 @@ public class MainRacerGUI {
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
-
-            } catch (NothingDataException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidNameInputException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
@@ -402,17 +418,11 @@ public class MainRacerGUI {
          */
 
         public void actionPerformed(ActionEvent e) {
-            try {
-                checkEmptyData("Данные для редактирования не найдены!");
-                if (racers.getSelectedRow() != -1)
-                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
-                copyTable(previousRacerTable, racerTable);
-                changeEditingPermit();
-                setConfirmbarUnvisible();
-            } catch (NothingDataException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
+            if (racers.getSelectedRow() != -1)
+                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+            copyTable(previousRacerTable, racerTable);
+            changeEditingPermit();
+            setConfirmbarUnvisible();
         }
     }
 
@@ -465,6 +475,8 @@ public class MainRacerGUI {
     public static void addRacer(Racer racer) {
         racerTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
                 racer.getPoints().toString() });
+        fullSearchTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
+                racer.getPoints().toString() });
     }
 
     private boolean getEditingPermit() {
@@ -488,8 +500,9 @@ public class MainRacerGUI {
         mainRacerGUI.setEnabled(value);
     }
 
-    private static class ClearInputEventListener implements ActionListener {
+    private class ClearInputEventListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            copyTable(fullSearchTable, racerTable);
             setInput(searchTeamField, "Команда");
             setInput(searchNameField, "Имя гонщика");
         }
@@ -544,9 +557,9 @@ public class MainRacerGUI {
                         filename += ".xml";
                     }
                     if (filename.endsWith("txt"))
-                        FileManage.writeRacerToTextFile(racerTable, filename);
+                        FileManage.writeRacerToTextFile(fullSearchTable, filename);
                     else
-                        FileManage.writeRacerToXmlFile(racerTable, filename);
+                        FileManage.writeRacerToXmlFile(fullSearchTable, filename);
                 }
             } catch (DataReadException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
@@ -561,7 +574,7 @@ public class MainRacerGUI {
     /**
      * Сlass for implementing a add button listener
      */
-    private static class AddEventListener implements ActionListener {
+    private class AddEventListener implements ActionListener {
 
         /***
          *
@@ -570,6 +583,7 @@ public class MainRacerGUI {
         public void actionPerformed(ActionEvent e) {
             setMainRacerEnable(false);
             setAddRacerVisible(true);
+            copyTable(fullSearchTable, racerTable);
         }
     }
 
@@ -600,6 +614,11 @@ public class MainRacerGUI {
                         int j = racers.getRowCount() - 1;
                         while (j > -1) {
                             if (j == racers.getSelectedRows()[i]) {
+                                additionalSearchDelete(fullSearchTable,
+                                        racers.getValueAt(racers.getSelectedRows()[i], 0).toString(),
+                                        racers.getValueAt(racers.getSelectedRows()[i], 1).toString(),
+                                        racers.getValueAt(racers.getSelectedRows()[i], 2).toString(),
+                                        racers.getValueAt(racers.getSelectedRows()[i], 3).toString());
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
                                 break;
                             }
@@ -618,6 +637,18 @@ public class MainRacerGUI {
         }
     }
 
+    private void additionalSearchDelete(DefaultTableModel table, String name, String age, String team,
+            String points) {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (!name.isEmpty() && !age.isEmpty() && !team.isEmpty() && !points.isEmpty()) {
+                if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
+                        && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
+                    table.removeRow(i);
+                }
+            }
+        }
+    }
+
     private static class ReportEventListener implements ActionListener {
         /***
          *
@@ -625,7 +656,7 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                CreateReport.printReport(racerTable, mainRacerGUI);
+                CreateReport.printReport(fullSearchTable, mainRacerGUI);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка формирования отчета",
                         JOptionPane.PLAIN_MESSAGE);
@@ -636,7 +667,7 @@ public class MainRacerGUI {
     /**
      * Сlass for implementing a search button listener
      */
-    private static class SearchEventListener implements ActionListener {
+    private class SearchEventListener implements ActionListener {
 
         /***
          *
@@ -644,19 +675,33 @@ public class MainRacerGUI {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                String teamInputText = searchTeamField.getText();
-                String nameInputText = searchNameField.getText();
-                if (teamInputText.equals("Команда") & nameInputText.equals("Имя гонщика"))
-                    throw new EmptySearchInputException();
-                else {
-                    String message = "Поиск успешно выполнен!";
-                    JOptionPane.showMessageDialog(null, message, "Успешный поиск", JOptionPane.PLAIN_MESSAGE);
+                if (getEditingPermit())
+                    confirmBtn.doClick();
+                copyTable(fullSearchTable, racerTable);
+                checkEmptyInput();
+                copyTable(racerTable, fullSearchTable);
+                for (int i = racerTable.getRowCount() - 1; i > -1; i--) {
+                    if (!searchNameField.getText().equals("Имя гонщика") & !racerTable.getValueAt(i, 0).toString()
+                            .toLowerCase().contains(searchNameField.getText().toLowerCase())) {
+                        racerTable.removeRow(i);
+                        continue;
+                    }
+
+                    if (!searchTeamField.getText().equals("Команда") & !racerTable.getValueAt(i, 2).toString()
+                            .toLowerCase().contains(searchTeamField.getText().toLowerCase()))
+                        racerTable.removeRow(i);
                 }
+
             } catch (EmptySearchInputException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    private void checkEmptyInput() throws EmptySearchInputException {
+        if (searchTeamField.getText().equals("Команда") & searchNameField.getText().equals("Имя гонщика"))
+            throw new EmptySearchInputException();
     }
 
     public void setVisible(boolean value) {
