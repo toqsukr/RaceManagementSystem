@@ -45,7 +45,7 @@ import util.Validation;
 /**
  * GUI of Race Management System
  */
-public class MainRacerGUI {
+public class MainRacerGUI extends JFrame {
     private static JFrame mainRacerGUI = new JFrame("Список гонщиков");
     /**
      * This button performs a search
@@ -140,8 +140,7 @@ public class MainRacerGUI {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
-                    if (racers.getSelectedRow() != -1)
-                        racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                    stopEditCell();
                     checkEditedData();
                     saveBeforeClose("Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
                     setConfirmbarUnvisible();
@@ -263,7 +262,12 @@ public class MainRacerGUI {
         container.add(filterPanel, BorderLayout.SOUTH);
     }
 
-    private static void saveBeforeClose(String message) {
+    public void stopEditCell() {
+        if (racers.getSelectedRow() != -1)
+            racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+    }
+
+    public void saveBeforeClose(String message) {
         if (racerTable.getRowCount() > 0) {
             int result = JOptionPane.showConfirmDialog(mainRacerGUI,
                     message,
@@ -321,7 +325,7 @@ public class MainRacerGUI {
             throw new UnselectedDeleteException();
     }
 
-    private static void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
+    public void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
             InvalidTeamInputException, InvalidPointInputException {
         for (int i = 0; i < racerTable.getRowCount(); i++) {
             if (!Validation.isValidName(racerTable.getValueAt(i, 0).toString()))

@@ -55,7 +55,7 @@ public class AddRacerGUI {
         addRacerGUI.setBounds(200, 150, 410, 300);
         addRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addRacerGUI.setResizable(false);
-        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
+        addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/racer.png"));
 
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));

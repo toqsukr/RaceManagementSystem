@@ -4,6 +4,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 public class MainMenuGUI {
     private static JFrame mainMenuGUI = new JFrame("Главное меню");
@@ -28,8 +31,16 @@ public class MainMenuGUI {
     private static MainRacerGUI mainRacerWindow = new MainRacerGUI();
 
     public MainMenuGUI() {
+
+        mainMenuGUI.addWindowListener((WindowListener) new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                closeOperation();
+            }
+        });
+
         mainMenuGUI.setBounds(650, 200, 300, 380);
-        mainMenuGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainMenuGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainMenuGUI.setResizable(false);
         mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage("etu/src/img/favicon.png"));
         mainRacerWindow.show();
@@ -52,6 +63,7 @@ public class MainMenuGUI {
         infoBtn.setMargin(new Insets(1, 4, 1, 6));
 
         exitBtn.setBackground(new Color(0xDFD9D9D9, false));
+        exitBtn.addActionListener(new ExitEventListener());
         exitBtn.setFocusable(false);
         exitBtn.setMargin(new Insets(1, 3, 1, 6));
 
@@ -99,6 +111,25 @@ public class MainMenuGUI {
         container.add(rightBox, BorderLayout.EAST);
     }
 
+    private void closeOperation() {
+        try {
+            mainRacerWindow.stopEditCell();
+            mainRacerWindow.checkEditedData();
+            mainRacerWindow.saveBeforeClose(
+                    "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+            System.exit(1);
+
+        } catch (Exception exception) {
+            int confirm = JOptionPane.showConfirmDialog(mainMenuGUI,
+                    "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                    "Предупреждение",
+                    JOptionPane.OK_CANCEL_OPTION);
+            if (confirm == JOptionPane.OK_OPTION) {
+                System.exit(1);
+            }
+        }
+    }
+
     private static class RacerEventListener implements ActionListener {
 
         /***
@@ -108,6 +139,17 @@ public class MainMenuGUI {
         public void actionPerformed(ActionEvent e) {
             mainRacerWindow.setVisible(true);
 
+        }
+    }
+
+    private class ExitEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            closeOperation();
         }
     }
 
