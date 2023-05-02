@@ -22,21 +22,42 @@ public class Racer {
     @Id
     @Column(name = "racerId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer getRacerId() { return racerId; }
-    public void setRacerId(int id) { racerId = id; }
+    public Integer getRacerId() {
+        return racerId;
+    }
+
+    public void setRacerId(int id) {
+        racerId = id;
+    }
 
     @Column(name = "racerName")
-    public String getName(){ return  name; }
-    public void setName(String inputString){ name = inputString; }
+    public String getName() {
+        return name;
+    }
 
+    public void setName(String inputString) {
+        name = inputString;
+    }
 
-    public String getTeam() { return team; }
+    public String getTeam() {
+        return team;
+    }
 
     @Column(name = "racerAge")
-    public Integer getAge(){ return age; }
-    public void setAge(int value){ age = value; }
+    public Integer getAge() {
+        return age;
+    }
+
+    public void setAge(int value) {
+        age = value;
+    }
 
     @Column(name = "racerPoints")
-    public Integer getPoints(){ return points; }
-    public void setPoints(int value){ points = value; }
+    public Integer getPoints() {
+        return points;
+    }
+
+    public void setPoints(int value) {
+        points = value;
+    }
 }

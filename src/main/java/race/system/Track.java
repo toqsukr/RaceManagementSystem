@@ -15,20 +15,43 @@ public class Track {
     @Id
     @Column(name = "teamId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getTrackId() { return trackId; }
-    public void setTrackId(int id) { trackId = id; }
+    public int getTrackId() {
+        return trackId;
+    }
+
+    public void setTrackId(int id) {
+        trackId = id;
+    }
 
     @Column(name = "trackName")
-    public String getTrackName() { return trackName; }
-    public void setTrackName(String inputString) { trackName = inputString; }
+    public String getTrackName() {
+        return trackName;
+    }
+
+    public void setTrackName(String inputString) {
+        trackName = inputString;
+    }
 
     @Column(name = "trackLength")
-    public double getLength(){ return length; };
-    public void setLength(double value){ length = value; };
+    public double getLength() {
+        return length;
+    };
 
-    public List<Score> getAllScores(){ return scores;};
-    public void addScore(Score score){};
-    public void deleteScore(Score score){};
+    public void setLength(double value) {
+        length = value;
+    };
 
-    public List<Racer> getWinners(){ return winners; };
+    public List<Score> getAllScores() {
+        return scores;
+    };
+
+    public void addScore(Score score) {
+    };
+
+    public void deleteScore(Score score) {
+    };
+
+    public List<Racer> getWinners() {
+        return winners;
+    };
 }

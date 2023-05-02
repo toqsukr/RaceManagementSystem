@@ -28,6 +28,7 @@ import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
 import exception.EmptySearchInputException;
+import exception.FileFormatException;
 import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
@@ -45,32 +46,60 @@ import util.Validation;
  */
 public class MainRacerGUI extends JFrame {
     private static JFrame mainRacerGUI = new JFrame("Список гонщиков");
+
     /**
      * This button performs a search
      */
     private static final JButton searchBtn = new JButton("Искать");
+
+    /**
+     * This button performs a clear search inputs
+     */
     private static final JButton clearInputBtn = new JButton("Очистить");
+
+    /**
+     * This button performs a disrupt values of search inputs
+     */
     private static final JButton disruptInputBtn = new JButton("Сбросить фильтр");
 
     /**
      * This button saves changes
      */
     private static final JButton saveBtn = new JButton();
+
     /**
      * This button adds new field into table
      */
     private static final JButton addBtn = new JButton();
+
     /**
      * This button deletes selected field
      */
     private static final JButton deleteBtn = new JButton();
+
     /**
      * This button allows you to edit selected field
      */
-    private static final JButton fileBtn = new JButton();
     private static final JButton editBtn = new JButton();
+
+    /**
+     * This button opens data file
+     */
+    private static final JButton fileBtn = new JButton();
+
+    /**
+     * This button confirms changes made
+     */
     private static final JButton confirmBtn = new JButton();
+
+    /**
+     * This button cancles changes made
+     */
     private static final JButton cancelBtn = new JButton();
+
+    /**
+     * This button forms racer data report
+     */
     private static final JButton reportBtn = new JButton();
 
     /**
@@ -78,31 +107,43 @@ public class MainRacerGUI extends JFrame {
      * racer
      */
     private static final JTextField searchNameField = new JTextField("Имя гонщика", 17);
+
     /**
      * This input is used to search for an entry in the table by the team of the
      * racer
      */
     private static final JTextField searchTeamField = new JTextField("Команда", 15);
+
     /**
      * This bar is used to store buttons
      */
     private static final JToolBar toolBar = new JToolBar();
+
     /**
      * Table column names
      */
     private static final String[] columns = { "Имя гонщика", "Возраст", "Команда", "Очки" };
+
     /**
-     * Field of the table
+     * Fields of the table
      */
     private static String[][] data = {};
+
     /**
-     * Generation of the default table
+     * The table model storing displaying data
      */
     private static DefaultTableModel racerTable = new DefaultTableModel(data, columns);
 
+    /**
+     * The table model storing the version of the table before editing
+     */
     private static DefaultTableModel previousRacerTable = new DefaultTableModel(data, columns);
 
+    /**
+     * The table model storing the full version of the table before searching
+     */
     private static DefaultTableModel fullSearchTable = new DefaultTableModel(data, columns);
+
     /**
      * Create the table
      */
@@ -112,19 +153,30 @@ public class MainRacerGUI extends JFrame {
             return getEditingPermit();
         }
     };
+
     /**
      * Creation of the scroll panel
      */
     private final JScrollPane scroll = new JScrollPane(racers);
+
     /**
      * This panel store 2 inputs and search button
      */
     private static final JPanel filterPanel = new JPanel();
 
+    /***
+     * Variable storing table edit status
+     */
     private boolean editingPermit = false;
 
+    /***
+     * The add racer window
+     */
     private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
+    /***
+     * The function creating MainRacerGUI
+     */
     public void show() {
         mainRacerGUI.addWindowListener((WindowListener) new WindowAdapter() {
             @Override
@@ -270,333 +322,6 @@ public class MainRacerGUI extends JFrame {
         container.add(filterPanel, BorderLayout.SOUTH);
     }
 
-    public void stopEditCell() {
-        if (racers.getSelectedRow() != -1)
-            racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
-    }
-
-    public void saveBeforeClose(String message) {
-        if (racerTable.getRowCount() > 0) {
-            int result = JOptionPane.showConfirmDialog(mainRacerGUI,
-                    message,
-                    "Подтверждение действия",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.YES_OPTION) {
-                saveBtn.doClick();
-            }
-        }
-    }
-
-    private static void setConfirmbarVisible() {
-        fileBtn.setVisible(false);
-        saveBtn.setVisible(false);
-        addBtn.setVisible(false);
-        deleteBtn.setVisible(false);
-        editBtn.setVisible(false);
-        reportBtn.setVisible(false);
-        confirmBtn.setVisible(true);
-        cancelBtn.setVisible(true);
-    }
-
-    private static void setConfirmbarUnvisible() {
-        fileBtn.setVisible(true);
-        saveBtn.setVisible(true);
-        addBtn.setVisible(true);
-        deleteBtn.setVisible(true);
-        editBtn.setVisible(true);
-        reportBtn.setVisible(true);
-        confirmBtn.setVisible(false);
-        cancelBtn.setVisible(false);
-    }
-
-    private void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
-        clearTable(newTable);
-        for (int i = 0; i < table.getRowCount(); i++) {
-            String name = table.getValueAt(i, 0).toString();
-            String age = table.getValueAt(i, 1).toString();
-            String team = table.getValueAt(i, 2).toString();
-            String points = table.getValueAt(i, 3).toString();
-            newTable.addRow(new String[] { name, age, team, points }); // Запись строки в таблицу
-        }
-    }
-
-    private void clearTable(DefaultTableModel table) {
-        int n = table.getRowCount();
-        for (int i = 0; i < n; i++) {
-            table.removeRow(n - i - 1);
-        }
-    }
-
-    private void checkDeleteSelect() throws UnselectedDeleteException {
-        if (racers.getSelectedRow() == -1)
-            throw new UnselectedDeleteException();
-    }
-
-    public void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
-            InvalidTeamInputException, InvalidPointInputException {
-        for (int i = 0; i < racerTable.getRowCount(); i++) {
-            if (!Validation.isValidName(racerTable.getValueAt(i, 0).toString()))
-                throw new InvalidNameInputException(i + 1);
-            if (!Validation.isValidAge(racerTable.getValueAt(i, 1).toString()))
-                throw new InvalidAgeInputException(i + 1);
-            if (!Validation.isValidTeam(racerTable.getValueAt(i, 2).toString()))
-                throw new InvalidTeamInputException(i + 1);
-            if (!Validation.isValidPoint(racerTable.getValueAt(i, 3).toString()))
-                throw new InvalidPointInputException(i + 1);
-        }
-    }
-
-    private class DisruptEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            copyTable(fullSearchTable, racerTable);
-        }
-    }
-
-    /**
-     * Сlass for implementing a open button listener
-     */
-    private class FileEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                saveBeforeClose(
-                        "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
-                FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
-                        FileDialog.LOAD);
-                load.setFile("data.xml");
-                load.setVisible(true);
-                if (load.getFile() != null) {
-                    checkFileFormat(load);
-                    String filename = load.getDirectory() + load.getFile();
-                    mainRacerGUI.setTitle("Список гонщиков");
-                    if (load.getFile().endsWith("txt"))
-                        FileManage.readRacerFromTextFile(racerTable, filename);
-                    else
-                        FileManage.readRacerFromXmlFile(racerTable, filename);
-                    copyTable(racerTable, fullSearchTable);
-                    mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
-                }
-
-            } catch (FileNotFoundException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (ReadFileException exception) {
-                clearTable(racerTable);
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-        }
-    }
-
-    private void checkFileFormat(FileDialog file) throws Exception {
-        if (!file.getFile().endsWith(".txt") && !file.getFile().endsWith(".xml"))
-            throw new Exception("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
-    }
-
-    private void additionalSearchEdit() {
-        for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
-            for (int j = 0; j < previousRacerTable.getRowCount(); j++) {
-                if (fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
-                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
-                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
-                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))) {
-                    for (int k = 0; k < fullSearchTable.getColumnCount(); k++) {
-                        fullSearchTable.setValueAt(racerTable.getValueAt(j, k), i, k);
-
-                    }
-
-                }
-            }
-        }
-    }
-
-    /**
-     * Сlass for implementing a open button listener
-     */
-    private class ConfirmEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                if (racers.getSelectedRow() != -1)
-                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
-                if (!isEqualTable(racerTable, previousRacerTable)) {
-                    checkEditedData();
-                    int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
-                            "Подтверждение действия",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION) {
-                        additionalSearchEdit();
-                        setConfirmbarUnvisible();
-                        changeEditingPermit();
-                        mainRacerGUI
-                                .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
-                    }
-                } else {
-                    mainRacerGUI
-                            .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
-                    setConfirmbarUnvisible();
-                    changeEditingPermit();
-                }
-            } catch (InvalidNameInputException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (InvalidAgeInputException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (InvalidTeamInputException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (InvalidPointInputException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-        }
-    }
-
-    /**
-     * Сlass for implementing a open button listener
-     */
-    private class CancelEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-
-        public void actionPerformed(ActionEvent e) {
-            if (racers.getSelectedRow() != -1)
-                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
-            copyTable(previousRacerTable, racerTable);
-            changeEditingPermit();
-            setConfirmbarUnvisible();
-            mainRacerGUI.setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
-        }
-    }
-
-    /**
-     * Сlass for implementing a edit button listener
-     */
-    private class EditEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                checkEmptyData("Данные для редактирования не найдены!", fullSearchTable);
-                mainRacerGUI.setTitle(mainRacerGUI.getTitle() + " - Режим редактирования");
-                copyTable(racerTable, previousRacerTable);
-                changeEditingPermit();
-                setConfirmbarVisible();
-
-            } catch (NothingDataException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-        }
-    }
-
-    private boolean isEqualTable(DefaultTableModel table, DefaultTableModel prevTable) {
-        boolean isEqual = true;
-        if (table.getRowCount() != prevTable.getRowCount() || table.getColumnCount() != prevTable.getColumnCount())
-            isEqual = false;
-        else {
-            for (int i = 0; i < table.getRowCount(); i++) {
-                for (int j = 0; j < table.getColumnCount(); j++) {
-                    if (!table.getValueAt(i, j).equals(prevTable.getValueAt(i, j))) {
-                        isEqual = false;
-                        break;
-                    }
-                }
-                if (!isEqual)
-                    break;
-            }
-        }
-        return isEqual;
-    }
-
-    private void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
-        if (table.getRowCount() == 0)
-            throw new NothingDataException(msg);
-    }
-
-    public static void addRacer(Racer racer) {
-        racerTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
-                racer.getPoints().toString() });
-        fullSearchTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
-                racer.getPoints().toString() });
-    }
-
-    private boolean getEditingPermit() {
-        return editingPermit;
-    }
-
-    private void changeEditingPermit() {
-
-        editingPermit = !editingPermit;
-    }
-
-    public static void setInput(JTextField input, String text) {
-        input.setText(text);
-    }
-
-    public static void setAddRacerVisible(boolean value) {
-        addRacerWindow.addRacerGUI.setVisible(value);
-    }
-
-    public static void setMainRacerEnable(boolean value) {
-        mainRacerGUI.setEnabled(value);
-    }
-
-    private class ClearInputEventListener implements ActionListener {
-        public void actionPerformed(ActionEvent e) {
-            setInput(searchTeamField, "Команда");
-            setInput(searchNameField, "Имя гонщика");
-        }
-    }
-
-    public static class TeamInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (searchTeamField.getText().equals("Команда"))
-                setInput(searchTeamField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (searchTeamField.getText().equals(""))
-                setInput(searchTeamField, "Команда");
-        }
-
-    }
-
-    public static class RacerInputFocusListener implements FocusListener {
-
-        public void focusGained(FocusEvent e) {
-            if (searchNameField.getText().equals("Имя гонщика"))
-                setInput(searchNameField, "");
-        }
-
-        public void focusLost(FocusEvent e) {
-            if (searchNameField.getText().equals(""))
-                setInput(searchNameField, "Имя гонщика");
-        }
-
-    }
-
     /**
      * Сlass for implementing a save button listener
      */
@@ -700,18 +425,140 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
-    private void additionalSearchDelete(DefaultTableModel table, String name, String age, String team,
-            String points) {
-        for (int i = 0; i < table.getRowCount(); i++) {
-            if (!name.isEmpty() && !age.isEmpty() && !team.isEmpty() && !points.isEmpty()) {
-                if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
-                        && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
-                    table.removeRow(i);
+    /**
+     * Сlass for implementing a open button listener
+     */
+    private class FileEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                saveBeforeClose(
+                        "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
+                FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
+                        FileDialog.LOAD);
+                load.setFile("data.xml");
+                load.setVisible(true);
+                if (load.getFile() != null) {
+                    checkFileFormat(load);
+                    String filename = load.getDirectory() + load.getFile();
+                    mainRacerGUI.setTitle("Список гонщиков");
+                    if (load.getFile().endsWith("txt"))
+                        FileManage.readRacerFromTextFile(racerTable, filename);
+                    else
+                        FileManage.readRacerFromXmlFile(racerTable, filename);
+                    copyTable(racerTable, fullSearchTable);
+                    mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                 }
+
+            } catch (FileNotFoundException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (ReadFileException exception) {
+                clearTable(racerTable);
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
     }
 
+    /**
+     * Сlass for implementing a open button listener
+     */
+    private class ConfirmEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                if (racers.getSelectedRow() != -1)
+                    racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+                if (!isEqualTable(racerTable, previousRacerTable)) {
+                    checkEditedData();
+                    int result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        additionalSearchEdit();
+                        setConfirmbarUnvisible();
+                        changeEditingPermit();
+                        mainRacerGUI
+                                .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
+                    }
+                } else {
+                    mainRacerGUI
+                            .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
+                    setConfirmbarUnvisible();
+                    changeEditingPermit();
+                }
+            } catch (InvalidNameInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidAgeInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTeamInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidPointInputException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    /**
+     * Сlass for implementing a open button listener
+     */
+    private class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+
+        public void actionPerformed(ActionEvent e) {
+            if (racers.getSelectedRow() != -1)
+                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+            copyTable(previousRacerTable, racerTable);
+            changeEditingPermit();
+            setConfirmbarUnvisible();
+            mainRacerGUI.setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
+        }
+    }
+
+    /**
+     * Сlass for implementing a edit button listener
+     */
+    private class EditEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                checkEmptyData("Данные для редактирования не найдены!", fullSearchTable);
+                mainRacerGUI.setTitle(mainRacerGUI.getTitle() + " - Режим редактирования");
+                copyTable(racerTable, previousRacerTable);
+                changeEditingPermit();
+                setConfirmbarVisible();
+
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    /**
+     * Сlass for implementing a report button listener
+     */
     private static class ReportEventListener implements ActionListener {
         /***
          *
@@ -770,11 +617,360 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
+    /**
+     * Сlass for implementing a disrupt button listener
+     */
+    private class DisruptEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            copyTable(fullSearchTable, racerTable);
+        }
+    }
+
+    /**
+     * Сlass for implementing a clear input button listener
+     */
+    private class ClearInputEventListener implements ActionListener {
+        /***
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            setInput(searchTeamField, "Команда");
+            setInput(searchNameField, "Имя гонщика");
+        }
+    }
+
+    /**
+     * Сlass for implementing a team input focus listener
+     */
+    public static class TeamInputFocusListener implements FocusListener {
+        /***
+         * @param e the event to be processed
+         */
+        public void focusGained(FocusEvent e) {
+            if (searchTeamField.getText().equals("Команда"))
+                setInput(searchTeamField, "");
+        }
+
+        /***
+         * @param e the event to be processed
+         */
+        public void focusLost(FocusEvent e) {
+            if (searchTeamField.getText().equals(""))
+                setInput(searchTeamField, "Команда");
+        }
+
+    }
+
+    /**
+     * Сlass for implementing a racer input focus listener
+     */
+    public static class RacerInputFocusListener implements FocusListener {
+        /***
+         * @param e the event to be processed
+         */
+        public void focusGained(FocusEvent e) {
+            if (searchNameField.getText().equals("Имя гонщика"))
+                setInput(searchNameField, "");
+        }
+
+        /***
+         * @param e the event to be processed
+         */
+        public void focusLost(FocusEvent e) {
+            if (searchNameField.getText().equals(""))
+                setInput(searchNameField, "Имя гонщика");
+        }
+
+    }
+
+    /***
+     * The function stops cell editing
+     */
+    public void stopEditCell() {
+        if (racers.getSelectedRow() != -1)
+            racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+    }
+
+    /***
+     * The function offers to save racer data before closing window
+     * 
+     * @param message the text to be shown while the window is closing
+     */
+    public void saveBeforeClose(String message) {
+        if (racerTable.getRowCount() > 0) {
+            int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                    message,
+                    "Подтверждение действия",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+            if (result == JOptionPane.YES_OPTION) {
+                saveBtn.doClick();
+            }
+        }
+    }
+
+    /***
+     * The function make visible confirm bar while editing
+     */
+    private static void setConfirmbarVisible() {
+        fileBtn.setVisible(false);
+        saveBtn.setVisible(false);
+        addBtn.setVisible(false);
+        deleteBtn.setVisible(false);
+        editBtn.setVisible(false);
+        reportBtn.setVisible(false);
+        confirmBtn.setVisible(true);
+        cancelBtn.setVisible(true);
+    }
+
+    /***
+     * The function make unvisible confirm bar while editing
+     */
+    private static void setConfirmbarUnvisible() {
+        fileBtn.setVisible(true);
+        saveBtn.setVisible(true);
+        addBtn.setVisible(true);
+        deleteBtn.setVisible(true);
+        editBtn.setVisible(true);
+        reportBtn.setVisible(true);
+        confirmBtn.setVisible(false);
+        cancelBtn.setVisible(false);
+    }
+
+    /***
+     * The function copies data from one table model to another
+     * 
+     * @param table    the table containing data to be copied
+     * @param newTable the table to which data to be copied
+     */
+    private void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
+        clearTable(newTable);
+        for (int i = 0; i < table.getRowCount(); i++) {
+            String name = table.getValueAt(i, 0).toString();
+            String age = table.getValueAt(i, 1).toString();
+            String team = table.getValueAt(i, 2).toString();
+            String points = table.getValueAt(i, 3).toString();
+            newTable.addRow(new String[] { name, age, team, points }); // Запись строки в таблицу
+        }
+    }
+
+    /***
+     * The function clears table
+     * 
+     * @param table the table to be cleared
+     */
+    private void clearTable(DefaultTableModel table) {
+        int n = table.getRowCount();
+        for (int i = 0; i < n; i++) {
+            table.removeRow(n - i - 1);
+        }
+    }
+
+    /***
+     * The function checks whether any row has selected to delete
+     * 
+     * @throws UnselectedDeleteException the exception throws if there aren't
+     *                                   selected rows
+     */
+    private void checkDeleteSelect() throws UnselectedDeleteException {
+        if (racers.getSelectedRow() == -1)
+            throw new UnselectedDeleteException();
+    }
+
+    /***
+     * The function checks whether table data is valid
+     * 
+     * @throws InvalidNameInputException  the exception throws if any edited name
+     *                                    isn't valid
+     * @throws InvalidAgeInputException   the exception throws if any edited age
+     *                                    isn't valid
+     * @throws InvalidTeamInputException  the exception throws if any edited team
+     *                                    isn't valid
+     * @throws InvalidPointInputException the exception throws if any edited point
+     *                                    isn't valid
+     */
+    public void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
+            InvalidTeamInputException, InvalidPointInputException {
+        for (int i = 0; i < racerTable.getRowCount(); i++) {
+            if (!Validation.isValidName(racerTable.getValueAt(i, 0).toString()))
+                throw new InvalidNameInputException(i + 1);
+            if (!Validation.isValidAge(racerTable.getValueAt(i, 1).toString()))
+                throw new InvalidAgeInputException(i + 1);
+            if (!Validation.isValidTeam(racerTable.getValueAt(i, 2).toString()))
+                throw new InvalidTeamInputException(i + 1);
+            if (!Validation.isValidPoint(racerTable.getValueAt(i, 3).toString()))
+                throw new InvalidPointInputException(i + 1);
+        }
+    }
+
+    /***
+     * The function checks whether input file format matchs the requested required
+     * 
+     * @param file the path to file to be opened
+     * @throws FileFormatException the exception throws if selected file format
+     *                             isn't valid
+     */
+    private void checkFileFormat(FileDialog file) throws FileFormatException {
+        if (!file.getFile().endsWith(".txt") && !file.getFile().endsWith(".xml"))
+            throw new FileFormatException("Некорректный формат файла!\nВыберите файл формата .txt или .xml!");
+    }
+
+    /***
+     * The function edits real table, so that all changes made in edition mode are
+     * saved. It's necessary if while editing search
+     * filter is applied and displaying table doesn't equal of real one
+     */
+    private void additionalSearchEdit() {
+        for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
+            for (int j = 0; j < previousRacerTable.getRowCount(); j++) {
+                if (fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))
+                        && fullSearchTable.getValueAt(i, 0).equals(previousRacerTable.getValueAt(j, 0))) {
+                    for (int k = 0; k < fullSearchTable.getColumnCount(); k++) {
+                        fullSearchTable.setValueAt(racerTable.getValueAt(j, k), i, k);
+                    }
+                }
+            }
+        }
+    }
+
+    /***
+     * The function checks whether transfered tables equaled
+     * 
+     * @param table     the first table to be compared
+     * @param prevTable the second table to be compared
+     * @return result of table comparing
+     */
+    private boolean isEqualTable(DefaultTableModel table, DefaultTableModel prevTable) {
+        boolean isEqual = true;
+        if (table.getRowCount() != prevTable.getRowCount() || table.getColumnCount() != prevTable.getColumnCount())
+            isEqual = false;
+        else {
+            for (int i = 0; i < table.getRowCount(); i++) {
+                for (int j = 0; j < table.getColumnCount(); j++) {
+                    if (!table.getValueAt(i, j).equals(prevTable.getValueAt(i, j))) {
+                        isEqual = false;
+                        break;
+                    }
+                }
+                if (!isEqual)
+                    break;
+            }
+        }
+        return isEqual;
+    }
+
+    /***
+     * The function checks whether table isn't empty
+     * 
+     * @param msg   the message to be shown if the table is empty
+     * @param table the table to be checked
+     * @throws NothingDataException the exception to be thrown if the table is empty
+     */
+    private void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
+        if (table.getRowCount() == 0)
+            throw new NothingDataException(msg);
+    }
+
+    /***
+     * The function adds new racer to the table
+     * 
+     * @param racer the racer to be added
+     */
+    public static void addRacer(Racer racer) {
+        racerTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
+                racer.getPoints().toString() });
+        fullSearchTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
+                racer.getPoints().toString() });
+    }
+
+    /***
+     * The function returns editingPermit variable
+     * 
+     * @return editingPermit variable
+     */
+    private boolean getEditingPermit() {
+        return editingPermit;
+    }
+
+    /***
+     * The function changes editingPermit variable to the opposite
+     */
+    private void changeEditingPermit() {
+
+        editingPermit = !editingPermit;
+    }
+
+    /***
+     * The function sets the value of the input
+     * 
+     * @param input the input that value to be changed
+     * @param text  the value to be setted
+     */
+    public static void setInput(JTextField input, String text) {
+        input.setText(text);
+    }
+
+    /***
+     * The function sets visibility options of AddRacerGUI window
+     * 
+     * @param value the value to be setted
+     */
+    public static void setAddRacerVisible(boolean value) {
+        addRacerWindow.addRacerGUI.setVisible(value);
+    }
+
+    /***
+     * The function sets enability options of MainRacerGUI window
+     * 
+     * @param value the value to be setted
+     */
+    public static void setMainRacerEnable(boolean value) {
+        mainRacerGUI.setEnabled(value);
+    }
+
+    /***
+     * The function removes real table rows, so that all changes made in deleting
+     * mode are saved. It's necessary if while deleting search
+     * filter is applied and displaying table doesn't equal of real one
+     * 
+     * @param table  the table to be changed
+     * @param name   the value of column name of transfered row
+     * @param age    the value of column age of transfered row
+     * @param team   the value of column team of transfered row
+     * @param points the value of column points of transfered row
+     */
+    private void additionalSearchDelete(DefaultTableModel table, String name, String age, String team,
+            String points) {
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (!name.isEmpty() && !age.isEmpty() && !team.isEmpty() && !points.isEmpty()) {
+                if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
+                        && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
+                    table.removeRow(i);
+                }
+            }
+        }
+    }
+
+    /***
+     * The function checks whether search inputs aren't empty
+     * 
+     * @throws EmptySearchInputException the exception throws if any of search
+     *                                   inputs is empty
+     */
     private void checkEmptyInput() throws EmptySearchInputException {
         if (searchTeamField.getText().equals("Команда") & searchNameField.getText().equals("Имя гонщика"))
             throw new EmptySearchInputException();
     }
 
+    /***
+     * The function sets visibility options of mainRacerGUI
+     */
     public void setVisible(boolean value) {
         mainRacerGUI.setVisible(value);
     }

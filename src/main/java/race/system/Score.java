@@ -12,13 +12,28 @@ public class Score {
     @Id
     @Column(name = "scoreId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getScoreId() { return scoreId; }
-    public void setScoreId(int id) { scoreId = id; }
+    public int getScoreId() {
+        return scoreId;
+    }
 
-    public Racer getRacerInfo(){ return racerInfo; };
-    public void setRacerInfo(Racer racer){ racerInfo = racer; };
+    public void setScoreId(int id) {
+        scoreId = id;
+    }
+
+    public Racer getRacerInfo() {
+        return racerInfo;
+    };
+
+    public void setRacerInfo(Racer racer) {
+        racerInfo = racer;
+    };
 
     @Column(name = "finishTime")
-    public double getFinishTime(){ return finishTime; };
-    public void setFinishTime(double time){ finishTime = time; };
+    public double getFinishTime() {
+        return finishTime;
+    };
+
+    public void setFinishTime(double time) {
+        finishTime = time;
+    };
 }
