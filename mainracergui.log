@@ -1,4 +1,18 @@
-2023-05-05 12:16:43.247 [main] INFO  com - Start logging MainRacerGUI
-2023-05-05 12:17:19.262 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-05 12:17:26.442 [AWT-EventQueue-0] WARN  com - Enterd invalid age while editing
-2023-05-05 12:36:12.281 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:01:04.081 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:01:07.783 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:03:05.388 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:03:12.926 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:03:25.375 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:05:55.820 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-06 00:07:56.836 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:08:03.744 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:11:23.135 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:11:28.234 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:13:58.704 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:14:01.555 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:15:36.208 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:15:39.346 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:16:09.753 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-06 00:17:20.243 [main] INFO  com - Start logging MainRacerGUI
+2023-05-06 00:17:23.474 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-06 00:19:50.686 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

@@ -79,4 +79,9 @@ public class Racer {
         racerTeam = team;
         racerPoints = points;
     };
+
+    public void showRacerInfo() {
+        System.out.println(racerName + ", " + racerAge + " y.o from team " + racerTeam.getTeamName() + " have "
+                + racerPoints + " points");
+    }
 }

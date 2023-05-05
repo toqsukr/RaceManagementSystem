@@ -1,17 +1,26 @@
 package application.graphic;
 
+import java.util.List;
+
 import exception.EmptyAddInputException;
 import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import race.system.Racer;
+import race.system.Team;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.net.URL;
 
 import javax.swing.*;
+
+import database.RacerDao;
+import database.TeamDao;
 import util.Validation;
 
 public class AddRacerGUI {
@@ -40,6 +49,8 @@ public class AddRacerGUI {
     private static final JLabel teamLabel = new JLabel("Команда:");
     private static final JLabel ageLabel = new JLabel("Возраст:");
     private static final JLabel pointLabel = new JLabel("Очки:");
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
+    private EntityManager em = emf.createEntityManager();
 
     /**
      * Constructor of GUI
@@ -153,7 +164,7 @@ public class AddRacerGUI {
             throw new InvalidPointInputException();
     }
 
-    private static class AddEventListener implements ActionListener {
+    private class AddEventListener implements ActionListener {
 
         /***
          *
@@ -164,8 +175,26 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
 
-                Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), null,
+                em.getTransaction().begin();
+                TeamDao teamDao = new TeamDao(em);
+
+                List<Team> existTeams = teamDao.getAllTeams();
+                Team team = new Team(inputTeamField.getText());
+
+                if (isAtTeamList(existTeams, team) == null) {
+                    teamDao.saveTeam(team);
+                } else
+                    team = isAtTeamList(existTeams, team);
+                Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));
+                RacerDao racerDao = new RacerDao(em);
+                List<Racer> existRacers = racerDao.getAllRacers();
+                if (isAtRacerList(existRacers, racer) == null) {
+                    racerDao.saveRacer(racer);
+                } else
+                    racer = isAtRacerList(existRacers, racer);
+                em.getTransaction().commit();
+
                 clearInputs();
                 MainRacerGUI.setMainRacerEnable(true);
                 MainRacerGUI.addRacer(racer);
@@ -198,6 +227,31 @@ public class AddRacerGUI {
             MainRacerGUI.setMainRacerEnable(true);
             MainRacerGUI.setAddRacerVisible(false);
         }
+    }
+
+    private static Team isAtTeamList(List<Team> teams, Team team) {
+        Team answer = null;
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getTeamName().equals(team.getTeamName())) {
+                answer = teams.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    private static Racer isAtRacerList(List<Racer> racers, Racer racer) {
+        Racer answer = null;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getRacerName().equals(racer.getRacerName())
+                    && racers.get(i).getRacerAge().equals(racer.getRacerAge())
+                    && racers.get(i).getTeam().equals(racer.getTeam())
+                    && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
+                answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
     }
 
 }

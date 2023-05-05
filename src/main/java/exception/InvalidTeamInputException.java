@@ -1,6 +1,6 @@
 package exception;
 
-public class InvalidTeamInputException extends Exception {
+public class InvalidTeamInputException extends InvalidDataException {
     /***
      * InvalidTeamInputException constructor
      */

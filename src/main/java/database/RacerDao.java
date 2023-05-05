@@ -2,31 +2,49 @@ package database;
 
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
+import javax.swing.JOptionPane;
 
+import org.hibernate.HibernateException;
+
+import jakarta.persistence.EntityManager;
 import race.system.Racer;
 
 public class RacerDao {
 
-    private SessionFactory sessionFactory;
+    private EntityManager em;
 
-    public RacerDao(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    public RacerDao(EntityManager em) {
+        this.em = em;
     }
 
-    public List<Racer> getAllRacers() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("SELECT mydb FROM Racer", Racer.class).list();
+    public EntityManager getEntityManager() {
+        return em;
+    }
+
+    public List<Racer> getAllRacers() throws HibernateException {
+        try {
+            return em.createQuery("FROM Racer", Racer.class).getResultList();
+
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+            return null;
         }
     }
 
     public void saveRacer(Racer racer) {
-        try (Session session = sessionFactory.openSession()) {
-            Transaction tx = session.beginTransaction();
-            session.save(racer);
-            tx.commit();
+        try {
+            em.persist(racer);
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void deleteRacer(Racer racer) {
+        try {
+            em.createQuery("DELETE FROM Racer r WHERE racerID = :id", null).setParameter("id", racer.getRacerID())
+                    .executeUpdate();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
 }

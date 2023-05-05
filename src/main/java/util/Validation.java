@@ -11,7 +11,7 @@ public class Validation {
      * @return true if the correct name is passed else false
      */
     public static boolean isValidName(String input) {
-        return input.matches("^([А-Яа-яA-Za-z]{2,20})(\\s[А-Яа-яA-Za-z]{0,30}){0,3}$");
+        return input.matches("^([А-Яа-яA-Za-z']{2,20})(\\s[А-Яа-яA-Za-z]{0,30}){0,3}$");
     }
 
     /***
@@ -31,7 +31,7 @@ public class Validation {
      */
 
     public static boolean isValidTeam(String input) {
-        return input.matches("^[А-Яа-я\\w\\s]{3,20}$");
+        return input.matches("^[А-Яа-я\\w\\s0-9]{3,20}$");
     }
 
     /***

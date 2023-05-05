@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -26,6 +27,10 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+
+import database.RacerDao;
+import database.TeamDao;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -45,13 +50,18 @@ import javax.swing.table.DefaultTableModel;
 import exception.EmptySearchInputException;
 import exception.FileFormatException;
 import exception.InvalidAgeInputException;
+import exception.InvalidDataException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import exception.NothingDataException;
 import exception.ReadFileException;
 import race.system.Racer;
+import race.system.Team;
 import util.CreateReport;
 import util.FileManage;
 import util.Validation;
@@ -189,6 +199,9 @@ public class MainRacerGUI extends JFrame {
      */
     private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
+    private EntityManager em = emf.createEntityManager();
+
     private static Logger logger;
 
     /***
@@ -227,7 +240,7 @@ public class MainRacerGUI extends JFrame {
                         mainRacerGUI.setTitle("Список гонщиков");
                         stopLogging(context);
                         mainRacerGUI.dispose();
-                    } catch (Exception exception) {
+                    } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
                                 "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
                                 "Предупреждение",
@@ -443,6 +456,7 @@ public class MainRacerGUI extends JFrame {
             try {
                 checkEmptyData("Данные для удаления не найдены!", fullSearchTable);
                 checkDeleteSelect();
+
                 String message = racers.getSelectedRows().length == 1
                         ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
                         : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет невозможно!";
@@ -452,17 +466,30 @@ public class MainRacerGUI extends JFrame {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
+                    em.getTransaction().begin();
+
+                    RacerDao racerDao = new RacerDao(em);
+
+                    List<Racer> existRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
+                    List<Team> existTeams = em.createQuery("FROM Team", Team.class).getResultList();
+
                     int i = racers.getSelectedRows().length - 1;
                     while (racers.getSelectedRows().length > 0) {
                         int j = racers.getRowCount() - 1;
                         while (j > -1) {
                             if (j == racers.getSelectedRows()[i]) {
-                                additionalSearchDelete(fullSearchTable,
-                                        racers.getValueAt(racers.getSelectedRows()[i], 0).toString(),
-                                        racers.getValueAt(racers.getSelectedRows()[i], 1).toString(),
-                                        racers.getValueAt(racers.getSelectedRows()[i], 2).toString(),
-                                        racers.getValueAt(racers.getSelectedRows()[i], 3).toString());
+                                String removingName = racers.getValueAt(racers.getSelectedRows()[i], 0).toString();
+                                String removingAge = racers.getValueAt(racers.getSelectedRows()[i], 1).toString();
+                                String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 2).toString();
+                                String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
+                                additionalSearchDelete(fullSearchTable, removingName, removingAge, removingTeamName,
+                                        removingPoints);
+                                Team removingTeam = isAtTeamList(existTeams, new Team(removingTeamName));
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
+                                Racer removingRacer = isAtRacerList(existRacers, new Racer(removingName,
+                                        Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
+                                if (removingRacer != null)
+                                    racerDao.deleteRacer(removingRacer);
                                 break;
                             }
                             j--;
@@ -470,6 +497,7 @@ public class MainRacerGUI extends JFrame {
                         i--;
                     }
                 }
+                em.getTransaction().commit();
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка удаления",
                         JOptionPane.PLAIN_MESSAGE);
@@ -948,10 +976,12 @@ public class MainRacerGUI extends JFrame {
      * @param racer the racer to be added
      */
     public static void addRacer(Racer racer) {
-        racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(), "",
-                racer.getRacerPoints().toString() });
-        fullSearchTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(), "",
-                racer.getRacerPoints().toString() });
+        racerTable.addRow(
+                new String[] { racer.getRacerName(), racer.getRacerAge().toString(), racer.getTeam().getTeamName(),
+                        racer.getRacerPoints().toString() });
+        fullSearchTable.addRow(
+                new String[] { racer.getRacerName(), racer.getRacerAge().toString(), racer.getTeam().getTeamName(),
+                        racer.getRacerPoints().toString() });
     }
 
     /***
@@ -1051,4 +1081,28 @@ public class MainRacerGUI extends JFrame {
         context.close();
     }
 
+    private static Racer isAtRacerList(List<Racer> racers, Racer racer) {
+        Racer answer = null;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getRacerName().equals(racer.getRacerName())
+                    && racers.get(i).getRacerAge().equals(racer.getRacerAge())
+                    && racers.get(i).getTeam().equals(racer.getTeam())
+                    && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
+                answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    private static Team isAtTeamList(List<Team> teams, Team team) {
+        Team answer = null;
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getTeamName().equals(team.getTeamName())) {
+                answer = teams.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
 }

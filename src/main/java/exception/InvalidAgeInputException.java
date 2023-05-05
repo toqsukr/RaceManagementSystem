@@ -1,6 +1,6 @@
 package exception;
 
-public class InvalidAgeInputException extends Exception {
+public class InvalidAgeInputException extends InvalidDataException {
     /***
      * InvalidAgeInputException constructor
      */

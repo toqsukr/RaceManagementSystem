@@ -1,6 +1,6 @@
 package exception;
 
-public class InvalidPointInputException extends Exception {
+public class InvalidPointInputException extends InvalidDataException {
     /***
      * InvalidPointInputException constructor
      */

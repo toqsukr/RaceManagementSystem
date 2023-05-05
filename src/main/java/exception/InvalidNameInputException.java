@@ -1,6 +1,6 @@
 package exception;
 
-public class InvalidNameInputException extends Exception {
+public class InvalidNameInputException extends InvalidDataException {
     /***
      * InvalidNameInputException constructor
      */
