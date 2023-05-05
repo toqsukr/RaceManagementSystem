@@ -38,7 +38,8 @@ public class AddRacerGUI {
      * This input is used to search for an entry in the table by the team of the
      * racer
      */
-    private static final JTextField inputTeamField = new JTextField("", 10);
+
+    private static JComboBox<String> comboTeam;
     private static final JTextField inputPointField = new JTextField("", 5);
 
     private static final JButton addBtn = new JButton("Добавить");
@@ -70,6 +71,8 @@ public class AddRacerGUI {
         addRacerGUI.setResizable(false);
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
+
+        setComboBox();
 
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -118,7 +121,7 @@ public class AddRacerGUI {
         teamBox.add(Box.createRigidArea(new Dimension(45, 0)));
         teamBox.add(teamLabel);
         teamBox.add(Box.createRigidArea(new Dimension(46, 0)));
-        teamBox.add(inputTeamField);
+        teamBox.add(comboTeam);
         centerBox.add(teamBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
 
@@ -142,13 +145,12 @@ public class AddRacerGUI {
     private static void clearInputs() {
         inputNameField.setText("");
         inputAgeField.setText("");
-        inputTeamField.setText("");
         inputPointField.setText("");
     }
 
     private static void checkEmptyInputs() throws EmptyAddInputException {
         if (inputNameField.getText().equals("") | inputAgeField.getText().equals("")
-                | inputTeamField.getText().equals("") | inputPointField.getText().equals(""))
+                | inputPointField.getText().equals(""))
             throw new EmptyAddInputException();
     }
 
@@ -158,8 +160,6 @@ public class AddRacerGUI {
             throw new InvalidNameInputException();
         if (!Validation.isValidAge(inputAgeField.getText()))
             throw new InvalidAgeInputException();
-        if (!Validation.isValidTeam(inputTeamField.getText()))
-            throw new InvalidTeamInputException();
         if (!Validation.isValidPoint(inputPointField.getText()))
             throw new InvalidPointInputException();
     }
@@ -179,7 +179,7 @@ public class AddRacerGUI {
                 TeamDao teamDao = new TeamDao(em);
 
                 List<Team> existTeams = teamDao.getAllTeams();
-                Team team = new Team(inputTeamField.getText());
+                Team team = new Team(comboTeam.getSelectedItem().toString());
 
                 if (isAtTeamList(existTeams, team) == null) {
                     teamDao.saveTeam(team);
@@ -193,6 +193,7 @@ public class AddRacerGUI {
                     racerDao.saveRacer(racer);
                 } else
                     racer = isAtRacerList(existRacers, racer);
+
                 em.getTransaction().commit();
 
                 clearInputs();
@@ -254,4 +255,14 @@ public class AddRacerGUI {
         return answer;
     }
 
+    private void setComboBox() {
+        em.getTransaction().begin();
+        List<Team> allTeams = em.createQuery("FROM Team", Team.class).getResultList();
+        String[] arr = new String[allTeams.size()];
+        for (int i = 0; i < allTeams.size(); i++) {
+            arr[i] = allTeams.get(i).getTeamName();
+        }
+        comboTeam = new JComboBox<String>(arr);
+        em.getTransaction().commit();
+    }
 }

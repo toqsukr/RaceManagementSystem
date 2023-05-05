@@ -202,6 +202,10 @@ public class MainRacerGUI extends JFrame {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
     private EntityManager em = emf.createEntityManager();
 
+    private List<Team> allTeams;
+
+    private JComboBox<String> comboTeam;
+
     private static Logger logger;
 
     /***
@@ -267,10 +271,15 @@ public class MainRacerGUI extends JFrame {
             toolBar.setFloatable(false);
             racers.getTableHeader().setReorderingAllowed(false);
 
-            JComboBox<String> combo = new JComboBox<String>(
-                    new String[] { "Red Bull Racing", "Aston Martin Racing", "Alpine", "Williams Racing", "McLaren",
-                            "Haas F1 Team", "AlphaTauri", "Alfa Romeo Racing", "Ferrari", "Mercedes" });
-            DefaultCellEditor editor = new DefaultCellEditor(combo);
+            em.getTransaction().begin();
+
+            allTeams = em.createQuery("FROM Team", Team.class).getResultList();
+
+            em.getTransaction().commit();
+
+            updateComboBox();
+
+            DefaultCellEditor editor = new DefaultCellEditor(comboTeam);
             racers.getColumnModel().getColumn(2).setCellEditor(editor);
 
             Container container = mainRacerGUI.getContentPane();
@@ -1122,4 +1131,13 @@ public class MainRacerGUI extends JFrame {
         }
         return answer;
     }
+
+    public void updateComboBox() {
+        String[] arr = new String[allTeams.size()];
+        for (int i = 0; i < allTeams.size(); i++) {
+            arr[i] = allTeams.get(i).getTeamName();
+        }
+        comboTeam = new JComboBox<String>(arr);
+    }
+
 }
