@@ -1,54 +1,37 @@
 package race.system;
 
-import java.util.*;
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RaceManagementSystem.Teams")
+@Table(name = "Teams")
 public class Team {
-    private int teamId;
-    private String name;
-    private int racerNumber;
-    private List<Racer> structure;
-    private int teamPoints;
+    private Integer teamID;
+    private String teamName;
 
     @Id
-    @Column(name = "teamId")
+    @Column(name = "teamID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getTeamId() {
-        return teamId;
+    public Integer getTeamID() {
+        return teamID;
     }
 
-    public void setTeamId(int id) {
-        teamId = id;
+    public void setTeamID(Integer id) {
+        teamID = id;
     }
 
     @Column(name = "teamName")
     public String getTeamName() {
-        return name;
+        return teamName;
+    }
+
+    public void setTeamName(String name) {
+        teamName = name;
+    }
+
+    public Team() {
     };
 
-    public void setTeamName(String inputString) {
-        name = inputString;
-    };
-
-    public int getTeamPoints() {
-        return teamPoints;
-    };
-
-    public int getRacerNumber() {
-        return structure.size();
-    };
-
-    public List<Racer> getTeamStructure() {
-        return structure;
-    };
-
-    public void addRacer(Racer racer) {
-        structure.add(racer);
-    };
-
-    public void deleteRacer(Racer racer) {
-        structure.remove(racer);
+    public Team(String name) {
+        teamName = name;
     };
 }

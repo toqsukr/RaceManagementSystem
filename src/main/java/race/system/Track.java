@@ -1,57 +1,39 @@
 package race.system;
 
-import javax.persistence.*;
-import java.util.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RaceManagementSystem.Tracks")
+@Table(name = "Tracks")
 public class Track {
-    private int trackId;
+    private Integer trackID;
     private String trackName;
-    private double length;
-    private List<Score> scores;
-    private List<Racer> winners;
+    private Integer trackLength;
 
     @Id
-    @Column(name = "teamId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getTrackId() {
-        return trackId;
+    public Integer getTrackID() {
+        return trackID;
     }
 
-    public void setTrackId(int id) {
-        trackId = id;
+    public void setTrackID(Integer trackID) {
+        this.trackID = trackID;
     }
 
-    @Column(name = "trackName")
+    // @Column(name = "trackName")
     public String getTrackName() {
         return trackName;
     }
 
-    public void setTrackName(String inputString) {
-        trackName = inputString;
+    public void setTrackName(String trackName) {
+        this.trackName = trackName;
     }
 
-    @Column(name = "trackLength")
-    public double getLength() {
-        return length;
-    };
+    // @Column(name = "trackLength")
+    public Integer getTrackLength() {
+        return trackLength;
+    }
 
-    public void setLength(double value) {
-        length = value;
-    };
-
-    public List<Score> getAllScores() {
-        return scores;
-    };
-
-    public void addScore(Score score) {
-    };
-
-    public void deleteScore(Score score) {
-    };
-
-    public List<Racer> getWinners() {
-        return winners;
-    };
+    public void setTrackLength(Integer trackLength) {
+        this.trackLength = trackLength;
+    }
 }

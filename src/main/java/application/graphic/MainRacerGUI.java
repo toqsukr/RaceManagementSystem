@@ -13,11 +13,26 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.URL;
 
+import org.apache.logging.log4j.core.LoggerContext;
+import org.apache.logging.log4j.core.appender.ConsoleAppender;
+import org.apache.logging.log4j.core.config.Configuration;
+import org.apache.logging.log4j.core.config.ConfigurationFactory;
+import org.apache.logging.log4j.core.config.ConfigurationSource;
+import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
+import org.apache.logging.log4j.core.layout.PatternLayout;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
+
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -63,6 +78,11 @@ public class MainRacerGUI extends JFrame {
     private static final JButton disruptInputBtn = new JButton("Сбросить фильтр");
 
     /**
+     * This button opens file
+     */
+    private static final JButton fileBtn = new JButton();
+
+    /**
      * This button saves changes
      */
     private static final JButton saveBtn = new JButton();
@@ -83,9 +103,9 @@ public class MainRacerGUI extends JFrame {
     private static final JButton editBtn = new JButton();
 
     /**
-     * This button opens data file
+     * This button forms racer data report
      */
-    private static final JButton fileBtn = new JButton();
+    private static final JButton reportBtn = new JButton();
 
     /**
      * This button confirms changes made
@@ -96,11 +116,6 @@ public class MainRacerGUI extends JFrame {
      * This button cancles changes made
      */
     private static final JButton cancelBtn = new JButton();
-
-    /**
-     * This button forms racer data report
-     */
-    private static final JButton reportBtn = new JButton();
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -174,152 +189,182 @@ public class MainRacerGUI extends JFrame {
      */
     private static AddRacerGUI addRacerWindow = new AddRacerGUI();
 
+    private static Logger logger;
+
     /***
      * The function creating MainRacerGUI
      */
     public void show() {
-        mainRacerGUI.addWindowListener((WindowListener) new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                try {
-                    stopEditCell();
-                    checkEditedData();
-                    saveBeforeClose("Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
-                    setConfirmbarUnvisible();
-                    if (editingPermit == true)
-                        changeEditingPermit();
-                    clearTable(racerTable);
-                    mainRacerGUI.setTitle("Список гонщиков");
-                    mainRacerGUI.dispose();
-                } catch (Exception exception) {
-                    int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
-                            "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
-                            "Предупреждение",
-                            JOptionPane.OK_CANCEL_OPTION);
-                    if (confirm == JOptionPane.OK_OPTION) {
+
+        try {
+            ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
+            ConfigurationSource configurationSource = new ConfigurationSource(
+                    new FileInputStream(new File("etu/src/main/java/configuration.xml")));
+
+            Configuration configuration = factory.getConfiguration(null, configurationSource);
+
+            ConsoleAppender appender = ConsoleAppender
+                    .createDefaultAppenderForLayout(PatternLayout.createDefaultLayout());
+
+            configuration.addAppender(appender);
+
+            LoggerContext context = new LoggerContext("JournalDevLoggerContext");
+
+            startLogging(context, configuration);
+
+            mainRacerGUI.addWindowListener((WindowListener) new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    try {
+                        stopEditCell();
+                        checkEditedData();
+                        saveBeforeClose(
+                                "Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
                         setConfirmbarUnvisible();
                         if (editingPermit == true)
                             changeEditingPermit();
                         clearTable(racerTable);
                         mainRacerGUI.setTitle("Список гонщиков");
+                        stopLogging(context);
                         mainRacerGUI.dispose();
+                    } catch (Exception exception) {
+                        int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
+                                "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                                "Предупреждение",
+                                JOptionPane.OK_CANCEL_OPTION);
+                        if (confirm == JOptionPane.OK_OPTION) {
+                            setConfirmbarUnvisible();
+                            if (editingPermit == true)
+                                changeEditingPermit();
+                            clearTable(racerTable);
+                            mainRacerGUI.setTitle("Список гонщиков");
+                            stopLogging(context);
+                            mainRacerGUI.dispose();
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        mainRacerGUI.setBounds(200, 150, 800, 600);
-        mainRacerGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        mainRacerGUI.setResizable(false);
-        URL mainRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
-        mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
-        addRacerWindow.show();
+            mainRacerGUI.setBounds(200, 150, 800, 600);
+            mainRacerGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            mainRacerGUI.setResizable(false);
+            URL mainRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
+            mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
+            addRacerWindow.show();
+            toolBar.setFloatable(false);
+            racers.getTableHeader().setReorderingAllowed(false);
 
-        toolBar.setFloatable(false);
-        racers.getTableHeader().setReorderingAllowed(false);
+            JComboBox<String> combo = new JComboBox<String>(
+                    new String[] { "Red Bull Racing", "Aston Martin Racing", "Alpine", "Williams Racing", "McLaren",
+                            "Haas F1 Team", "AlphaTauri", "Alfa Romeo Racing", "Ferrari", "Mercedes" });
+            DefaultCellEditor editor = new DefaultCellEditor(combo);
+            racers.getColumnModel().getColumn(2).setCellEditor(editor);
 
-        Container container = mainRacerGUI.getContentPane();
-        container.setLayout(new BorderLayout());
+            Container container = mainRacerGUI.getContentPane();
+            container.setLayout(new BorderLayout());
 
-        searchBtn.setBackground(new Color(0xDFD9D9D9, false));
-        clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
-        disruptInputBtn.setBackground(new Color(0xDFD9D9D9, false));
+            searchBtn.setBackground(new Color(0xDFD9D9D9, false));
+            clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
+            disruptInputBtn.setBackground(new Color(0xDFD9D9D9, false));
 
-        searchTeamField.addFocusListener(new TeamInputFocusListener());
+            searchTeamField.addFocusListener(new TeamInputFocusListener());
 
-        searchNameField.addFocusListener(new RacerInputFocusListener());
+            searchNameField.addFocusListener(new RacerInputFocusListener());
 
-        searchNameField.setMargin(new Insets(2, 2, 3, 0));
-        searchTeamField.setMargin(new Insets(2, 2, 3, 0));
+            searchNameField.setMargin(new Insets(2, 2, 3, 0));
+            searchTeamField.setMargin(new Insets(2, 2, 3, 0));
 
-        searchBtn.addActionListener(new SearchEventListener());
-        searchBtn.setMargin(new Insets(1, 6, 1, 6));
+            searchBtn.addActionListener(new SearchEventListener());
+            searchBtn.setMargin(new Insets(1, 6, 1, 6));
 
-        disruptInputBtn.addActionListener(new DisruptEventListener());
-        disruptInputBtn.setMargin(new Insets(1, 6, 1, 6));
+            disruptInputBtn.addActionListener(new DisruptEventListener());
+            disruptInputBtn.setMargin(new Insets(1, 6, 1, 6));
 
-        clearInputBtn.addActionListener(new ClearInputEventListener());
-        clearInputBtn.setMargin(new Insets(1, 6, 1, 6));
+            clearInputBtn.addActionListener(new ClearInputEventListener());
+            clearInputBtn.setMargin(new Insets(1, 6, 1, 6));
 
-        filterPanel.add(searchNameField);
-        filterPanel.add(searchTeamField);
-        filterPanel.add(searchBtn);
-        filterPanel.add(clearInputBtn);
-        filterPanel.add(disruptInputBtn);
+            filterPanel.add(searchNameField);
+            filterPanel.add(searchTeamField);
+            filterPanel.add(searchBtn);
+            filterPanel.add(clearInputBtn);
+            filterPanel.add(disruptInputBtn);
 
-        // FlatSVGIcon svgIcon = new FlatSVGIcon("etu/src/img/close.svg", 50, 50);
-        // fileBtn.setIcon(svgIcon);
+            // FlatSVGIcon svgIcon = new FlatSVGIcon("etu/src/img/close.svg", 50, 50);
+            // fileBtn.setIcon(svgIcon);
 
-        URL fileIcon = this.getClass().getClassLoader().getResource("img/file.png");
-        fileBtn.setIcon(new ImageIcon(new ImageIcon(fileIcon).getImage().getScaledInstance(50, 50, 4)));
-        fileBtn.setToolTipText("Открыть файл");
-        fileBtn.setBackground(new Color(0xDFD9D9D9, false));
-        fileBtn.addActionListener(new FileEventListener());
-        fileBtn.setFocusable(false);
+            URL fileIcon = this.getClass().getClassLoader().getResource("img/file.png");
+            fileBtn.setIcon(new ImageIcon(new ImageIcon(fileIcon).getImage().getScaledInstance(50, 50, 4)));
+            fileBtn.setToolTipText("Открыть файл");
+            fileBtn.setBackground(new Color(0xDFD9D9D9, false));
+            fileBtn.addActionListener(new FileEventListener());
+            fileBtn.setFocusable(false);
 
-        URL saveIcon = this.getClass().getClassLoader().getResource("img/save.png");
-        saveBtn.setIcon(new ImageIcon(new ImageIcon(saveIcon).getImage().getScaledInstance(50, 50, 4)));
-        saveBtn.setToolTipText("Сохранить файл");
-        saveBtn.setBackground(new Color(0xDFD9D9D9, false));
-        saveBtn.addActionListener(new SaveEventListener());
-        saveBtn.setFocusable(false);
+            URL saveIcon = this.getClass().getClassLoader().getResource("img/save.png");
+            saveBtn.setIcon(new ImageIcon(new ImageIcon(saveIcon).getImage().getScaledInstance(50, 50, 4)));
+            saveBtn.setToolTipText("Сохранить файл");
+            saveBtn.setBackground(new Color(0xDFD9D9D9, false));
+            saveBtn.addActionListener(new SaveEventListener());
+            saveBtn.setFocusable(false);
 
-        URL addIcon = this.getClass().getClassLoader().getResource("img/add.png");
-        addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
-        addBtn.setToolTipText("Добавить гонщика");
-        addBtn.setBackground(new Color(0xDFD9D9D9, false));
-        addBtn.addActionListener(new AddEventListener());
-        addBtn.setFocusable(false);
+            URL addIcon = this.getClass().getClassLoader().getResource("img/add.png");
+            addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
+            addBtn.setToolTipText("Добавить гонщика");
+            addBtn.setBackground(new Color(0xDFD9D9D9, false));
+            addBtn.addActionListener(new AddEventListener());
+            addBtn.setFocusable(false);
 
-        URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete.png");
-        deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
-        deleteBtn.setToolTipText("Удалить гонщика");
-        deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
-        deleteBtn.addActionListener(new DeleteEventListener());
-        deleteBtn.setFocusable(false);
+            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete.png");
+            deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
+            deleteBtn.setToolTipText("Удалить гонщика");
+            deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
+            deleteBtn.addActionListener(new DeleteEventListener());
+            deleteBtn.setFocusable(false);
 
-        URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
-        editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
-        editBtn.setToolTipText("Редактировать запись");
-        editBtn.setBackground(new Color(0xDFD9D9D9, false));
-        editBtn.addActionListener(new EditEventListener());
-        editBtn.setFocusable(false);
+            URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
+            editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
+            editBtn.setToolTipText("Редактировать запись");
+            editBtn.setBackground(new Color(0xDFD9D9D9, false));
+            editBtn.addActionListener(new EditEventListener());
+            editBtn.setFocusable(false);
 
-        URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
-        reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
-        reportBtn.setToolTipText("Сформировать отчет");
-        reportBtn.setBackground(new Color(0xDFD9D9D9, false));
-        reportBtn.addActionListener(new ReportEventListener());
-        reportBtn.setFocusable(false);
+            URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
+            reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
+            reportBtn.setToolTipText("Сформировать отчет");
+            reportBtn.setBackground(new Color(0xDFD9D9D9, false));
+            reportBtn.addActionListener(new ReportEventListener());
+            reportBtn.setFocusable(false);
 
-        URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
-        confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
-        confirmBtn.setVisible(false);
-        confirmBtn.setToolTipText("Ок");
-        confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
-        confirmBtn.addActionListener(new ConfirmEventListener());
-        confirmBtn.setFocusable(false);
+            URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
+            confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
+            confirmBtn.setVisible(false);
+            confirmBtn.setToolTipText("Ок");
+            confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
+            confirmBtn.addActionListener(new ConfirmEventListener());
+            confirmBtn.setFocusable(false);
 
-        URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
-        cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
-        cancelBtn.setVisible(false);
-        cancelBtn.setToolTipText("Отмена");
-        cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
-        cancelBtn.addActionListener(new CancelEventListener());
-        cancelBtn.setFocusable(false);
+            URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
+            cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
+            cancelBtn.setVisible(false);
+            cancelBtn.setToolTipText("Отмена");
+            cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+            cancelBtn.addActionListener(new CancelEventListener());
+            cancelBtn.setFocusable(false);
 
-        toolBar.add(fileBtn);
-        toolBar.add(saveBtn);
-        toolBar.add(addBtn);
-        toolBar.add(deleteBtn);
-        toolBar.add(editBtn);
-        toolBar.add(confirmBtn);
-        toolBar.add(cancelBtn);
-        toolBar.add(reportBtn);
+            toolBar.add(fileBtn);
+            toolBar.add(saveBtn);
+            toolBar.add(addBtn);
+            toolBar.add(deleteBtn);
+            toolBar.add(editBtn);
+            toolBar.add(confirmBtn);
+            toolBar.add(cancelBtn);
+            toolBar.add(reportBtn);
 
-        container.add(toolBar, BorderLayout.NORTH);
-        container.add(scroll, BorderLayout.CENTER);
-        container.add(filterPanel, BorderLayout.SOUTH);
+            container.add(toolBar, BorderLayout.NORTH);
+            container.add(scroll, BorderLayout.CENTER);
+            container.add(filterPanel, BorderLayout.SOUTH);
+        } catch (IOException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
     }
 
     /**
@@ -344,15 +389,24 @@ public class MainRacerGUI extends JFrame {
                     if (!filename.endsWith(".xml") && !filename.endsWith(".txt")) {
                         filename += ".xml";
                     }
-                    if (filename.endsWith("txt"))
+                    if (filename.endsWith("txt")) {
+
                         FileManage.writeRacerToTextFile(fullSearchTable, filename);
-                    else
+                        logger.log(Level.DEBUG, "Data is saved successful");
+                    }
+
+                    else {
                         FileManage.writeRacerToXmlFile(fullSearchTable, filename);
+                        logger.debug("Data is saved successful");
+                    }
+
                 }
             } catch (NothingDataException exception) {
+                logger.info("NothingDataException exception", exception);
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (Exception exception) {
+                logger.info("Saving exception", exception);
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -369,6 +423,7 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            logger.info("Opening window AddRacerGUI");
             setMainRacerEnable(false);
             setAddRacerVisible(true);
             copyTable(fullSearchTable, racerTable);
@@ -450,14 +505,17 @@ public class MainRacerGUI extends JFrame {
                     else
                         FileManage.readRacerFromXmlFile(racerTable, filename);
                     copyTable(racerTable, fullSearchTable);
+                    logger.debug("Data is opened successful");
                     mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                 }
 
             } catch (FileNotFoundException exception) {
+                logger.info("FileNotFound exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (ReadFileException exception) {
                 clearTable(racerTable);
+                logger.info("ReadFileException exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (Exception exception) {
@@ -499,15 +557,19 @@ public class MainRacerGUI extends JFrame {
                     changeEditingPermit();
                 }
             } catch (InvalidNameInputException exception) {
+                logger.warn("Enterd invalid name while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidAgeInputException exception) {
+                logger.warn("Enterd invalid age while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTeamInputException exception) {
+                logger.warn("Enterd invalid team while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidPointInputException exception) {
+                logger.warn("Enterd invalid point while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -608,6 +670,7 @@ public class MainRacerGUI extends JFrame {
                 }
 
             } catch (EmptySearchInputException exception) {
+
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (NothingDataException exception) {
@@ -873,8 +936,10 @@ public class MainRacerGUI extends JFrame {
      * @throws NothingDataException the exception to be thrown if the table is empty
      */
     private void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
-        if (table.getRowCount() == 0)
+        if (table.getRowCount() == 0) {
+            logger.warn("Table is empty");
             throw new NothingDataException(msg);
+        }
     }
 
     /***
@@ -883,10 +948,10 @@ public class MainRacerGUI extends JFrame {
      * @param racer the racer to be added
      */
     public static void addRacer(Racer racer) {
-        racerTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
-                racer.getPoints().toString() });
-        fullSearchTable.addRow(new String[] { racer.getName(), racer.getAge().toString(), racer.getTeam(),
-                racer.getPoints().toString() });
+        racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(), "",
+                racer.getRacerPoints().toString() });
+        fullSearchTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(), "",
+                racer.getRacerPoints().toString() });
     }
 
     /***
@@ -973,6 +1038,17 @@ public class MainRacerGUI extends JFrame {
      */
     public void setVisible(boolean value) {
         mainRacerGUI.setVisible(value);
+    }
+
+    private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
+        context.start(configuration);
+        logger = context.getLogger("com");
+        logger.log(Level.INFO, "Start logging MainRacerGUI");
+    }
+
+    public static void stopLogging(LoggerContext context) {
+        logger.log(Level.INFO, "Stop logging MainRacerGUI");
+        context.close();
     }
 
 }

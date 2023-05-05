@@ -1,63 +1,82 @@
 package race.system;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "RaceManagementSystem.Racers")
+@Table(name = "Racers")
 public class Racer {
-    private Integer racerId;
-    private String name;
-    private Integer age;
-    private Integer points;
-
-    private String team;
-
-    public Racer(String name, Integer age, String team, Integer points) {
-        this.name = name;
-        this.age = age;
-        this.team = team;
-        this.points = points;
-    }
+    private Integer racerID;
+    private String racerName;
+    private Integer racerAge;
+    private Integer racerPoints;
+    private Team racerTeam;
+    private Track winnerTrackID;
 
     @Id
-    @Column(name = "racerId")
+    @Column(name = "racerID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Integer getRacerId() {
-        return racerId;
+    public Integer getRacerID() {
+        return racerID;
     }
 
-    public void setRacerId(int id) {
-        racerId = id;
+    public void setRacerID(Integer id) {
+        racerID = id;
     }
 
     @Column(name = "racerName")
-    public String getName() {
-        return name;
+    public String getRacerName() {
+        return racerName;
     }
 
-    public void setName(String inputString) {
-        name = inputString;
-    }
-
-    public String getTeam() {
-        return team;
+    public void setRacerName(String name) {
+        racerName = name;
     }
 
     @Column(name = "racerAge")
-    public Integer getAge() {
-        return age;
+    public Integer getRacerAge() {
+        return racerAge;
     }
 
-    public void setAge(int value) {
-        age = value;
+    public void setRacerAge(Integer age) {
+        racerAge = age;
     }
 
     @Column(name = "racerPoints")
-    public Integer getPoints() {
-        return points;
+    public Integer getRacerPoints() {
+        return racerPoints;
     }
 
-    public void setPoints(int value) {
-        points = value;
+    public void setRacerPoints(Integer points) {
+        racerPoints = points;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "racerTeamID", referencedColumnName = "teamID")
+    public Team getTeam() {
+        return racerTeam;
+    }
+
+    public void setTeam(Team team) {
+        racerTeam = team;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "winnerTrackID", referencedColumnName = "trackID")
+    public Track getWinnerTrack() {
+        return winnerTrackID;
+    }
+
+    public void setWinnerTrack(Track track) {
+        winnerTrackID = track;
+    }
+
+    public Racer() {
+    };
+
+    public Racer(String name, Integer age, Team team, Integer points) {
+        racerName = name;
+        racerAge = age;
+        racerTeam = team;
+        racerPoints = points;
+    };
 }

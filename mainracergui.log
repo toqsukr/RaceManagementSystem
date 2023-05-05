@@ -1,0 +1,4 @@
+2023-05-05 12:16:43.247 [main] INFO  com - Start logging MainRacerGUI
+2023-05-05 12:17:19.262 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-05 12:17:26.442 [AWT-EventQueue-0] WARN  com - Enterd invalid age while editing
+2023-05-05 12:36:12.281 [main] INFO  com - Start logging MainRacerGUI

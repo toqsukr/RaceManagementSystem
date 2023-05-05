@@ -164,8 +164,8 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
 
-                Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()),
-                        inputTeamField.getText(), Integer.parseInt(inputPointField.getText()));
+                Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), null,
+                        Integer.parseInt(inputPointField.getText()));
                 clearInputs();
                 MainRacerGUI.setMainRacerEnable(true);
                 MainRacerGUI.addRacer(racer);
