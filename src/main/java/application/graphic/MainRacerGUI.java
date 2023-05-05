@@ -469,6 +469,7 @@ public class MainRacerGUI extends JFrame {
                     em.getTransaction().begin();
 
                     RacerDao racerDao = new RacerDao(em);
+                    TeamDao teamDao = new TeamDao(em);
 
                     List<Racer> existRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
                     List<Team> existTeams = em.createQuery("FROM Team", Team.class).getResultList();
@@ -488,8 +489,13 @@ public class MainRacerGUI extends JFrame {
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
                                 Racer removingRacer = isAtRacerList(existRacers, new Racer(removingName,
                                         Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
-                                if (removingRacer != null)
+                                Integer id = removingRacer.getTeam().getTeamID();
+                                if (removingRacer != null) {
                                     racerDao.deleteRacer(removingRacer);
+                                    existRacers.remove(existRacers.indexOf(removingRacer));
+                                    if (!isTeamAtRacerList(existRacers, id))
+                                        teamDao.deleteTeam(removingTeam);
+                                }
                                 break;
                             }
                             j--;
@@ -1089,6 +1095,17 @@ public class MainRacerGUI extends JFrame {
                     && racers.get(i).getTeam().equals(racer.getTeam())
                     && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
                 answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    private static boolean isTeamAtRacerList(List<Racer> racers, Integer id) {
+        boolean answer = false;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getTeam().getTeamID().equals(id)) {
+                answer = true;
                 break;
             }
         }

@@ -39,4 +39,13 @@ public class TeamDao {
         }
 
     }
+
+    public void deleteTeam(Team team) {
+        try {
+            em.createQuery("DELETE FROM Team t WHERE teamID = :id", null).setParameter("id", team.getTeamID())
+                    .executeUpdate();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
 }
