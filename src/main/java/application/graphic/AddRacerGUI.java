@@ -19,8 +19,6 @@ import java.net.URL;
 
 import javax.swing.*;
 
-import database.RacerDao;
-import database.TeamDao;
 import util.Validation;
 
 public class AddRacerGUI {
@@ -213,8 +211,11 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
 
-                Team team = new Team(teamCheckBox.isSelected() ? inputTeamField.getText()
-                        : comboTeam.getSelectedItem().toString());
+                String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
+                        : comboTeam.getSelectedItem().toString();
+                Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
+                if (team == null)
+                    team = new Team(teamName);
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));

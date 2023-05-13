@@ -515,6 +515,8 @@ public class MainRacerGUI extends JFrame {
                                         Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
+                                    if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID()))
+                                        allTeams.remove(allTeams.indexOf(removingTeam));
                                 }
                                 break;
                             }
@@ -843,7 +845,6 @@ public class MainRacerGUI extends JFrame {
                 Thread threadData = new Thread(() -> {
                     syncronizeData();
                     em.getTransaction().commit();
-                    em.close();
                 });
                 threadData.start();
                 saveBtn.doClick();
@@ -858,6 +859,7 @@ public class MainRacerGUI extends JFrame {
     private static void setConfirmbarVisible() {
         fileBtn.setVisible(false);
         saveBtn.setVisible(false);
+        toDataBaseBtn.setVisible(false);
         addBtn.setVisible(false);
         deleteBtn.setVisible(false);
         editBtn.setVisible(false);
@@ -872,6 +874,7 @@ public class MainRacerGUI extends JFrame {
     private static void setConfirmbarUnvisible() {
         fileBtn.setVisible(true);
         saveBtn.setVisible(true);
+        toDataBaseBtn.setVisible(true);
         addBtn.setVisible(true);
         deleteBtn.setVisible(true);
         editBtn.setVisible(true);
@@ -1214,7 +1217,7 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private static Team isAtTeamList(List<Team> teams, String team) {
+    public static Team isAtTeamList(List<Team> teams, String team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
             if (teams.get(i).getTeamName().equals(team)) {
@@ -1234,6 +1237,8 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void syncronizeData() {
+        RacerDao racerDao = new RacerDao(em);
+        TeamDao teamDao = new TeamDao(em);
         for (Team team : allTeams) {
             if (em.find(Team.class, team.getTeamID()) != null) {
                 em.merge(team);
@@ -1250,6 +1255,18 @@ public class MainRacerGUI extends JFrame {
                 racer.setRacerID(null);
                 em.persist(racer);
             }
+        }
+
+        List<Racer> dbRacers = racerDao.getAllRacers();
+        for (Racer racer : dbRacers) {
+            if (isAtRacerList(allRacers, racer) == null)
+                racerDao.deleteRacer(racer);
+        }
+
+        List<Team> dbTeams = teamDao.getAllTeams();
+        for (Team team : dbTeams) {
+            if (isAtTeamList(allTeams, team) == null)
+                teamDao.deleteTeam(team);
         }
     }
 
