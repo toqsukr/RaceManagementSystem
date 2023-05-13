@@ -51,7 +51,7 @@ public class AddRacerGUI {
     private static final JLabel teamLabel = new JLabel("Команда:");
     private static final JLabel ageLabel = new JLabel("Возраст:");
     private static final JLabel pointLabel = new JLabel("Очки:");
-    private static final JCheckBox teamCheckBox = new JCheckBox("Другая", null, false);
+    private static final JCheckBox teamCheckBox = new JCheckBox("Другое", null, false);
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
     private EntityManager em = emf.createEntityManager();
     private MainRacerGUI parentWindow;

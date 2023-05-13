@@ -128,6 +128,8 @@ public class MainRacerGUI extends JFrame {
      */
     private static final JButton cancelBtn = new JButton();
 
+    private static final JButton toDataBaseBtn = new JButton();
+
     /**
      * This input is used to search for an entry in the table by the name of the
      * racer
@@ -248,7 +250,6 @@ public class MainRacerGUI extends JFrame {
                         setConfirmbarUnvisible();
                         if (editingPermit == true)
                             changeEditingPermit();
-                        clearTable(racerTable);
                         mainRacerGUI.setTitle("Список гонщиков");
                         stopLogging(context);
                         mainRacerGUI.dispose();
@@ -261,7 +262,6 @@ public class MainRacerGUI extends JFrame {
                             setConfirmbarUnvisible();
                             if (editingPermit == true)
                                 changeEditingPermit();
-                            clearTable(racerTable);
                             mainRacerGUI.setTitle("Список гонщиков");
                             stopLogging(context);
                             mainRacerGUI.dispose();
@@ -286,6 +286,7 @@ public class MainRacerGUI extends JFrame {
             try {
                 allTeams = getTeamData();
                 allRacers = getRacerData();
+                initialSetRacerTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
@@ -370,6 +371,12 @@ public class MainRacerGUI extends JFrame {
             reportBtn.addActionListener(new ReportEventListener());
             reportBtn.setFocusable(false);
 
+            URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/database.png");
+            toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
+            toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            toDataBaseBtn.setFocusable(false);
+
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
             confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
             confirmBtn.setVisible(false);
@@ -388,12 +395,13 @@ public class MainRacerGUI extends JFrame {
 
             toolBar.add(fileBtn);
             toolBar.add(saveBtn);
+            toolBar.add(toDataBaseBtn);
             toolBar.add(addBtn);
             toolBar.add(deleteBtn);
             toolBar.add(editBtn);
+            toolBar.add(reportBtn);
             toolBar.add(confirmBtn);
             toolBar.add(cancelBtn);
-            toolBar.add(reportBtn);
 
             container.add(toolBar, BorderLayout.NORTH);
             container.add(scroll, BorderLayout.CENTER);
@@ -438,7 +446,7 @@ public class MainRacerGUI extends JFrame {
 
                 }
             } catch (NothingDataException exception) {
-                logger.info("NothingDataException exception", exception);
+                logger.info("NothingDataException exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (Exception exception) {
@@ -1259,5 +1267,13 @@ public class MainRacerGUI extends JFrame {
 
     public void addToAllRacer(Racer racer) {
         allRacers.add(racer);
+    }
+
+    public void initialSetRacerTable() {
+        for (Racer racer : allRacers) {
+            racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
+                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
+        }
+        copyTable(racerTable, fullSearchTable);
     }
 }
