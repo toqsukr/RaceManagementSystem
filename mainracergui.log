@@ -311,3 +311,5 @@ exception.NothingDataException: Данные для сохранения не н
 2023-05-14 01:49:44.920 [main] INFO  com - Start logging MainRacerGUI
 2023-05-14 01:49:49.945 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
 2023-05-14 01:50:08.384 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:14:10.011 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:14:32.513 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

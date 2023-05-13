@@ -615,6 +615,7 @@ public class MainRacerGUI extends JFrame {
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
                         additionalSearchEdit();
+                        compareEditedData();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                         mainRacerGUI
@@ -1292,5 +1293,26 @@ public class MainRacerGUI extends JFrame {
                     racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
         }
         copyTable(racerTable, fullSearchTable);
+    }
+
+    private void compareEditedData() {
+        for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
+            String name = fullSearchTable.getValueAt(i, 0).toString();
+            String age = fullSearchTable.getValueAt(i, 1).toString();
+            String team = fullSearchTable.getValueAt(i, 2).toString();
+            String point = fullSearchTable.getValueAt(i, 3).toString();
+            if (!name.equals(allRacers.get(i).getRacerName()))
+                allRacers.get(i).setRacerName(name);
+            if (!age.equals(allRacers.get(i).getRacerAge().toString()))
+                allRacers.get(i).setRacerAge(Integer.parseInt(age));
+            if (!team.equals(allRacers.get(i).getTeam().getTeamName())) {
+                Team newTeam = isAtTeamList(allTeams, team);
+                if (newTeam == null)
+                    newTeam = new Team(team);
+                allRacers.get(i).setTeam(newTeam);
+            }
+            if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
+                allRacers.get(i).setRacerPoints(Integer.parseInt(point));
+        }
     }
 }
