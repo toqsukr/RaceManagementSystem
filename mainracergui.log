@@ -313,3 +313,20 @@ exception.NothingDataException: Данные для сохранения не н
 2023-05-14 01:50:08.384 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
 2023-05-14 02:14:10.011 [main] INFO  com - Start logging MainRacerGUI
 2023-05-14 02:14:32.513 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:16:58.819 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:17:04.845 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-14 02:17:25.271 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:17:47.487 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:17:51.022 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-14 02:18:09.665 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:24:07.713 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:24:21.522 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:25:40.674 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:25:43.851 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-14 02:25:53.322 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-14 02:26:17.656 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-14 02:26:22.829 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-14 02:26:25.930 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:28:42.824 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:28:59.082 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-14 02:29:01.967 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

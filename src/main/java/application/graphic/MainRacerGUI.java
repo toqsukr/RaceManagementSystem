@@ -375,6 +375,7 @@ public class MainRacerGUI extends JFrame {
             toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
             toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            toDataBaseBtn.addActionListener(new ToDataBaseEventListener());
             toDataBaseBtn.setFocusable(false);
 
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
@@ -453,6 +454,28 @@ public class MainRacerGUI extends JFrame {
                 logger.info("Saving exception", exception);
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка сохранения файла",
                         JOptionPane.PLAIN_MESSAGE);
+            }
+        }
+    }
+
+    private class ToDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            logger.info("Deploy data to database");
+            if (allRacers.size() > 0) {
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                        "Выгрузить данные в базу?",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    em.getTransaction().begin();
+                    syncronizeData();
+                    em.getTransaction().commit();
+                }
             }
         }
     }
@@ -842,14 +865,8 @@ public class MainRacerGUI extends JFrame {
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
             if (result == JOptionPane.YES_OPTION) {
-                em.getTransaction().begin();
-                Thread threadData = new Thread(() -> {
-                    syncronizeData();
-                    em.getTransaction().commit();
-                });
-                threadData.start();
                 saveBtn.doClick();
-                threadData.join();
+                toDataBaseBtn.doClick();
             }
         }
     }
