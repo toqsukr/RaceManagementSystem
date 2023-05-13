@@ -330,3 +330,5 @@ exception.NothingDataException: Данные для сохранения не н
 2023-05-14 02:28:42.824 [main] INFO  com - Start logging MainRacerGUI
 2023-05-14 02:28:59.082 [AWT-EventQueue-0] INFO  com - Deploy data to database
 2023-05-14 02:29:01.967 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-14 02:50:42.758 [main] INFO  com - Start logging MainRacerGUI
+2023-05-14 02:50:47.199 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

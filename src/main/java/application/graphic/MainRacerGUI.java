@@ -465,7 +465,11 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             logger.info("Deploy data to database");
-            if (allRacers.size() > 0) {
+            List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
+            List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
+
+            if (allRacers.size() > 0
+                    && (!areEqualTeamLists(allTeams, dbTeams) || !areEqualRacerLists(allRacers, dbRacers))) {
                 int result = JOptionPane.showConfirmDialog(mainRacerGUI,
                         "Выгрузить данные в базу?",
                         "Подтверждение действия",
@@ -1331,5 +1335,42 @@ public class MainRacerGUI extends JFrame {
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
         }
+    }
+
+    private boolean areEqualTeamLists(List<Team> teams1, List<Team> teams2) {
+        boolean answer = false;
+        if (teams1.size() == teams2.size()) {
+            for (int i = 0; i < teams1.size(); i++) {
+                answer = false;
+                for (int j = 0; j < teams2.size(); j++) {
+                    if (teams1.get(i).getTeamName().equals(teams2.get(j).getTeamName())) {
+                        answer = true;
+                    }
+                }
+                if (!answer)
+                    break;
+            }
+        }
+        return answer;
+    }
+
+    private boolean areEqualRacerLists(List<Racer> racers1, List<Racer> racers2) {
+        boolean answer = false;
+        if (racers1.size() == racers2.size()) {
+            for (int i = 0; i < racers1.size(); i++) {
+                answer = false;
+                for (int j = 0; j < racers2.size(); j++) {
+                    if (racers1.get(i).getRacerName().equals(racers2.get(j).getRacerName())
+                            && racers1.get(i).getRacerAge().equals(racers2.get(j).getRacerAge())
+                            && racers1.get(i).getTeam().equals(racers2.get(j).getTeam())
+                            && racers1.get(i).getRacerPoints().equals(racers2.get(j).getRacerPoints())) {
+                        answer = true;
+                    }
+                }
+                if (!answer)
+                    break;
+            }
+        }
+        return answer;
     }
 }
