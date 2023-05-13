@@ -74,6 +74,7 @@ public class Racer {
     };
 
     public Racer(String name, Integer age, Team team, Integer points) {
+        racerID = 0;
         racerName = name;
         racerAge = age;
         racerTeam = team;

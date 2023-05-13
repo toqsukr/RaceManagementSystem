@@ -1,43 +1,123 @@
-2023-05-06 00:01:04.081 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:01:07.783 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:03:05.388 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:03:12.926 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:03:25.375 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:05:55.820 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 00:07:56.836 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:08:03.744 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:11:23.135 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:11:28.234 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:13:58.704 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:14:01.555 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:15:36.208 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:15:39.346 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:16:09.753 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 00:17:20.243 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:17:23.474 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:19:50.686 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 00:35:26.174 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:35:31.420 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:38:54.042 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:38:57.524 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:40:05.117 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 00:53:10.795 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 00:53:21.714 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 00:53:49.421 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 01:01:19.911 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 01:02:06.251 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 01:02:09.759 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:02:43.491 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 01:15:57.031 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 01:16:00.070 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:16:21.631 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 01:16:58.072 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 01:17:01.677 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:17:16.987 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:17:35.037 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-06 01:29:14.880 [main] INFO  com - Start logging MainRacerGUI
-2023-05-06 01:29:19.414 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:29:44.036 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:30:03.638 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-06 01:31:57.217 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-06 01:33:13.122 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 00:12:35.648 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 00:12:43.003 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 00:13:33.809 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 00:13:37.189 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 00:13:44.169 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 00:42:43.831 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 00:42:52.442 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 00:43:00.704 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 00:58:01.307 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 00:58:06.393 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:00:18.296 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:03:50.820 [main] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:08:11.868 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:08:16.666 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:08:28.877 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:08:32.459 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:08:34.074 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:08:35.474 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:11:44.476 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:11:46.363 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:11:47.844 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:34:39.780 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:36:11.887 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:36:15.186 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:36:39.725 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:37:11.200 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 01:37:31.502 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:43:32.821 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:43:35.154 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:43:54.928 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 01:43:54.938 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:47:02.747 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:47:20.261 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 01:47:32.138 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 01:47:32.144 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:49:08.606 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:49:15.249 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 01:49:24.612 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 01:49:24.628 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:50:39.661 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:50:42.643 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:51:06.437 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 01:51:06.437 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:51:49.038 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:51:51.711 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 01:58:27.674 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 01:58:30.703 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 01:58:47.264 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:05:34.704 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:05:36.686 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:07:42.363 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:07:44.512 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:09:46.455 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:09:48.291 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:12:18.522 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:12:20.353 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:13:25.524 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:13:27.389 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:16:05.870 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:16:07.717 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:16:19.514 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:17:01.192 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:17:06.856 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:17:28.410 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 02:17:28.410 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:23:06.035 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:23:10.526 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:23:17.257 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 02:23:17.257 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:24:05.732 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:24:08.975 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:24:23.241 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-13 02:24:32.491 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:30:38.088 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:30:41.438 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:30:45.435 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:31:42.222 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:31:45.060 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:31:52.303 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:33:02.650 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:33:05.224 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:34:51.559 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:34:53.564 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:35:01.754 [AWT-EventQueue-0] DEBUG com - Data is saved successful
+2023-05-13 02:35:01.757 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:35:29.619 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:35:32.204 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:36:12.497 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:37:46.095 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:37:48.245 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:37:55.080 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:39:23.333 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:39:25.598 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:39:29.630 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:41:07.618 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:41:10.221 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:41:14.701 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:44:24.114 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:44:31.162 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:44:37.973 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:46:25.207 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:46:27.857 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:46:34.037 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:46:42.798 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:46:44.516 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:50:35.893 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:50:38.848 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:50:43.074 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:55:08.462 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:55:10.944 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:55:16.367 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:56:12.124 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:56:19.168 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:56:23.988 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 02:57:33.603 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 02:57:36.305 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 02:57:40.359 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 03:07:38.278 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 03:07:41.946 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 03:07:46.056 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-13 03:08:38.229 [AWT-EventQueue-0] INFO  com - Start logging MainRacerGUI
+2023-05-13 03:08:42.917 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-13 03:08:47.437 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

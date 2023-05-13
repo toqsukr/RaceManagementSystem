@@ -29,9 +29,12 @@ public class Team {
     }
 
     public Team() {
+        teamID = 0;
+        teamName = null;
     };
 
     public Team(String name) {
+        teamID = 0;
         teamName = name;
     };
 }

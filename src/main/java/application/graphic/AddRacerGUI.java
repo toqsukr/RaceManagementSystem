@@ -52,15 +52,17 @@ public class AddRacerGUI {
     private static final JLabel pointLabel = new JLabel("Очки:");
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
     private EntityManager em = emf.createEntityManager();
+    private MainRacerGUI parentWindow;
 
     /**
      * Constructor of GUI
      */
-    public void show() {
+    public AddRacerGUI(MainRacerGUI parent) {
+        parentWindow = parent;
         addRacerGUI.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                MainRacerGUI.setMainRacerEnable(true);
+                parentWindow.setMainRacerEnable(true);
                 addRacerGUI.dispose();
                 clearInputs();
             }
@@ -175,30 +177,16 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
 
-                em.getTransaction().begin();
-                TeamDao teamDao = new TeamDao(em);
-
-                List<Team> existTeams = teamDao.getAllTeams();
                 Team team = new Team(comboTeam.getSelectedItem().toString());
 
-                if (isAtTeamList(existTeams, team) == null) {
-                    teamDao.saveTeam(team);
-                } else
-                    team = isAtTeamList(existTeams, team);
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));
-                RacerDao racerDao = new RacerDao(em);
-                List<Racer> existRacers = racerDao.getAllRacers();
-                if (isAtRacerList(existRacers, racer) == null) {
-                    racerDao.saveRacer(racer);
-                } else
-                    racer = isAtRacerList(existRacers, racer);
-
-                em.getTransaction().commit();
-
+                if (isAtRacerList(parentWindow.getAllRacers(), racer) == null) {
+                    parentWindow.addToAllRacer(racer);
+                }
                 clearInputs();
-                MainRacerGUI.setMainRacerEnable(true);
-                MainRacerGUI.addRacer(racer);
+                parentWindow.setMainRacerEnable(true);
+                parentWindow.addRacer(racer);
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
@@ -218,15 +206,15 @@ public class AddRacerGUI {
         }
     }
 
-    private static class CancelEventListener implements ActionListener {
+    private class CancelEventListener implements ActionListener {
         /***
          *
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
             clearInputs();
-            MainRacerGUI.setMainRacerEnable(true);
-            MainRacerGUI.setAddRacerVisible(false);
+            parentWindow.setMainRacerEnable(true);
+            parentWindow.setAddRacerVisible(false);
         }
     }
 

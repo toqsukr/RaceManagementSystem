@@ -26,7 +26,7 @@ public class MainMenuGUI {
 
     private static JLabel title = new JLabel("Система управления автогонками");
 
-    private static MainRacerGUI mainRacerWindow = new MainRacerGUI();
+    private static MainRacerGUI mainRacerWindow;
 
     public MainMenuGUI() {
 
@@ -42,7 +42,6 @@ public class MainMenuGUI {
         mainMenuGUI.setResizable(false);
         URL mainMenuIcon = this.getClass().getClassLoader().getResource("img/favicon.png");
         mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainMenuIcon));
-        mainRacerWindow.show();
 
         URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -157,6 +156,10 @@ public class MainMenuGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            if (mainRacerWindow == null) {
+                mainRacerWindow = new MainRacerGUI();
+                mainRacerWindow.show();
+            }
             mainRacerWindow.setVisible(true);
         }
     }
