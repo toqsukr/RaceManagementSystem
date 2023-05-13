@@ -33,6 +33,7 @@ public class AddRacerGUI {
      */
     private static final JTextField inputNameField = new JTextField("", 10);
     private static final JTextField inputAgeField = new JTextField("", 5);
+    private static final JTextField inputTeamField = new JTextField("", 10);
 
     /**
      * This input is used to search for an entry in the table by the team of the
@@ -50,6 +51,7 @@ public class AddRacerGUI {
     private static final JLabel teamLabel = new JLabel("Команда:");
     private static final JLabel ageLabel = new JLabel("Возраст:");
     private static final JLabel pointLabel = new JLabel("Очки:");
+    private static final JCheckBox teamCheckBox = new JCheckBox("Другая", null, false);
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
     private EntityManager em = emf.createEntityManager();
     private MainRacerGUI parentWindow;
@@ -68,16 +70,20 @@ public class AddRacerGUI {
             }
         });
         addRacerGUI.setVisible(false);
-        addRacerGUI.setBounds(200, 150, 410, 300);
+        addRacerGUI.setBounds(200, 150, 410, 330);
         addRacerGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addRacerGUI.setResizable(false);
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
         setComboBox();
-
+        comboTeam.setBackground(new Color(0xFFFFFF, false));
+        comboTeam.setFocusable(false);
+        teamCheckBox.setBackground(addRacerGUI.getBackground());
+        teamCheckBox.setFocusable(false);
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+        inputTeamField.setVisible(false);
 
         Box leftBox = Box.createVerticalBox();
         Box centerBox = Box.createVerticalBox();
@@ -96,6 +102,8 @@ public class AddRacerGUI {
         cancelBtn.addActionListener(new CancelEventListener());
         cancelBtn.setFocusable(false);
 
+        teamCheckBox.addItemListener(new TeamCheckboxItemListener());
+
         Container container = addRacerGUI.getContentPane();
         container.setLayout(new BorderLayout());
 
@@ -111,7 +119,7 @@ public class AddRacerGUI {
         nameBox.add(Box.createRigidArea(new Dimension(20, 0)));
         nameBox.add(inputNameField);
         centerBox.add(nameBox);
-        centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         ageBox.add(Box.createRigidArea(new Dimension(45, 0)));
         ageBox.add(ageLabel);
@@ -120,10 +128,27 @@ public class AddRacerGUI {
         centerBox.add(ageBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        teamBox.add(Box.createRigidArea(new Dimension(45, 0)));
-        teamBox.add(teamLabel);
-        teamBox.add(Box.createRigidArea(new Dimension(46, 0)));
-        teamBox.add(comboTeam);
+        teamBox.add(Box.createRigidArea(new Dimension(15, 0)));
+        Box teamLabelBox = Box.createHorizontalBox();
+        teamLabelBox.add(Box.createRigidArea(new Dimension(30, 0)));
+        teamLabelBox.add(teamLabel);
+        Box teamCheckboxBox = Box.createHorizontalBox();
+        teamCheckboxBox.add(teamCheckBox);
+        teamLabelBox.add(Box.createRigidArea(new Dimension(30, 0)));
+
+        Box teamInnerBox = Box.createVerticalBox();
+        teamInnerBox.add(teamLabelBox);
+        teamInnerBox.add(teamCheckboxBox);
+        teamBox.add(teamInnerBox);
+        teamBox.add(Box.createRigidArea(new Dimension(16, 0)));
+
+        Box teamInputBox = Box.createVerticalBox();
+
+        teamInputBox.add(Box.createRigidArea(new Dimension(0, 10)));
+        teamInputBox.add(inputTeamField);
+        teamInputBox.add(comboTeam);
+        teamInputBox.add(Box.createRigidArea(new Dimension(0, 10)));
+        teamBox.add(teamInputBox);
         centerBox.add(teamBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
 
@@ -133,7 +158,7 @@ public class AddRacerGUI {
         pointBox.add(inputPointField);
 
         centerBox.add(pointBox);
-        centerBox.add(Box.createRigidArea(new Dimension(0, 45)));
+        centerBox.add(Box.createRigidArea(new Dimension(0, 20)));
         centerBox.add(toolBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 50)));
 
@@ -166,6 +191,17 @@ public class AddRacerGUI {
             throw new InvalidPointInputException();
     }
 
+    private class TeamCheckboxItemListener implements ItemListener {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            inputTeamField.setVisible(!inputTeamField.isVisible());
+            comboTeam.setVisible(!comboTeam.isVisible());
+
+        }
+
+    }
+
     private class AddEventListener implements ActionListener {
 
         /***
@@ -177,7 +213,8 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
 
-                Team team = new Team(comboTeam.getSelectedItem().toString());
+                Team team = new Team(teamCheckBox.isSelected() ? inputTeamField.getText()
+                        : comboTeam.getSelectedItem().toString());
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));
@@ -185,7 +222,6 @@ public class AddRacerGUI {
                     parentWindow.addToAllRacer(racer);
                 }
                 clearInputs();
-                parentWindow.setMainRacerEnable(true);
                 parentWindow.addRacer(racer);
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",

@@ -198,7 +198,7 @@ public class MainRacerGUI extends JFrame {
     /***
      * The add racer window
      */
-    private static AddRacerGUI addRacerWindow;
+    private AddRacerGUI addRacerWindow;
 
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
     private EntityManager em = emf.createEntityManager();
@@ -213,13 +213,15 @@ public class MainRacerGUI extends JFrame {
      * The logger variable
      */
     private static Logger logger;
+    private MainMenuGUI parentWindow;
 
     /***
      * The function creating MainRacerGUI
      */
-    public void show() {
-
+    public MainRacerGUI(MainMenuGUI parent) {
+        parentWindow = parent;
         try {
+
             ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
             ConfigurationSource configurationSource = new ConfigurationSource(
                     new FileInputStream(new File("etu/src/main/java/configuration.xml")));
@@ -552,9 +554,13 @@ public class MainRacerGUI extends JFrame {
                         String age = racerTable.getValueAt(i, 1).toString();
                         String teamName = racerTable.getValueAt(i, 2).toString();
                         String points = racerTable.getValueAt(i, 3).toString();
-                        Team team = isAtTeamList(allTeams, teamName) ? isAtTeamList(allTeams, new Team(teamName))
-                                : new Team(teamName);
-                        Racer racer = new Racer(name, Integer.parseInt(age), team, Integer.parseInt(points));
+                        Team team = isAtTeamList(allTeams, teamName);
+                        if (team == null) {
+                            team = new Team(teamName);
+                            allTeams.add(team);
+                        }
+                        Racer racer = new Racer(name, Integer.parseInt(age), team,
+                                Integer.parseInt(points));
                         if (isAtRacerList(allRacers, racer) == null)
                             allRacers.add(racer);
                     }
@@ -1200,15 +1206,15 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private static boolean isAtTeamList(List<Team> teams, String team) {
-        boolean flag = false;
+    private static Team isAtTeamList(List<Team> teams, String team) {
+        Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
             if (teams.get(i).getTeamName().equals(team)) {
-                flag = true;
+                answer = teams.get(i);
                 break;
             }
         }
-        return flag;
+        return answer;
     }
 
     public void updateComboBox() {
@@ -1220,20 +1226,21 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void syncronizeData() {
-        for (Racer racer : allRacers) {
-            if (em.find(Racer.class, racer.getRacerID()) != null) {
-                em.merge(racer);
-            } else {
-                racer.setRacerID(null);
-                em.persist(racer);
-            }
-        }
         for (Team team : allTeams) {
             if (em.find(Team.class, team.getTeamID()) != null) {
                 em.merge(team);
             } else {
                 team.setTeamID(null);
                 em.persist(team);
+            }
+        }
+
+        for (Racer racer : allRacers) {
+            if (em.find(Racer.class, racer.getRacerID()) != null) {
+                em.merge(racer);
+            } else {
+                racer.setRacerID(null);
+                em.persist(racer);
             }
         }
     }
