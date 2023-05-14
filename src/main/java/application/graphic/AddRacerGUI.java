@@ -167,19 +167,21 @@ public class AddRacerGUI {
         container.add(rightBox, BorderLayout.EAST);
     }
 
-    private static void clearInputs() {
+    private void clearInputs() {
         inputNameField.setText("");
         inputAgeField.setText("");
+        inputTeamField.setText("");
         inputPointField.setText("");
     }
 
-    private static void checkEmptyInputs() throws EmptyAddInputException {
+    private void checkEmptyInputs() throws EmptyAddInputException {
         if (inputNameField.getText().equals("") | inputAgeField.getText().equals("")
-                | inputPointField.getText().equals(""))
+                | inputPointField.getText().equals("")
+                | (teamCheckBox.isSelected() && inputTeamField.getText().equals("")))
             throw new EmptyAddInputException();
     }
 
-    private static void checkRacerInputDate() throws InvalidNameInputException, InvalidAgeInputException,
+    private void checkRacerInputDate() throws InvalidNameInputException, InvalidAgeInputException,
             InvalidTeamInputException, InvalidPointInputException {
         if (!Validation.isValidName(inputNameField.getText()))
             throw new InvalidNameInputException();
@@ -187,6 +189,8 @@ public class AddRacerGUI {
             throw new InvalidAgeInputException();
         if (!Validation.isValidPoint(inputPointField.getText()))
             throw new InvalidPointInputException();
+        if (teamCheckBox.isSelected() && !Validation.isValidTeam(inputTeamField.getText()))
+            throw new InvalidTeamInputException();
     }
 
     private class TeamCheckboxItemListener implements ItemListener {
@@ -195,7 +199,6 @@ public class AddRacerGUI {
         public void itemStateChanged(ItemEvent e) {
             inputTeamField.setVisible(!inputTeamField.isVisible());
             comboTeam.setVisible(!comboTeam.isVisible());
-
         }
 
     }
@@ -214,12 +217,16 @@ public class AddRacerGUI {
                 String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
                         : comboTeam.getSelectedItem().toString();
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
-                if (team == null)
+                if (team == null) {
                     team = new Team(teamName);
+                    parentWindow.addtoAllTeam(team);
+                    parentWindow.addItemComboTeam(teamName);
+                    comboTeam.addItem(teamName);
+                }
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));
-                if (isAtRacerList(parentWindow.getAllRacers(), racer) == null) {
+                if (MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), racer) == null) {
                     parentWindow.addToAllRacer(racer);
                 }
                 clearInputs();
@@ -253,31 +260,6 @@ public class AddRacerGUI {
             parentWindow.setMainRacerEnable(true);
             parentWindow.setAddRacerVisible(false);
         }
-    }
-
-    private static Team isAtTeamList(List<Team> teams, Team team) {
-        Team answer = null;
-        for (int i = 0; i < teams.size(); i++) {
-            if (teams.get(i).getTeamName().equals(team.getTeamName())) {
-                answer = teams.get(i);
-                break;
-            }
-        }
-        return answer;
-    }
-
-    private static Racer isAtRacerList(List<Racer> racers, Racer racer) {
-        Racer answer = null;
-        for (int i = 0; i < racers.size(); i++) {
-            if (racers.get(i).getRacerName().equals(racer.getRacerName())
-                    && racers.get(i).getRacerAge().equals(racer.getRacerAge())
-                    && racers.get(i).getTeam().equals(racer.getTeam())
-                    && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
-                answer = racers.get(i);
-                break;
-            }
-        }
-        return answer;
     }
 
     private void setComboBox() {

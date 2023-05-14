@@ -467,11 +467,8 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 logger.info("Deploy data to database");
-                List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-                List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
                 checkIdenticalData();
-                if (allRacers.size() > 0
-                        && (!areEqualTeamLists(allTeams, dbTeams) || !areEqualRacerLists(allRacers, dbRacers))) {
+                if (allRacers.size() > 0) {
                     int result = JOptionPane.showConfirmDialog(mainRacerGUI,
                             "Выгрузить данные в базу?",
                             "Подтверждение действия",
@@ -484,8 +481,7 @@ public class MainRacerGUI extends JFrame {
                     }
                 }
             } catch (IdenticalDataException exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Сообщение",
-                        JOptionPane.PLAIN_MESSAGE);
+                logger.warn(exception.getMessage());
             }
         }
     }
@@ -1209,7 +1205,7 @@ public class MainRacerGUI extends JFrame {
         return racers;
     }
 
-    private static Racer isAtRacerList(List<Racer> racers, Racer racer) {
+    public static Racer isAtRacerList(List<Racer> racers, Racer racer) {
         Racer answer = null;
         for (int i = 0; i < racers.size(); i++) {
             if (racers.get(i).getRacerName().equals(racer.getRacerName())
@@ -1223,7 +1219,7 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private static boolean isTeamAtRacerList(List<Racer> racers, Integer id) {
+    public static boolean isTeamAtRacerList(List<Racer> racers, Integer id) {
         boolean answer = false;
         for (int i = 0; i < racers.size(); i++) {
             if (racers.get(i).getTeam().getTeamID().equals(id)) {
@@ -1234,7 +1230,7 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private static Team isAtTeamList(List<Team> teams, Team team) {
+    public static Team isAtTeamList(List<Team> teams, Team team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
             if (teams.get(i).getTeamName().equals(team.getTeamName())) {
@@ -1262,6 +1258,10 @@ public class MainRacerGUI extends JFrame {
             arr[i] = allTeams.get(i).getTeamName();
         }
         comboTeam = new JComboBox<String>(arr);
+    }
+
+    public void addItemComboTeam(String item) {
+        comboTeam.addItem(item);
     }
 
     public void syncronizeData() {
@@ -1323,6 +1323,7 @@ public class MainRacerGUI extends JFrame {
     }
 
     private void compareEditedData() {
+        em.getTransaction().begin();
         for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
             String name = fullSearchTable.getValueAt(i, 0).toString();
             String age = fullSearchTable.getValueAt(i, 1).toString();
@@ -1341,6 +1342,8 @@ public class MainRacerGUI extends JFrame {
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
         }
+        em.getTransaction().commit();
+
     }
 
     private boolean areEqualTeamLists(List<Team> teams1, List<Team> teams2) {
@@ -1385,7 +1388,7 @@ public class MainRacerGUI extends JFrame {
         List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
 
         if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
-            throw new IdenticalDataException("Данные идентичны!");
+            throw new IdenticalDataException("Full identical data!");
     }
 
     public boolean getMainRacerVisibility() {
