@@ -272,4 +272,8 @@ public class AddRacerGUI {
         comboTeam = new JComboBox<String>(arr);
         em.getTransaction().commit();
     }
+
+    public void deleteItemComboTeam(int index) {
+        comboTeam.removeItemAt(index);
+    }
 }

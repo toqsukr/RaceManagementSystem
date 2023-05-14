@@ -544,8 +544,11 @@ public class MainRacerGUI extends JFrame {
                                         Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
-                                    if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID()))
+                                    if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
+                                        comboTeam.removeItemAt(allTeams.indexOf(removingTeam));
+                                        addRacerWindow.deleteItemComboTeam(allTeams.indexOf(removingTeam));
                                         allTeams.remove(allTeams.indexOf(removingTeam));
+                                    }
                                 }
                                 break;
                             }
