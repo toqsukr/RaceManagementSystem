@@ -133,10 +133,14 @@ public class MainMenuGUI {
 
     private void closeOperation() {
         try {
-            mainRacerWindow.stopEditCell();
-            mainRacerWindow.checkEditedData();
-            mainRacerWindow.saveBeforeClose(
-                    "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+
+            if (mainRacerWindow.getMainRacerVisibility()) {
+                mainRacerWindow.stopEditCell();
+                mainRacerWindow.checkEditedData();
+                mainRacerWindow.saveBeforeClose(
+                        "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+
+            }
             System.exit(1);
 
         } catch (Exception exception) {

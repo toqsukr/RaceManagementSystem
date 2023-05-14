@@ -50,6 +50,7 @@ import javax.swing.table.DefaultTableModel;
 
 import exception.EmptySearchInputException;
 import exception.FileFormatException;
+import exception.IdenticalDataException;
 import exception.InvalidAgeInputException;
 import exception.InvalidDataException;
 import exception.InvalidNameInputException;
@@ -464,22 +465,27 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            logger.info("Deploy data to database");
-            List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-            List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
-
-            if (allRacers.size() > 0
-                    && (!areEqualTeamLists(allTeams, dbTeams) || !areEqualRacerLists(allRacers, dbRacers))) {
-                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
-                        "Выгрузить данные в базу?",
-                        "Подтверждение действия",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    em.getTransaction().begin();
-                    syncronizeData();
-                    em.getTransaction().commit();
+            try {
+                logger.info("Deploy data to database");
+                List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
+                List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
+                checkIdenticalData();
+                if (allRacers.size() > 0
+                        && (!areEqualTeamLists(allTeams, dbTeams) || !areEqualRacerLists(allRacers, dbRacers))) {
+                    int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                            "Выгрузить данные в базу?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        em.getTransaction().begin();
+                        syncronizeData();
+                        em.getTransaction().commit();
+                    }
                 }
+            } catch (IdenticalDataException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Сообщение",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
     }
@@ -1373,4 +1379,17 @@ public class MainRacerGUI extends JFrame {
         }
         return answer;
     }
+
+    private void checkIdenticalData() throws IdenticalDataException {
+        List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
+        List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
+
+        if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
+            throw new IdenticalDataException("Данные идентичны!");
+    }
+
+    public boolean getMainRacerVisibility() {
+        return mainRacerGUI.isShowing();
+    }
+
 }
