@@ -210,7 +210,7 @@ public class MainRacerGUI extends JFrame {
 
     private List<Racer> allRacers;
 
-    private JComboBox<String> comboTeam;
+    private JComboBox<String> comboTeam = new JComboBox<>();
 
     /***
      * The logger variable
@@ -293,7 +293,7 @@ public class MainRacerGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
 
-            updateComboBox();
+            updateComboTeam();
 
             DefaultCellEditor editor = new DefaultCellEditor(comboTeam);
             racers.getColumnModel().getColumn(2).setCellEditor(editor);
@@ -591,6 +591,11 @@ public class MainRacerGUI extends JFrame {
                         FileManage.readRacerFromTextFile(racerTable, filename);
                     else
                         FileManage.readRacerFromXmlFile(racerTable, filename);
+                    comboTeam.removeAllItems();
+                    comboTeam.setSelectedItem(null);
+                    addRacerWindow.clearComboTeam();
+                    allRacers.clear();
+                    allTeams.clear();
                     for (int i = 0; i < racerTable.getRowCount(); i++) {
                         String name = racerTable.getValueAt(i, 0).toString();
                         String age = racerTable.getValueAt(i, 1).toString();
@@ -600,6 +605,8 @@ public class MainRacerGUI extends JFrame {
                         if (team == null) {
                             team = new Team(teamName);
                             allTeams.add(team);
+                            addItemComboTeam(teamName);
+                            addRacerWindow.addItemComboTeam(teamName);
                         }
                         Racer racer = new Racer(name, Integer.parseInt(age), team,
                                 Integer.parseInt(points));
@@ -1255,12 +1262,10 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    public void updateComboBox() {
-        String[] arr = new String[allTeams.size()];
-        for (int i = 0; i < allTeams.size(); i++) {
-            arr[i] = allTeams.get(i).getTeamName();
+    private void updateComboTeam() {
+        for (Team team : allTeams) {
+            addItemComboTeam(team.getTeamName());
         }
-        comboTeam = new JComboBox<String>(arr);
     }
 
     public void addItemComboTeam(String item) {
@@ -1326,7 +1331,6 @@ public class MainRacerGUI extends JFrame {
     }
 
     private void compareEditedData() {
-        em.getTransaction().begin();
         for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
             String name = fullSearchTable.getValueAt(i, 0).toString();
             String age = fullSearchTable.getValueAt(i, 1).toString();
@@ -1345,8 +1349,6 @@ public class MainRacerGUI extends JFrame {
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
         }
-        em.getTransaction().commit();
-
     }
 
     private boolean areEqualTeamLists(List<Team> teams1, List<Team> teams2) {

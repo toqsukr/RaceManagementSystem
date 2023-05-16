@@ -273,7 +273,16 @@ public class AddRacerGUI {
         em.getTransaction().commit();
     }
 
+    public void addItemComboTeam(String item) {
+        comboTeam.addItem(item);
+    }
+
     public void deleteItemComboTeam(int index) {
         comboTeam.removeItemAt(index);
+    }
+
+    public void clearComboTeam() {
+        comboTeam.removeAllItems();
+        comboTeam.setSelectedItem(null);
     }
 }
