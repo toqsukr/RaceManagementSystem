@@ -48,4 +48,12 @@ public class TeamDao {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
+
+    public void clearTeam() {
+        try {
+            em.createQuery("DELETE FROM Team").executeUpdate();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
 }

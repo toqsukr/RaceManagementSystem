@@ -47,4 +47,12 @@ public class RacerDao {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
     }
+
+    public void clearRacer() {
+        try {
+            em.createQuery("DELETE FROM Racer").executeUpdate();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
 }

@@ -216,6 +216,7 @@ public class MainRacerGUI extends JFrame {
      * The logger variable
      */
     private static Logger logger;
+    private boolean isOpenFile = false;
     private MainMenuGUI parentWindow;
 
     /***
@@ -576,6 +577,8 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            DefaultTableModel exceptionRacerTable = new DefaultTableModel(data, columns);
+            copyTable(racerTable, exceptionRacerTable);
             try {
                 saveBeforeClose(
                         "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
@@ -585,6 +588,7 @@ public class MainRacerGUI extends JFrame {
                 load.setVisible(true);
                 if (load.getFile() != null) {
                     checkFileFormat(load);
+                    setIsOpenFile(true);
                     String filename = load.getDirectory() + load.getFile();
                     mainRacerGUI.setTitle("Список гонщиков");
                     if (load.getFile().endsWith("txt"))
@@ -623,7 +627,7 @@ public class MainRacerGUI extends JFrame {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (ReadFileException exception) {
-                clearTable(racerTable);
+                copyTable(exceptionRacerTable, racerTable);
                 logger.info("ReadFileException exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
                         JOptionPane.PLAIN_MESSAGE);
@@ -858,6 +862,10 @@ public class MainRacerGUI extends JFrame {
                 setInput(searchNameField, "Имя гонщика");
         }
 
+    }
+
+    public void setIsOpenFile(boolean value) {
+        isOpenFile = value;
     }
 
     /***
@@ -1275,6 +1283,11 @@ public class MainRacerGUI extends JFrame {
     public void syncronizeData() {
         RacerDao racerDao = new RacerDao(em);
         TeamDao teamDao = new TeamDao(em);
+        if (isOpenFile) {
+            racerDao.clearRacer();
+            teamDao.clearTeam();
+            setIsOpenFile(false);
+        }
         for (Team team : allTeams) {
             if (em.find(Team.class, team.getTeamID()) != null) {
                 em.merge(team);
