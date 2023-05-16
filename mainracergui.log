@@ -1,155 +1,19 @@
-2023-05-16 16:40:29.899 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 16:41:31.809 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 16:41:44.556 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 16:42:18.037 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 16:46:32.527 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:22:34.303 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:22:38.649 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:22:38.665 [AWT-EventQueue-0] WARN  com - Full identical data!
-2023-05-16 21:22:45.701 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:22:45.715 [AWT-EventQueue-0] WARN  com - Full identical data!
-2023-05-16 21:23:26.131 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:23:26.145 [AWT-EventQueue-0] WARN  com - Full identical data!
-2023-05-16 21:23:37.913 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:25:51.773 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:26:19.142 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:30:10.011 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:30:20.939 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:30:22.378 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:30:32.151 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:30:48.084 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:30:49.397 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:31:45.349 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:32:38.012 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 21:34:33.381 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:36:33.881 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:36:48.743 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:37:24.739 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:38:34.016 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 21:38:45.178 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:47:58.525 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:48:15.229 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:48:29.692 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 21:48:40.062 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:49:04.718 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:49:24.536 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:49:30.239 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:50:01.778 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 21:50:21.748 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:51:30.700 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:55:04.538 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:55:13.246 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:55:31.651 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:55:39.179 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:55:41.185 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 21:58:42.964 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 21:58:55.657 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 21:58:57.359 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:00:15.356 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:00:23.438 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:04:10.029 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:04:31.570 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:04:33.639 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:04:42.018 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:04:45.831 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:05:30.649 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:05:38.099 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:05:41.063 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:06:21.103 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:06:22.624 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:15:23.803 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:15:39.501 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:15:45.954 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:16:46.535 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:16:58.167 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:17:14.776 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:17:53.516 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:17:59.008 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:18:05.118 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:18:09.469 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:18:31.645 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:22:24.546 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:22:32.495 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:23:17.004 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:23:28.303 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:23:43.355 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:24:08.256 [AWT-EventQueue-0] DEBUG com - Data is saved successful
-2023-05-16 22:24:14.413 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:24:28.512 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:24:41.797 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:24:47.107 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:24:53.926 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:27:46.818 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:27:54.025 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:27:58.855 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:28:08.661 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:30:32.133 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:31:47.008 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:33:24.851 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:33:31.189 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:33:39.384 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:33:47.455 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:34:29.269 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:35:05.899 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:35:22.214 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:35:45.910 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:35:55.810 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:36:18.083 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:36:36.272 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:36:37.300 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:37:30.907 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:37:32.074 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:38:51.555 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:39:11.141 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:39:11.878 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:39:26.347 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:39:29.393 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:39:34.866 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:39:35.782 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:40:10.358 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:40:11.764 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:50:15.838 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:50:24.051 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:50:25.635 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:50:52.668 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:50:54.402 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:51:16.497 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:51:30.138 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:51:31.235 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:51:49.007 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 22:51:55.418 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:52:02.327 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:52:04.646 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 22:55:30.575 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:55:38.509 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:55:41.341 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:56:11.794 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:56:18.896 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:56:23.537 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:56:36.430 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:56:41.523 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:56:44.198 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 22:58:11.823 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 22:58:17.846 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:58:30.082 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 22:58:40.700 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 22:59:04.683 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 23:00:06.504 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 23:00:07.861 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 23:00:11.388 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 23:00:50.621 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 23:01:00.147 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 23:01:14.511 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:01:19.492 [AWT-EventQueue-0] INFO  com - Deploy data to database
-2023-05-16 23:01:42.745 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
-2023-05-16 23:02:13.803 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 23:07:57.826 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 23:08:28.739 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:08:36.268 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
-2023-05-16 23:09:29.864 [main] INFO  com - Start logging MainRacerGUI
-2023-05-16 23:09:36.621 [AWT-EventQueue-0] INFO  com - ReadFileException exception
-2023-05-16 23:09:54.818 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:10:07.742 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:10:35.897 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:10:41.448 [AWT-EventQueue-0] DEBUG com - Data is opened successful
-2023-05-16 23:10:45.714 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 00:59:47.962 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 01:01:03.762 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 01:01:08.809 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 01:21:20.608 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 01:24:29.407 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 01:24:48.381 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 01:24:58.424 [AWT-EventQueue-0] INFO  com - ReadFileException exception
+2023-05-17 01:25:19.784 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-17 01:25:22.466 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 01:26:03.135 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-17 01:26:06.174 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 01:28:01.061 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 01:29:27.231 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 01:29:41.835 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-17 01:29:44.747 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 01:30:11.690 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-17 01:30:23.591 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 01:30:24.692 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 01:38:00.273 [main] INFO  com - Start logging MainRacerGUI

@@ -116,6 +116,8 @@ public class FileManage {
         Document doc = openXmlDocument(filename);
         // Обработка ошибки парсера при чтении данных из XML-файла
         // Получение списка элементов с именем book
+        if (doc == null)
+            throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
         NodeList nlRacers = doc.getElementsByTagName("racer");
         int rows = table.getRowCount();
         for (int i = 0; i < rows; i++)

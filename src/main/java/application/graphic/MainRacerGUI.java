@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -227,8 +228,9 @@ public class MainRacerGUI extends JFrame {
         try {
 
             ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
-            ConfigurationSource configurationSource = new ConfigurationSource(
-                    new FileInputStream(new File("etu/src/main/java/configuration.xml")));
+            URL configUrl = this.getClass().getClassLoader().getResource("configuration.xml");
+            InputStream inputStream = configUrl.openStream();
+            ConfigurationSource configurationSource = new ConfigurationSource(inputStream);
 
             Configuration configuration = factory.getConfiguration(null, configurationSource);
 

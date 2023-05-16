@@ -3,7 +3,7 @@ package race.system;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "RaceManagementSystem.Scores")
+@Table(name = "scores")
 public class Score {
     private int scoreId;
     private Racer racerInfo;

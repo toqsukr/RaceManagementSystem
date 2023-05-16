@@ -3,7 +3,7 @@ package race.system;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Teams")
+@Table(name = "teams")
 public class Team {
     private Integer teamID;
     private String teamName;

@@ -7,9 +7,14 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <properties>
             <property name="javax.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
-            <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3434/mydb" />
+            <!-- <property name="javax.persistence.jdbc.url"
+            value="jdbc:mysql://localhost:3434/mydb" />
             <property name="javax.persistence.jdbc.user" value="root" />
-            <property name="javax.persistence.jdbc.password" value="vh5P+!yy:Ah8=k7" />
+            <property name="javax.persistence.jdbc.password" value="vh5P+!yy:Ah8=k7" /> -->
+            <property name="javax.persistence.jdbc.url"
+                value="jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7618872" />
+            <property name="javax.persistence.jdbc.user" value="sql7618872" />
+            <property name="javax.persistence.jdbc.password" value="5hZdBU3NSq" />
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
         </properties>

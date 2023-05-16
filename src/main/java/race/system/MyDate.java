@@ -3,7 +3,7 @@ package race.system;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "RaceManagementSystem.Dates")
+@Table(name = "dates")
 public class MyDate {
     private int dateId;
     private int day;
