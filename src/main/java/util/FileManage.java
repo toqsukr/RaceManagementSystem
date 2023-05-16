@@ -40,11 +40,16 @@ public class FileManage {
             throw new FileNotFoundException("Файл " + fileName + " не найден!");
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         int rows = table.getRowCount();
-        for (int i = 0; i < rows; i++)
-            table.removeRow(0); // Очистка таблицы
         String racer;
+        racer = reader.readLine();
+        if (racer != null) {
+            for (int i = 0; i < rows; i++)
+                table.removeRow(0); // Очистка таблицы
+        } else {
+            reader.close();
+            throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
+        }
         do {
-            racer = reader.readLine();
             if (racer != null) {
                 String age = reader.readLine();
                 String team = reader.readLine();
@@ -56,6 +61,7 @@ public class FileManage {
                 }
                 table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
             }
+            racer = reader.readLine();
 
         } while (racer != null);
         reader.close();
