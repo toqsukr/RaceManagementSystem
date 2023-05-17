@@ -18,3 +18,8 @@
 2023-05-18 02:05:17.527 [AWT-EventQueue-0] DEBUG com - Data is opened successful
 2023-05-18 02:05:43.257 [AWT-EventQueue-0] INFO  com - Downloading data from database
 2023-05-18 02:05:55.526 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-18 02:20:07.796 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 02:24:52.779 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 02:26:50.018 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 02:26:55.212 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-18 02:27:06.806 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI

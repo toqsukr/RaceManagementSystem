@@ -251,32 +251,34 @@ public class MainRacerGUI extends JFrame {
                     try {
                         stopEditCell();
                         checkEditedData();
-                        saveBeforeClose(
+                        int result = saveBeforeClose(
                                 "Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
-                        setConfirmbarUnvisible();
-                        if (editingPermit == true)
-                            changeEditingPermit();
-                        comboTeam.removeAllItems();
-                        comboTeam.setSelectedItem(null);
-                        addRacerWindow.clearComboTeam();
-                        allTeams.clear();
-                        allRacers.clear();
-                        clearTable(racerTable);
-                        try {
-                            allTeams = getTeamData();
-                            allRacers = getRacerData();
-                            addRacerWindow.updateComboTeam();
-                            updateComboTeam();
-                            initialSetRacerTable();
-                            mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                            stopLogging(context);
-                            mainRacerGUI.dispose();
+                        if (result != -1) {
+                            setConfirmbarUnvisible();
+                            if (editingPermit == true)
+                                changeEditingPermit();
+                            comboTeam.removeAllItems();
+                            comboTeam.setSelectedItem(null);
+                            addRacerWindow.clearComboTeam();
+                            allTeams.clear();
+                            allRacers.clear();
+                            clearTable(racerTable);
+                            try {
+                                allTeams = getTeamData();
+                                allRacers = getRacerData();
+                                addRacerWindow.updateComboTeam();
+                                updateComboTeam();
+                                initialSetRacerTable();
+                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                                stopLogging(context);
+                                mainRacerGUI.dispose();
 
-                        } catch (InterruptedException exception2) {
-                            logger.error("Reading data base error!");
-                            mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                            stopLogging(context);
-                            mainRacerGUI.dispose();
+                            } catch (InterruptedException exception2) {
+                                logger.error("Reading data base error!");
+                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                                stopLogging(context);
+                                mainRacerGUI.dispose();
+                            }
                         }
                     } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
@@ -476,21 +478,23 @@ public class MainRacerGUI extends JFrame {
             try {
                 logger.info("Downloading data from database");
                 checkIdenticalData();
-                saveBeforeClose(
+                int result = saveBeforeClose(
                         "Сохранить изменения?\nПосле загрузки данных из базы\nнесохраненные данные будут утеряны!");
-                setIsOpenFile(false);
-                mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                comboTeam.removeAllItems();
-                comboTeam.setSelectedItem(null);
-                addRacerWindow.clearComboTeam();
-                allTeams.clear();
-                allRacers.clear();
-                clearTable(racerTable);
-                allTeams = getTeamData();
-                allRacers = getRacerData();
-                addRacerWindow.updateComboTeam();
-                updateComboTeam();
-                initialSetRacerTable();
+                if (result != -1) {
+                    setIsOpenFile(false);
+                    mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                    comboTeam.removeAllItems();
+                    comboTeam.setSelectedItem(null);
+                    addRacerWindow.clearComboTeam();
+                    allTeams.clear();
+                    allRacers.clear();
+                    clearTable(racerTable);
+                    allTeams = getTeamData();
+                    allRacers = getRacerData();
+                    addRacerWindow.updateComboTeam();
+                    updateComboTeam();
+                    initialSetRacerTable();
+                }
             } catch (IdenticalDataException exception) {
                 logger.warn(exception.getMessage());
             } catch (InterruptedException exception) {
@@ -678,39 +682,41 @@ public class MainRacerGUI extends JFrame {
             DefaultTableModel exceptionRacerTable = new DefaultTableModel(data, columns);
             copyTable(racerTable, exceptionRacerTable);
             try {
-                saveBeforeClose(
+                int result = saveBeforeClose(
                         "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
-                FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
-                        FileDialog.LOAD);
-                load.setFile("data.xml");
-                load.setVisible(true);
-                if (load.getFile() != null) {
-                    checkFileFormat(load);
-                    setIsOpenFile(true);
-                    String filename = load.getDirectory() + load.getFile();
-                    mainRacerGUI.setTitle("Список гонщиков");
-                    if (load.getFile().endsWith("txt"))
-                        FileManage.readRacerFromTextFile(racerTable, filename);
-                    else
-                        FileManage.readRacerFromXmlFile(racerTable, filename);
-                    comboTeam.removeAllItems();
-                    comboTeam.setSelectedItem(null);
-                    addRacerWindow.clearComboTeam();
-                    allRacers.clear();
-                    allTeams.clear();
-                    setTeamsAndRacers();
-                    if (comboTeam.getComponentCount() == 0) {
-                        addRacerWindow.setComboTeamVisibility(false);
-                        addRacerWindow.setTeamCheckBoxVisibility(false);
+                if (result != -1) {
+                    FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
+                            FileDialog.LOAD);
+                    load.setFile("data.xml");
+                    load.setVisible(true);
+                    if (load.getFile() != null) {
+                        checkFileFormat(load);
+                        setIsOpenFile(true);
+                        String filename = load.getDirectory() + load.getFile();
+                        mainRacerGUI.setTitle("Список гонщиков");
+                        if (load.getFile().endsWith("txt"))
+                            FileManage.readRacerFromTextFile(racerTable, filename);
+                        else
+                            FileManage.readRacerFromXmlFile(racerTable, filename);
+                        comboTeam.removeAllItems();
+                        comboTeam.setSelectedItem(null);
+                        addRacerWindow.clearComboTeam();
+                        allRacers.clear();
+                        allTeams.clear();
+                        setTeamsAndRacers();
+                        if (comboTeam.getComponentCount() == 0) {
+                            addRacerWindow.setComboTeamVisibility(false);
+                            addRacerWindow.setTeamCheckBoxVisibility(false);
 
-                    } else if (!comboTeam.isVisible()) {
-                        addRacerWindow.setComboTeamVisibility(true);
-                        addRacerWindow.setTeamCheckBoxVisibility(true);
+                        } else if (!comboTeam.isVisible()) {
+                            addRacerWindow.setComboTeamVisibility(true);
+                            addRacerWindow.setTeamCheckBoxVisibility(true);
+                        }
+
+                        copyTable(racerTable, fullSearchTable);
+                        logger.debug("Data is opened successful");
+                        mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                     }
-
-                    copyTable(racerTable, fullSearchTable);
-                    logger.debug("Data is opened successful");
-                    mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                 }
 
             } catch (FileNotFoundException exception) {
@@ -972,9 +978,10 @@ public class MainRacerGUI extends JFrame {
      * 
      * @param message the text to be shown while the window is closing
      */
-    public void saveBeforeClose(String message) {
+    public int saveBeforeClose(String message) {
+        int result = 1;
         if (racerTable.getRowCount() > 0) {
-            int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+            result = JOptionPane.showConfirmDialog(mainRacerGUI,
                     message,
                     "Подтверждение действия",
                     JOptionPane.YES_NO_OPTION,
@@ -984,6 +991,7 @@ public class MainRacerGUI extends JFrame {
                 toDataBaseBtn.doClick();
             }
         }
+        return result;
     }
 
     /***
