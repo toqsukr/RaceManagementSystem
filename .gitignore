@@ -40,4 +40,4 @@ build/
  
 /src/doc/
 
-/etu/src/resources/META-INF/persistence.xml
+persistence.xml
