@@ -694,6 +694,7 @@ public class MainRacerGUI extends JFrame {
                     if (result == JOptionPane.YES_OPTION) {
                         additionalSearchEdit();
                         compareEditedData();
+                        checkEmptyTeam();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                         mainRacerGUI
@@ -1385,6 +1386,16 @@ public class MainRacerGUI extends JFrame {
             }
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
+        }
+    }
+
+    private void checkEmptyTeam() {
+        for (int i = allTeams.size() - 1; i > -1; i--) {
+            if (!isTeamAtRacerList(allRacers, allTeams.get(i).getTeamID())) {
+                comboTeam.removeItemAt(i);
+                addRacerWindow.deleteItemComboTeam(i);
+                allTeams.remove(i);
+            }
         }
     }
 

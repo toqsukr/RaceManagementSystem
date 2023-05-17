@@ -149,3 +149,23 @@
 2023-05-17 15:37:25.371 [AWT-EventQueue-0] DEBUG com - Data is opened successful
 2023-05-17 15:37:26.074 [AWT-EventQueue-0] INFO  com - Downloading data from database
 2023-05-17 15:37:33.846 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 16:40:50.851 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 16:40:58.903 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-17 16:40:58.917 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-17 16:41:02.700 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 16:41:02.713 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-17 16:41:20.832 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 16:41:20.846 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-17 16:41:30.386 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 16:41:37.761 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 16:41:43.097 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 16:50:49.347 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 16:53:00.744 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 16:53:17.790 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 16:53:23.044 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-17 16:53:23.058 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-17 16:53:28.078 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 16:53:33.872 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 16:53:51.557 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-17 16:54:01.118 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-17 16:54:10.247 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
