@@ -40,4 +40,4 @@ build/
  
 /src/doc/
 
-/src/resources/META-INF
+persistence.xml
