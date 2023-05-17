@@ -285,4 +285,12 @@ public class AddRacerGUI {
         comboTeam.removeAllItems();
         comboTeam.setSelectedItem(null);
     }
+
+    public void setTeamCheckBoxVisibility(boolean value) {
+        teamCheckBox.setVisible(value);
+    }
+
+    public void setComboTeamVisibility(boolean value) {
+        comboTeam.setVisible(value);
+    }
 }

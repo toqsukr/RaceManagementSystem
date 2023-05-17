@@ -131,6 +131,7 @@ public class MainRacerGUI extends JFrame {
     private static final JButton cancelBtn = new JButton();
 
     private static final JButton toDataBaseBtn = new JButton();
+    private static final JButton fromDataBaseBtn = new JButton();
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -375,12 +376,19 @@ public class MainRacerGUI extends JFrame {
             reportBtn.addActionListener(new ReportEventListener());
             reportBtn.setFocusable(false);
 
-            URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/database.png");
+            URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
             toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
             toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
             toDataBaseBtn.addActionListener(new ToDataBaseEventListener());
             toDataBaseBtn.setFocusable(false);
+
+            URL fromDataBaseUrl = this.getClass().getClassLoader().getResource("img/downloadfromdb.png");
+            fromDataBaseBtn
+                    .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
+            fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            fromDataBaseBtn.setFocusable(false);
 
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
             confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
@@ -399,6 +407,7 @@ public class MainRacerGUI extends JFrame {
             cancelBtn.setFocusable(false);
 
             toolBar.add(fileBtn);
+            toolBar.add(fromDataBaseBtn);
             toolBar.add(saveBtn);
             toolBar.add(toDataBaseBtn);
             toolBar.add(addBtn);
@@ -619,6 +628,15 @@ public class MainRacerGUI extends JFrame {
                         if (isAtRacerList(allRacers, racer) == null)
                             allRacers.add(racer);
                     }
+                    if (comboTeam.getComponentCount() == 0) {
+                        addRacerWindow.setComboTeamVisibility(false);
+                        addRacerWindow.setTeamCheckBoxVisibility(false);
+
+                    } else if (!comboTeam.isVisible()) {
+                        addRacerWindow.setComboTeamVisibility(true);
+                        addRacerWindow.setTeamCheckBoxVisibility(true);
+                    }
+
                     copyTable(racerTable, fullSearchTable);
                     logger.debug("Data is opened successful");
                     mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
@@ -628,13 +646,12 @@ public class MainRacerGUI extends JFrame {
                 logger.info("FileNotFound exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Файл не найден!",
                         JOptionPane.PLAIN_MESSAGE);
-            } catch (ReadFileException exception) {
-                copyTable(exceptionRacerTable, racerTable);
-                logger.info("ReadFileException exception");
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения файла",
-                        JOptionPane.PLAIN_MESSAGE);
+
             } catch (Exception exception) {
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка открытия файла",
+                copyTable(exceptionRacerTable, racerTable);
+                logger.error("Reading file error!");
+                JOptionPane.showMessageDialog(mainRacerGUI, "Файл поврежден!\nПроверьте корректность данных!",
+                        "Ошибка чтения файла",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }

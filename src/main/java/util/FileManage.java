@@ -90,34 +90,20 @@ public class FileManage {
         }
     }
 
-    public static Document openXmlDocument(String path) {
-        try {
-            // Создание парсера документа
-            DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            // Чтение документа из файла
-            Document doc = dBuilder.parse(new File(path));
-            // Нормализация документа
-            doc.getDocumentElement().normalize();
-            return doc;
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public static void readRacerFromXmlFile(DefaultTableModel table, String filename)
-            throws FileNotFoundException, ReadFileException {
+            throws FileNotFoundException, ReadFileException, SAXException, ParserConfigurationException, IOException {
         if (!new File(filename).exists())
             throw new FileNotFoundException("Файл " + filename + " не найден!");
-        Document doc = openXmlDocument(filename);
-        // Обработка ошибки парсера при чтении данных из XML-файла
-        // Получение списка элементов с именем book
+        // Создание парсера документа
+        DocumentBuilder dBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        // Чтение документа из файла
+        Document doc = dBuilder.parse(new File(filename));
         if (doc == null)
             throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
+        // Нормализация документа
+        doc.getDocumentElement().normalize();
+        // Обработка ошибки парсера при чтении данных из XML-файла
+        // Получение списка элементов с именем book
         NodeList nlRacers = doc.getElementsByTagName("racer");
         int rows = table.getRowCount();
         for (int i = 0; i < rows; i++)
