@@ -293,4 +293,10 @@ public class AddRacerGUI {
     public void setComboTeamVisibility(boolean value) {
         comboTeam.setVisible(value);
     }
+
+    public void updateComboTeam() {
+        for (Team team : parentWindow.getAllTeams()) {
+            addItemComboTeam(team.getTeamName());
+        }
+    }
 }

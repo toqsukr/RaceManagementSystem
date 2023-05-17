@@ -13,8 +13,6 @@ import java.awt.event.FocusListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -62,7 +60,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import exception.NothingDataException;
-import exception.ReadFileException;
 import race.system.Racer;
 import race.system.Team;
 import util.CreateReport;
@@ -271,10 +268,6 @@ public class MainRacerGUI extends JFrame {
                             stopLogging(context);
                             mainRacerGUI.dispose();
                         }
-                    } catch (InterruptedException exception) {
-                        JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(),
-                                "Ошибка синхронизации с базой данных!",
-                                JOptionPane.PLAIN_MESSAGE);
                     }
                 }
             });
@@ -388,6 +381,7 @@ public class MainRacerGUI extends JFrame {
                     .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
             fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            fromDataBaseBtn.addActionListener(new FromDataBaseEventListener());
             fromDataBaseBtn.setFocusable(false);
 
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
@@ -422,6 +416,41 @@ public class MainRacerGUI extends JFrame {
             container.add(filterPanel, BorderLayout.SOUTH);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    /**
+     * Сlass for implementing a fromDataBase button listener
+     */
+    private class FromDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                logger.info("Downloading data from database");
+                checkIdenticalData();
+                saveBeforeClose(
+                        "Сохранить изменения?\nПосле загрузки данных из базы\nнесохраненные данные будут утеряны!");
+                setIsOpenFile(false);
+                comboTeam.removeAllItems();
+                comboTeam.setSelectedItem(null);
+                addRacerWindow.clearComboTeam();
+                allTeams.clear();
+                allRacers.clear();
+                clearTable(racerTable);
+                allTeams = getTeamData();
+                allRacers = getRacerData();
+                addRacerWindow.updateComboTeam();
+                updateComboTeam();
+                initialSetRacerTable();
+            } catch (IdenticalDataException exception) {
+                logger.warn(exception.getMessage());
+            } catch (InterruptedException exception) {
+                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -471,6 +500,9 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
+    /**
+     * Сlass for implementing a toDataBase button listener
+     */
     private class ToDataBaseEventListener implements ActionListener {
         /***
          *
@@ -611,23 +643,7 @@ public class MainRacerGUI extends JFrame {
                     addRacerWindow.clearComboTeam();
                     allRacers.clear();
                     allTeams.clear();
-                    for (int i = 0; i < racerTable.getRowCount(); i++) {
-                        String name = racerTable.getValueAt(i, 0).toString();
-                        String age = racerTable.getValueAt(i, 1).toString();
-                        String teamName = racerTable.getValueAt(i, 2).toString();
-                        String points = racerTable.getValueAt(i, 3).toString();
-                        Team team = isAtTeamList(allTeams, teamName);
-                        if (team == null) {
-                            team = new Team(teamName);
-                            allTeams.add(team);
-                            addItemComboTeam(teamName);
-                            addRacerWindow.addItemComboTeam(teamName);
-                        }
-                        Racer racer = new Racer(name, Integer.parseInt(age), team,
-                                Integer.parseInt(points));
-                        if (isAtRacerList(allRacers, racer) == null)
-                            allRacers.add(racer);
-                    }
+                    setTeamsAndRacers();
                     if (comboTeam.getComponentCount() == 0) {
                         addRacerWindow.setComboTeamVisibility(false);
                         addRacerWindow.setTeamCheckBoxVisibility(false);
@@ -900,7 +916,7 @@ public class MainRacerGUI extends JFrame {
      * 
      * @param message the text to be shown while the window is closing
      */
-    public void saveBeforeClose(String message) throws InterruptedException {
+    public void saveBeforeClose(String message) {
         if (racerTable.getRowCount() > 0) {
             int result = JOptionPane.showConfirmDialog(mainRacerGUI,
                     message,
@@ -921,6 +937,7 @@ public class MainRacerGUI extends JFrame {
         fileBtn.setVisible(false);
         saveBtn.setVisible(false);
         toDataBaseBtn.setVisible(false);
+        fromDataBaseBtn.setVisible(false);
         addBtn.setVisible(false);
         deleteBtn.setVisible(false);
         editBtn.setVisible(false);
@@ -936,6 +953,7 @@ public class MainRacerGUI extends JFrame {
         fileBtn.setVisible(true);
         saveBtn.setVisible(true);
         toDataBaseBtn.setVisible(true);
+        fromDataBaseBtn.setVisible(true);
         addBtn.setVisible(true);
         deleteBtn.setVisible(true);
         editBtn.setVisible(true);
@@ -1208,37 +1226,24 @@ public class MainRacerGUI extends JFrame {
 
     public List<Team> getTeamData() throws InterruptedException {
         List<Team> teams = new ArrayList<>();
-        Runnable foo = () -> {
-            em.getTransaction().begin();
-            List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-            em.getTransaction().commit();
-
-            for (Team team : dbTeams) {
-                teams.add(team);
-            }
-
-        };
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
+        em.getTransaction().begin();
+        List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
+        em.getTransaction().commit();
+        for (Team team : dbTeams) {
+            teams.add(team);
+        }
         return teams;
     }
 
     public List<Racer> getRacerData() throws InterruptedException {
         List<Racer> racers = new ArrayList<>();
-        Runnable foo = () -> {
-            em.getTransaction().begin();
-            List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
-            em.getTransaction().commit();
+        em.getTransaction().begin();
+        List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
+        em.getTransaction().commit();
 
-            for (Racer racer : dbRacers) {
-                racers.add(racer);
-            }
-
-        };
-        Thread thread = new Thread(foo);
-        thread.start();
-        thread.join();
+        for (Racer racer : dbRacers) {
+            racers.add(racer);
+        }
         return racers;
     }
 
@@ -1430,6 +1435,26 @@ public class MainRacerGUI extends JFrame {
 
     public boolean getMainRacerVisibility() {
         return mainRacerGUI.isShowing();
+    }
+
+    private void setTeamsAndRacers() {
+        for (int i = 0; i < racerTable.getRowCount(); i++) {
+            String name = racerTable.getValueAt(i, 0).toString();
+            String age = racerTable.getValueAt(i, 1).toString();
+            String teamName = racerTable.getValueAt(i, 2).toString();
+            String points = racerTable.getValueAt(i, 3).toString();
+            Team team = isAtTeamList(allTeams, teamName);
+            if (team == null) {
+                team = new Team(teamName);
+                allTeams.add(team);
+                addItemComboTeam(teamName);
+                addRacerWindow.addItemComboTeam(teamName);
+            }
+            Racer racer = new Racer(name, Integer.parseInt(age), team,
+                    Integer.parseInt(points));
+            if (isAtRacerList(allRacers, racer) == null)
+                allRacers.add(racer);
+        }
     }
 
 }
