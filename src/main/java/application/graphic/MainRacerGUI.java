@@ -70,7 +70,7 @@ import util.Validation;
  * GUI of Race Management System
  */
 public class MainRacerGUI extends JFrame {
-    private static JFrame mainRacerGUI = new JFrame("Список гонщиков");
+    private static JFrame mainRacerGUI = new JFrame("Список гонщиков (База данных)");
 
     /**
      * This button performs a search
@@ -256,9 +256,28 @@ public class MainRacerGUI extends JFrame {
                         setConfirmbarUnvisible();
                         if (editingPermit == true)
                             changeEditingPermit();
-                        mainRacerGUI.setTitle("Список гонщиков");
-                        stopLogging(context);
-                        mainRacerGUI.dispose();
+                        comboTeam.removeAllItems();
+                        comboTeam.setSelectedItem(null);
+                        addRacerWindow.clearComboTeam();
+                        allTeams.clear();
+                        allRacers.clear();
+                        clearTable(racerTable);
+                        try {
+                            allTeams = getTeamData();
+                            allRacers = getRacerData();
+                            addRacerWindow.updateComboTeam();
+                            updateComboTeam();
+                            initialSetRacerTable();
+                            mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                            stopLogging(context);
+                            mainRacerGUI.dispose();
+
+                        } catch (InterruptedException exception2) {
+                            logger.error("Reading data base error!");
+                            mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                            stopLogging(context);
+                            mainRacerGUI.dispose();
+                        }
                     } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
                                 "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
@@ -268,9 +287,29 @@ public class MainRacerGUI extends JFrame {
                             setConfirmbarUnvisible();
                             if (editingPermit == true)
                                 changeEditingPermit();
-                            mainRacerGUI.setTitle("Список гонщиков");
-                            stopLogging(context);
-                            mainRacerGUI.dispose();
+                            comboTeam.removeAllItems();
+                            comboTeam.setSelectedItem(null);
+                            addRacerWindow.clearComboTeam();
+                            allTeams.clear();
+                            allRacers.clear();
+                            clearTable(racerTable);
+                            try {
+                                allTeams = getTeamData();
+                                allRacers = getRacerData();
+                                addRacerWindow.updateComboTeam();
+                                updateComboTeam();
+                                initialSetRacerTable();
+                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                                stopLogging(context);
+                                mainRacerGUI.dispose();
+
+                            } catch (InterruptedException exception2) {
+                                logger.error("Reading data base error!");
+                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
+                                stopLogging(context);
+                                mainRacerGUI.dispose();
+                            }
+
                         }
                     }
                 }
@@ -440,6 +479,7 @@ public class MainRacerGUI extends JFrame {
                 saveBeforeClose(
                         "Сохранить изменения?\nПосле загрузки данных из базы\nнесохраненные данные будут утеряны!");
                 setIsOpenFile(false);
+                mainRacerGUI.setTitle("Список гонщиков (База данных)");
                 comboTeam.removeAllItems();
                 comboTeam.setSelectedItem(null);
                 addRacerWindow.clearComboTeam();
