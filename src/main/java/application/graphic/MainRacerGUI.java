@@ -1389,7 +1389,7 @@ public class MainRacerGUI extends JFrame {
                 Team newTeam = isAtTeamList(allTeams, team);
                 if (newTeam == null)
                     newTeam = new Team(team);
-                allRacers.get(i).setTeam(newTeam); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                allRacers.get(i).setTeam(newTeam);
             }
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));

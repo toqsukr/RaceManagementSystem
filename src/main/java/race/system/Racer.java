@@ -10,7 +10,6 @@ public class Racer {
     private Integer racerAge;
     private Integer racerPoints;
     private Team racerTeam;
-    private Track winnerTrackID;
 
     @Id
     @Column(name = "racerID")
@@ -58,16 +57,6 @@ public class Racer {
 
     public void setTeam(Team team) {
         racerTeam = team;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "winnerTrackID", referencedColumnName = "trackID")
-    public Track getWinnerTrack() {
-        return winnerTrackID;
-    }
-
-    public void setWinnerTrack(Track track) {
-        winnerTrackID = track;
     }
 
     public Racer() {

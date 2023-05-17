@@ -508,3 +508,10 @@
 2023-05-17 23:34:20.938 [AWT-EventQueue-0] WARN  com - Deploy empty table!
 2023-05-17 23:34:20.945 [AWT-EventQueue-0] WARN  com - Full Identical data
 2023-05-17 23:34:23.254 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 23:35:57.224 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 23:37:40.744 [AWT-EventQueue-0] WARN  com - Table is empty
+2023-05-17 23:37:43.255 [AWT-EventQueue-0] WARN  com - Table is empty
+2023-05-17 23:37:50.122 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-17 23:52:27.927 [main] INFO  com - Start logging MainRacerGUI
+2023-05-17 23:52:36.112 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-17 23:52:37.046 [AWT-EventQueue-0] INFO  com - Deploy data to database
