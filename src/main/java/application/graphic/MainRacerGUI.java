@@ -58,7 +58,6 @@ import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.Persistence;
 import exception.NothingDataException;
 import race.system.Racer;
@@ -516,20 +515,29 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+
             logger.info("Deploy data to database");
-            if (allRacers.size() > 0) {
-                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+            int emptyResult = 1, result = 1;
+            if (allRacers.size() == 0) {
+                logger.warn("Deploy empty table!");
+                emptyResult = JOptionPane.showConfirmDialog(mainRacerGUI,
+                        "Таблица пуста! При выгрузке в базу все данные в ней удалятся!\nПродолжить?",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+            } else {
+                result = JOptionPane.showConfirmDialog(mainRacerGUI,
                         "Выгрузить данные в базу?",
                         "Подтверждение действия",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    em.getTransaction().begin();
-                    syncronizeData();
-                    em.getTransaction().commit();
-                }
-            }
 
+            }
+            if (result == JOptionPane.YES_OPTION || emptyResult == JOptionPane.YES_OPTION) {
+                em.getTransaction().begin();
+                syncronizeData();
+                em.getTransaction().commit();
+            }
         }
     }
 
@@ -581,14 +589,17 @@ public class MainRacerGUI extends JFrame {
                             if (j == racers.getSelectedRows()[i]) {
                                 String removingName = racers.getValueAt(racers.getSelectedRows()[i], 0).toString();
                                 String removingAge = racers.getValueAt(racers.getSelectedRows()[i], 1).toString();
-                                String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 2).toString();
-                                String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
+                                String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 2)
+                                        .toString();
+                                String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 3)
+                                        .toString();
                                 additionalSearchDelete(fullSearchTable, removingName, removingAge, removingTeamName,
                                         removingPoints);
                                 Team removingTeam = isAtTeamList(allTeams, new Team(removingTeamName));
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
                                 Racer removingRacer = isAtRacerList(allRacers, new Racer(removingName,
-                                        Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
+                                        Integer.parseInt(removingAge), removingTeam,
+                                        Integer.parseInt(removingPoints)));
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
@@ -701,7 +712,8 @@ public class MainRacerGUI extends JFrame {
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                         mainRacerGUI
-                                .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
+                                .setTitle(mainRacerGUI.getTitle().substring(0,
+                                        mainRacerGUI.getTitle().length() - 23));
                     }
                 } else {
                     mainRacerGUI
@@ -1396,7 +1408,7 @@ public class MainRacerGUI extends JFrame {
 
     private boolean areEqualTeamLists(List<Team> teams1, List<Team> teams2) {
         boolean answer = false;
-        if (teams1.size() == teams2.size()) {
+        if (teams1.size() == teams2.size() && teams1.size() != 0) {
             for (int i = 0; i < teams1.size(); i++) {
                 answer = false;
                 for (int j = 0; j < teams2.size(); j++) {
@@ -1407,13 +1419,14 @@ public class MainRacerGUI extends JFrame {
                 if (!answer)
                     break;
             }
-        }
+        } else if (teams1.size() == 0)
+            answer = true;
         return answer;
     }
 
     private boolean areEqualRacerLists(List<Racer> racers1, List<Racer> racers2) {
         boolean answer = false;
-        if (racers1.size() == racers2.size()) {
+        if (racers1.size() == racers2.size() && racers1.size() != 0) {
             for (int i = 0; i < racers1.size(); i++) {
                 answer = false;
                 for (int j = 0; j < racers2.size(); j++) {
@@ -1427,7 +1440,8 @@ public class MainRacerGUI extends JFrame {
                 if (!answer)
                     break;
             }
-        }
+        } else if (racers1.size() == 0)
+            answer = true;
         return answer;
     }
 
