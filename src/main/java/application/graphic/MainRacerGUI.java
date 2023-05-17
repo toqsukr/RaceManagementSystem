@@ -58,6 +58,7 @@ import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Persistence;
 import exception.NothingDataException;
 import race.system.Racer;
@@ -128,6 +129,7 @@ public class MainRacerGUI extends JFrame {
     private static final JButton cancelBtn = new JButton();
 
     private static final JButton toDataBaseBtn = new JButton();
+
     private static final JButton fromDataBaseBtn = new JButton();
 
     /**
@@ -203,6 +205,7 @@ public class MainRacerGUI extends JFrame {
     private AddRacerGUI addRacerWindow;
 
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
+
     private EntityManager em = emf.createEntityManager();
 
     private List<Team> allTeams;
@@ -215,7 +218,9 @@ public class MainRacerGUI extends JFrame {
      * The logger variable
      */
     private static Logger logger;
+
     private boolean isOpenFile = false;
+
     private MainMenuGUI parentWindow;
 
     /***
@@ -282,8 +287,10 @@ public class MainRacerGUI extends JFrame {
             racers.getTableHeader().setReorderingAllowed(false);
 
             try {
+                em.getTransaction().begin();
                 allTeams = getTeamData();
                 allRacers = getRacerData();
+                em.getTransaction().commit();
                 initialSetRacerTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -509,24 +516,20 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            try {
-                logger.info("Deploy data to database");
-                checkIdenticalData();
-                if (allRacers.size() > 0) {
-                    int result = JOptionPane.showConfirmDialog(mainRacerGUI,
-                            "Выгрузить данные в базу?",
-                            "Подтверждение действия",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION) {
-                        em.getTransaction().begin();
-                        syncronizeData();
-                        em.getTransaction().commit();
-                    }
+            logger.info("Deploy data to database");
+            if (allRacers.size() > 0) {
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                        "Выгрузить данные в базу?",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    em.getTransaction().begin();
+                    syncronizeData();
+                    em.getTransaction().commit();
                 }
-            } catch (IdenticalDataException exception) {
-                logger.warn(exception.getMessage());
             }
+
         }
     }
 
@@ -1227,9 +1230,7 @@ public class MainRacerGUI extends JFrame {
 
     public List<Team> getTeamData() throws InterruptedException {
         List<Team> teams = new ArrayList<>();
-        em.getTransaction().begin();
         List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-        em.getTransaction().commit();
         for (Team team : dbTeams) {
             teams.add(team);
         }
@@ -1238,10 +1239,7 @@ public class MainRacerGUI extends JFrame {
 
     public List<Racer> getRacerData() throws InterruptedException {
         List<Racer> racers = new ArrayList<>();
-        em.getTransaction().begin();
         List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
-        em.getTransaction().commit();
-
         for (Racer racer : dbRacers) {
             racers.add(racer);
         }
@@ -1314,34 +1312,31 @@ public class MainRacerGUI extends JFrame {
             setIsOpenFile(false);
         }
         for (Team team : allTeams) {
-            if (em.find(Team.class, team.getTeamID()) != null) {
-                em.merge(team);
-            } else {
+            if (em.find(Team.class, team.getTeamID()) == null) {
                 team.setTeamID(null);
                 em.persist(team);
             }
         }
 
         for (Racer racer : allRacers) {
-            if (em.find(Racer.class, racer.getRacerID()) != null) {
-                em.merge(racer);
-            } else {
+            if (em.find(Racer.class, racer.getRacerID()) == null) {
                 racer.setRacerID(null);
                 em.persist(racer);
             }
         }
 
         List<Racer> dbRacers = racerDao.getAllRacers();
+        List<Team> dbTeams = teamDao.getAllTeams();
         for (Racer racer : dbRacers) {
             if (isAtRacerList(allRacers, racer) == null)
                 racerDao.deleteRacer(racer);
         }
 
-        List<Team> dbTeams = teamDao.getAllTeams();
         for (Team team : dbTeams) {
             if (isAtTeamList(allTeams, team) == null)
                 teamDao.deleteTeam(team);
         }
+
     }
 
     public List<Team> getAllTeams() {
@@ -1382,7 +1377,7 @@ public class MainRacerGUI extends JFrame {
                 Team newTeam = isAtTeamList(allTeams, team);
                 if (newTeam == null)
                     newTeam = new Team(team);
-                allRacers.get(i).setTeam(newTeam);
+                allRacers.get(i).setTeam(newTeam); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
@@ -1437,9 +1432,10 @@ public class MainRacerGUI extends JFrame {
     }
 
     private void checkIdenticalData() throws IdenticalDataException {
-        List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-        List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
-
+        RacerDao racerDao = new RacerDao(em);
+        TeamDao teamDao = new TeamDao(em);
+        List<Racer> dbRacers = racerDao.getAllRacers();
+        List<Team> dbTeams = teamDao.getAllTeams();
         if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
             throw new IdenticalDataException("Full identical data!");
     }
