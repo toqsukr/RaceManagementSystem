@@ -158,7 +158,11 @@ public class MainMenuGUI {
         }
     }
 
-    private static class RacerEventListener implements ActionListener {
+    public void setMainMenuEnable(boolean value) {
+        mainMenuGUI.setEnabled(value);
+    }
+
+    private class RacerEventListener implements ActionListener {
 
         /***
          *
@@ -166,10 +170,11 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainRacerWindow.setVisible(true);
+            setMainMenuEnable(false);
         }
     }
 
-    private static class TeamEventListener implements ActionListener {
+    private class TeamEventListener implements ActionListener {
 
         /***
          *
@@ -177,6 +182,7 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainTeamWindow.setVisible(true);
+            setMainMenuEnable(false);
         }
     }
 

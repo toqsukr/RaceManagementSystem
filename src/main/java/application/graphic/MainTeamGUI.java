@@ -4,6 +4,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,12 +43,7 @@ public class MainTeamGUI extends JFrame {
     /**
      * This button opens file
      */
-    private static final JButton fileBtn = new JButton();
-
-    /**
-     * This button saves changes
-     */
-    private static final JButton saveBtn = new JButton();
+    private static final JButton squadBtn = new JButton();
 
     /**
      * This button deletes selected field
@@ -137,6 +135,15 @@ public class MainTeamGUI extends JFrame {
      */
     public MainTeamGUI(MainMenuGUI parent) {
         parentWindow = parent;
+
+        mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                parentWindow.setMainMenuEnable(true);
+                mainTeamGUI.dispose();
+            }
+        });
+
         try {
 
             ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
@@ -157,7 +164,7 @@ public class MainTeamGUI extends JFrame {
         }
 
         mainTeamGUI.setBounds(200, 150, 800, 600);
-        mainTeamGUI.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        mainTeamGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         mainTeamGUI.setResizable(false);
         URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/team.png");
         mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
@@ -167,19 +174,13 @@ public class MainTeamGUI extends JFrame {
         Container container = mainTeamGUI.getContentPane();
         container.setLayout(new BorderLayout());
 
-        URL fileIcon = this.getClass().getClassLoader().getResource("img/file.png");
-        fileBtn.setIcon(new ImageIcon(new ImageIcon(fileIcon).getImage().getScaledInstance(50, 50, 4)));
-        fileBtn.setToolTipText("Открыть файл");
-        fileBtn.setBackground(new Color(0xDFD9D9D9, false));
-        fileBtn.setFocusable(false);
+        URL squadIcon = this.getClass().getClassLoader().getResource("img/squad.png");
+        squadBtn.setIcon(new ImageIcon(new ImageIcon(squadIcon).getImage().getScaledInstance(50, 50, 4)));
+        squadBtn.setToolTipText("Посмотреть состав команды");
+        squadBtn.setBackground(new Color(0xDFD9D9D9, false));
+        squadBtn.setFocusable(false);
 
-        URL saveIcon = this.getClass().getClassLoader().getResource("img/save.png");
-        saveBtn.setIcon(new ImageIcon(new ImageIcon(saveIcon).getImage().getScaledInstance(50, 50, 4)));
-        saveBtn.setToolTipText("Сохранить файл");
-        saveBtn.setBackground(new Color(0xDFD9D9D9, false));
-        saveBtn.setFocusable(false);
-
-        URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete.png");
+        URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_team.png");
         deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
         deleteBtn.setToolTipText("Удалить гонщика");
         deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -224,9 +225,8 @@ public class MainTeamGUI extends JFrame {
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setFocusable(false);
 
-        toolBar.add(fileBtn);
+        toolBar.add(squadBtn);
         toolBar.add(fromDataBaseBtn);
-        toolBar.add(saveBtn);
         toolBar.add(toDataBaseBtn);
         toolBar.add(deleteBtn);
         toolBar.add(editBtn);

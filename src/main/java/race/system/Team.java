@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 public class Team {
     private Integer teamID;
     private String teamName;
+    private Integer racerNumber;
 
     @Id
     @Column(name = "teamID")
@@ -28,13 +29,25 @@ public class Team {
         teamName = name;
     }
 
+    @Column(name = "racerNumber")
+    @Access(AccessType.FIELD)
+    public Integer getRacerNumber() {
+        return racerNumber;
+    }
+
+    public void updateRacerNumber() {
+        racerNumber++;
+    }
+
     public Team() {
         teamID = 0;
         teamName = null;
+        racerNumber = 0;
     };
 
     public Team(String name) {
         teamID = 0;
         teamName = name;
+        racerNumber = 1;
     };
 }

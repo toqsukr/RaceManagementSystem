@@ -271,12 +271,14 @@ public class MainRacerGUI extends JFrame {
                                 initialSetRacerTable();
                                 mainRacerGUI.setTitle("Список гонщиков (База данных)");
                                 stopLogging(context);
+                                parentWindow.setMainMenuEnable(true);
                                 mainRacerGUI.dispose();
 
                             } catch (InterruptedException exception2) {
                                 logger.error("Reading data base error!");
                                 mainRacerGUI.setTitle("Список гонщиков (База данных)");
                                 stopLogging(context);
+                                parentWindow.setMainMenuEnable(true);
                                 mainRacerGUI.dispose();
                             }
                         }
@@ -561,6 +563,7 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 logger.info("Deploy data to database");
+                checkIdenticalData();
                 int emptyResult = 1, result = 1;
                 if (allRacers.size() == 0) {
                     logger.warn("Deploy empty table!");
