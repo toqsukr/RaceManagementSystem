@@ -251,69 +251,30 @@ public class MainRacerGUI extends JFrame {
                     try {
                         stopEditCell();
                         checkEditedData();
-                        int result = saveBeforeClose(
-                                "Сохранить изменения?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
-                        if (result != -1) {
-                            setConfirmbarUnvisible();
-                            if (editingPermit == true)
-                                changeEditingPermit();
-                            comboTeam.removeAllItems();
-                            comboTeam.setSelectedItem(null);
-                            addRacerWindow.clearComboTeam();
-                            allTeams.clear();
-                            allRacers.clear();
-                            clearTable(racerTable);
-                            try {
-                                allTeams = getTeamData();
-                                allRacers = getRacerData();
-                                addRacerWindow.updateComboTeam();
-                                updateComboTeam();
-                                initialSetRacerTable();
-                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                                stopLogging(context);
-                                parentWindow.setMainMenuEnable(true);
-                                mainRacerGUI.dispose();
-
-                            } catch (InterruptedException exception2) {
-                                logger.error("Reading data base error!");
-                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                                stopLogging(context);
-                                parentWindow.setMainMenuEnable(true);
-                                mainRacerGUI.dispose();
-                            }
+                        setConfirmbarUnvisible();
+                        if (editingPermit == true) {
+                            changeEditingPermit();
+                            mainRacerGUI.setTitle(
+                                    mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                         }
+                        stopLogging(context);
+                        parentWindow.setMainMenuEnable(true);
+                        mainRacerGUI.dispose();
+
                     } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
                                 "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
                                 "Предупреждение",
                                 JOptionPane.OK_CANCEL_OPTION);
                         if (confirm == JOptionPane.OK_OPTION) {
+                            copyTable(previousRacerTable, racerTable);
+                            changeEditingPermit();
+                            mainRacerGUI.setTitle(
+                                    mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                             setConfirmbarUnvisible();
-                            if (editingPermit == true)
-                                changeEditingPermit();
-                            comboTeam.removeAllItems();
-                            comboTeam.setSelectedItem(null);
-                            addRacerWindow.clearComboTeam();
-                            allTeams.clear();
-                            allRacers.clear();
-                            clearTable(racerTable);
-                            try {
-                                allTeams = getTeamData();
-                                allRacers = getRacerData();
-                                addRacerWindow.updateComboTeam();
-                                updateComboTeam();
-                                initialSetRacerTable();
-                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                                stopLogging(context);
-                                mainRacerGUI.dispose();
-
-                            } catch (InterruptedException exception2) {
-                                logger.error("Reading data base error!");
-                                mainRacerGUI.setTitle("Список гонщиков (База данных)");
-                                stopLogging(context);
-                                mainRacerGUI.dispose();
-                            }
-
+                            stopLogging(context);
+                            parentWindow.setMainMenuEnable(true);
+                            mainRacerGUI.dispose();
                         }
                     }
                 }
@@ -333,7 +294,7 @@ public class MainRacerGUI extends JFrame {
                 allTeams = getTeamData();
                 allRacers = getRacerData();
                 em.getTransaction().commit();
-                initialSetRacerTable();
+                setRacerTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
@@ -495,7 +456,8 @@ public class MainRacerGUI extends JFrame {
                     allRacers = getRacerData();
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
-                    initialSetRacerTable();
+                    setRacerTable();
+                    parentWindow.getMainTeamGUI().setTeamTable();
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn(exception.getMessage());
@@ -1053,7 +1015,7 @@ public class MainRacerGUI extends JFrame {
      * 
      * @param table the table to be cleared
      */
-    private void clearTable(DefaultTableModel table) {
+    public static void clearTable(DefaultTableModel table) {
         int n = table.getRowCount();
         for (int i = 0; i < n; i++) {
             table.removeRow(n - i - 1);
@@ -1412,6 +1374,14 @@ public class MainRacerGUI extends JFrame {
         return allRacers;
     }
 
+    public void setAllTeams(List<Team> list) {
+        allTeams = list;
+    }
+
+    public void setAllRacers(List<Racer> list) {
+        allRacers = list;
+    }
+
     public void addtoAllTeam(Team team) {
         allTeams.add(team);
     }
@@ -1420,7 +1390,7 @@ public class MainRacerGUI extends JFrame {
         allRacers.add(racer);
     }
 
-    public void initialSetRacerTable() {
+    public void setRacerTable() {
         for (Racer racer : allRacers) {
             racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
                     racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });

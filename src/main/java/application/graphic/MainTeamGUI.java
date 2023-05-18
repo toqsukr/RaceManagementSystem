@@ -1,5 +1,7 @@
 package application.graphic;
 
+import race.system.Team;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
@@ -10,6 +12,7 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -18,7 +21,7 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
@@ -136,14 +139,6 @@ public class MainTeamGUI extends JFrame {
     public MainTeamGUI(MainMenuGUI parent) {
         parentWindow = parent;
 
-        mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                parentWindow.setMainMenuEnable(true);
-                mainTeamGUI.dispose();
-            }
-        });
-
         try {
 
             ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
@@ -159,83 +154,107 @@ public class MainTeamGUI extends JFrame {
             configuration.addAppender(appender);
 
             LoggerContext context = new LoggerContext("JournalDevLoggerContext");
+            startLogging(context, configuration);
+
+            mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    parentWindow.setMainMenuEnable(true);
+                    stopLogging(context);
+                    mainTeamGUI.dispose();
+                }
+            });
+
+            mainTeamGUI.setBounds(200, 150, 800, 600);
+            mainTeamGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            mainTeamGUI.setResizable(false);
+            URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/team.png");
+            mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
+            toolBar.setFloatable(false);
+            teams.getTableHeader().setReorderingAllowed(false);
+
+            try {
+                em.getTransaction().begin();
+                parentWindow.getMainRacerGUI().setAllTeams(parentWindow.getMainRacerGUI().getTeamData());
+                parentWindow.getMainRacerGUI().setAllRacers(parentWindow.getMainRacerGUI().getRacerData());
+                em.getTransaction().commit();
+                setTeamTable();
+                logger.info("Data were downloaded successful!");
+            } catch (InterruptedException exception) {
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
+                        JOptionPane.PLAIN_MESSAGE);
+                logger.error("Error reading database!");
+
+            }
+
+            Container container = mainTeamGUI.getContentPane();
+            container.setLayout(new BorderLayout());
+
+            URL squadIcon = this.getClass().getClassLoader().getResource("img/squad.png");
+            squadBtn.setIcon(new ImageIcon(new ImageIcon(squadIcon).getImage().getScaledInstance(50, 50, 4)));
+            squadBtn.setToolTipText("Посмотреть состав команды");
+            squadBtn.setBackground(new Color(0xDFD9D9D9, false));
+            squadBtn.setFocusable(false);
+
+            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_team.png");
+            deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
+            deleteBtn.setToolTipText("Удалить гонщика");
+            deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
+            deleteBtn.setFocusable(false);
+
+            URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
+            editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
+            editBtn.setToolTipText("Редактировать запись");
+            editBtn.setBackground(new Color(0xDFD9D9D9, false));
+            editBtn.setFocusable(false);
+
+            URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
+            reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
+            reportBtn.setToolTipText("Сформировать отчет");
+            reportBtn.setBackground(new Color(0xDFD9D9D9, false));
+            reportBtn.setFocusable(false);
+
+            URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
+            toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
+            toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            toDataBaseBtn.setFocusable(false);
+
+            URL fromDataBaseUrl = this.getClass().getClassLoader().getResource("img/downloadfromdb.png");
+            fromDataBaseBtn
+                    .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
+            fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            fromDataBaseBtn.setFocusable(false);
+
+            URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
+            confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
+            confirmBtn.setVisible(false);
+            confirmBtn.setToolTipText("Ок");
+            confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
+            confirmBtn.setFocusable(false);
+
+            URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
+            cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
+            cancelBtn.setVisible(false);
+            cancelBtn.setToolTipText("Отмена");
+            cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+            cancelBtn.setFocusable(false);
+
+            toolBar.add(squadBtn);
+            toolBar.add(fromDataBaseBtn);
+            toolBar.add(toDataBaseBtn);
+            toolBar.add(deleteBtn);
+            toolBar.add(editBtn);
+            toolBar.add(reportBtn);
+            toolBar.add(confirmBtn);
+            toolBar.add(cancelBtn);
+
+            container.add(toolBar, BorderLayout.NORTH);
+            container.add(scroll, BorderLayout.CENTER);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
-
-        mainTeamGUI.setBounds(200, 150, 800, 600);
-        mainTeamGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        mainTeamGUI.setResizable(false);
-        URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/team.png");
-        mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
-        toolBar.setFloatable(false);
-        teams.getTableHeader().setReorderingAllowed(false);
-
-        Container container = mainTeamGUI.getContentPane();
-        container.setLayout(new BorderLayout());
-
-        URL squadIcon = this.getClass().getClassLoader().getResource("img/squad.png");
-        squadBtn.setIcon(new ImageIcon(new ImageIcon(squadIcon).getImage().getScaledInstance(50, 50, 4)));
-        squadBtn.setToolTipText("Посмотреть состав команды");
-        squadBtn.setBackground(new Color(0xDFD9D9D9, false));
-        squadBtn.setFocusable(false);
-
-        URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_team.png");
-        deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
-        deleteBtn.setToolTipText("Удалить гонщика");
-        deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
-        deleteBtn.setFocusable(false);
-
-        URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
-        editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
-        editBtn.setToolTipText("Редактировать запись");
-        editBtn.setBackground(new Color(0xDFD9D9D9, false));
-        editBtn.setFocusable(false);
-
-        URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
-        reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
-        reportBtn.setToolTipText("Сформировать отчет");
-        reportBtn.setBackground(new Color(0xDFD9D9D9, false));
-        reportBtn.setFocusable(false);
-
-        URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
-        toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
-        toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
-        toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
-        toDataBaseBtn.setFocusable(false);
-
-        URL fromDataBaseUrl = this.getClass().getClassLoader().getResource("img/downloadfromdb.png");
-        fromDataBaseBtn
-                .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
-        fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
-        fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
-        fromDataBaseBtn.setFocusable(false);
-
-        URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
-        confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
-        confirmBtn.setVisible(false);
-        confirmBtn.setToolTipText("Ок");
-        confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
-        confirmBtn.setFocusable(false);
-
-        URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
-        cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
-        cancelBtn.setVisible(false);
-        cancelBtn.setToolTipText("Отмена");
-        cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
-        cancelBtn.setFocusable(false);
-
-        toolBar.add(squadBtn);
-        toolBar.add(fromDataBaseBtn);
-        toolBar.add(toDataBaseBtn);
-        toolBar.add(deleteBtn);
-        toolBar.add(editBtn);
-        toolBar.add(reportBtn);
-        toolBar.add(confirmBtn);
-        toolBar.add(cancelBtn);
-
-        container.add(toolBar, BorderLayout.NORTH);
-        container.add(scroll, BorderLayout.CENTER);
     }
 
     private boolean getEditingPermit() {
@@ -244,5 +263,39 @@ public class MainTeamGUI extends JFrame {
 
     public void setVisible(boolean value) {
         mainTeamGUI.setVisible(value);
+    }
+
+    public void setTeamTable() {
+        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
+        if (teamTable.getRowCount() != 0)
+            MainRacerGUI.clearTable(teamTable);
+        for (Team team : allTeams) {
+            teamTable.addRow(new String[] { team.getTeamName(), team.getRacerNumber().toString(),
+                    team.getTotalPoints().toString() });
+        }
+    }
+
+    /***
+     * The function starts logging
+     * 
+     * @param context       the logger variable
+     * @param configuration params of logging
+     * @throws IOException checks whether there are input/output errors
+     */
+
+    private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
+        context.start(configuration);
+        logger = context.getLogger("com");
+        logger.log(Level.INFO, "Start logging MainTeamGUI");
+    }
+
+    /***
+     * The function stops logging
+     * 
+     * @param context the logger variable
+     */
+    public static void stopLogging(LoggerContext context) {
+        logger.log(Level.INFO, "Stop logging MainTeamGUI");
+        context.close();
     }
 }

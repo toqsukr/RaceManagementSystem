@@ -200,4 +200,12 @@ public class MainMenuGUI {
     public void setVisible(boolean value) {
         mainMenuGUI.setVisible(value);
     }
+
+    public MainRacerGUI getMainRacerGUI() {
+        return mainRacerWindow;
+    }
+
+    public MainTeamGUI getMainTeamGUI() {
+        return mainTeamWindow;
+    }
 }
