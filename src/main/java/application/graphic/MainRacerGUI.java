@@ -257,6 +257,8 @@ public class MainRacerGUI extends JFrame {
                             mainRacerGUI.setTitle(
                                     mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                         }
+                        clearInputBtn.doClick();
+                        disruptInputBtn.doClick();
                         stopLogging(context);
                         parentWindow.setMainMenuEnable(true);
                         mainRacerGUI.dispose();
@@ -442,7 +444,7 @@ public class MainRacerGUI extends JFrame {
                 logger.info("Downloading data from database");
                 checkIdenticalData();
                 int result = saveBeforeClose(
-                        "Сохранить изменения?\nПосле загрузки данных из базы\nнесохраненные данные будут утеряны!");
+                        "Сохранить изменения в списке гонщиков локально?\nПосле загрузки данных из базы несохраненные данные будут утеряны!");
                 if (result != -1) {
                     setIsOpenFile(false);
                     mainRacerGUI.setTitle("Список гонщиков (База данных)");
@@ -652,7 +654,7 @@ public class MainRacerGUI extends JFrame {
             copyTable(racerTable, exceptionRacerTable);
             try {
                 int result = saveBeforeClose(
-                        "Сохранить изменения?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
+                        "Сохранить изменения в списке гонщиков локально?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
                 if (result != -1) {
                     FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
                             FileDialog.LOAD);
@@ -1500,19 +1502,16 @@ public class MainRacerGUI extends JFrame {
                 allTeams.add(team);
                 addItemComboTeam(teamName);
                 addRacerWindow.addItemComboTeam(teamName);
-            } else {
+            } else
                 team.expandRacerNumber();
-                team.addPoints(Integer.parseInt(points));
-            }
+
             Racer racer = new Racer(name, Integer.parseInt(age), team,
                     Integer.parseInt(points));
-            if (isAtRacerList(allRacers, racer) == null)
+            if (isAtRacerList(allRacers, racer) == null) {
+                team.addPoints(Integer.parseInt(points));
                 allRacers.add(racer);
+            }
         }
-    }
-
-    public void deployToDataBase() {
-        toDataBaseBtn.doClick();
     }
 
     public void downloadFromDataBase() {

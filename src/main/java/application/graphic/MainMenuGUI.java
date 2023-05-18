@@ -140,7 +140,7 @@ public class MainMenuGUI {
             mainRacerWindow.stopEditCell();
             mainRacerWindow.checkEditedData();
             int result = mainRacerWindow.saveBeforeClose(
-                    "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+                    "Сохранить изменения в списке гонщиков локально?\nПосле закрытия окна несохраненные данные будут утеряны!");
             if (result != -1) {
                 System.exit(1);
             }

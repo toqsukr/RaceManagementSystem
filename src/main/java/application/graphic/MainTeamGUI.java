@@ -235,6 +235,7 @@ public class MainTeamGUI extends JFrame {
             fromDataBaseBtn
                     .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
+            fromDataBaseBtn.addActionListener(new FromDataBaseEventListener());
             fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
             fromDataBaseBtn.setFocusable(false);
 
@@ -327,6 +328,19 @@ public class MainTeamGUI extends JFrame {
             } catch (IdenticalDataException exception) {
                 logger.warn("Full Identical data");
             }
+        }
+    }
+
+    /**
+     * Сlass for implementing a fromDataBase button listener
+     */
+    private class FromDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            parentWindow.getMainRacerGUI().downloadFromDataBase();
         }
     }
 
