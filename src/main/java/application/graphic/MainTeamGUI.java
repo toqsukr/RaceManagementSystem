@@ -56,7 +56,7 @@ public class MainTeamGUI extends JFrame {
     private static final JButton editBtn = new JButton();
 
     /**
-     * This button forms racer data report
+     * This button forms team data report
      */
     private static final JButton reportBtn = new JButton();
 
@@ -92,17 +92,17 @@ public class MainTeamGUI extends JFrame {
     /**
      * The table model storing displaying data
      */
-    private static DefaultTableModel racerTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel teamTable = new DefaultTableModel(data, columns);
 
     /**
      * The table model storing the version of the table before editing
      */
-    private static DefaultTableModel previousRacerTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel previousTeamTable = new DefaultTableModel(data, columns);
 
     /**
      * Create the table
      */
-    private final JTable racers = new JTable(racerTable) {
+    private final JTable teams = new JTable(teamTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
             return getEditingPermit();
@@ -112,7 +112,7 @@ public class MainTeamGUI extends JFrame {
     /**
      * Creation of the scroll panel
      */
-    private final JScrollPane scroll = new JScrollPane(racers);
+    private final JScrollPane scroll = new JScrollPane(teams);
 
     /***
      * Variable storing table edit status
@@ -169,7 +169,7 @@ public class MainTeamGUI extends JFrame {
         URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/team.png");
         mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
         toolBar.setFloatable(false);
-        racers.getTableHeader().setReorderingAllowed(false);
+        teams.getTableHeader().setReorderingAllowed(false);
 
         Container container = mainTeamGUI.getContentPane();
         container.setLayout(new BorderLayout());

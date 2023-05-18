@@ -8,6 +8,7 @@ public class Team {
     private Integer teamID;
     private String teamName;
     private Integer racerNumber;
+    private Integer totalPoints;
 
     @Id
     @Column(name = "teamID")
@@ -35,19 +36,39 @@ public class Team {
         return racerNumber;
     }
 
-    public void updateRacerNumber() {
+    public void expandRacerNumber() {
         racerNumber++;
+    }
+
+    public void reduceRacerNumber() {
+        racerNumber--;
+    }
+
+    @Column(name = "totalPoints")
+    @Access(AccessType.FIELD)
+    public Integer getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void addPoints(int value) {
+        totalPoints += value;
+    }
+
+    public void deductPoints(int value) {
+        totalPoints -= value;
     }
 
     public Team() {
         teamID = 0;
         teamName = null;
         racerNumber = 0;
+        totalPoints = 0;
     };
 
     public Team(String name) {
         teamID = 0;
         teamName = name;
         racerNumber = 1;
+        totalPoints = 0;
     };
 }

@@ -563,7 +563,6 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 logger.info("Deploy data to database");
-                checkIdenticalData();
                 int emptyResult = 1, result = 1;
                 if (allRacers.size() == 0) {
                     logger.warn("Deploy empty table!");
@@ -646,6 +645,9 @@ public class MainRacerGUI extends JFrame {
                                         removingPoints);
                                 Team removingTeam = isAtTeamList(allTeams, new Team(removingTeamName));
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
+                                removingTeam.deductPoints(Integer.parseInt(removingPoints));
+
+                                removingTeam.reduceRacerNumber();
                                 Racer removingRacer = isAtRacerList(allRacers, new Racer(removingName,
                                         Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
                                 if (removingRacer != null) {
@@ -1521,6 +1523,9 @@ public class MainRacerGUI extends JFrame {
                 allTeams.add(team);
                 addItemComboTeam(teamName);
                 addRacerWindow.addItemComboTeam(teamName);
+            } else {
+                team.expandRacerNumber();
+                team.addPoints(Integer.parseInt(points));
             }
             Racer racer = new Racer(name, Integer.parseInt(age), team,
                     Integer.parseInt(points));

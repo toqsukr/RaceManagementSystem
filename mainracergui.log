@@ -76,3 +76,26 @@
 2023-05-18 23:25:43.470 [main] INFO  com - Start logging MainRacerGUI
 2023-05-18 23:25:54.087 [AWT-EventQueue-0] INFO  com - Deploy data to database
 2023-05-18 23:26:53.272 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:37:58.960 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:38:10.074 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-18 23:38:12.406 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-18 23:39:13.606 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-18 23:39:13.618 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-18 23:39:15.473 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-18 23:39:15.484 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-18 23:39:16.484 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-18 23:39:26.944 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-18 23:39:26.956 [AWT-EventQueue-0] WARN  com - Full identical data!
+2023-05-18 23:39:31.492 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-18 23:41:00.146 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:41:08.531 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-18 23:41:09.370 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-18 23:43:41.364 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-18 23:47:08.937 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:54:15.146 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:54:22.357 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-18 23:54:24.162 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-18 23:57:07.618 [main] INFO  com - Start logging MainRacerGUI
+2023-05-18 23:57:15.918 [AWT-EventQueue-0] DEBUG com - Data is opened successful
+2023-05-18 23:57:17.528 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-18 23:57:49.517 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
