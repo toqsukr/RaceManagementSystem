@@ -49,7 +49,7 @@ public class Racer {
         racerPoints = points;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "racerTeamID", referencedColumnName = "teamID")
     public Team getTeam() {
         return racerTeam;
