@@ -1,5 +1,6 @@
 package application.graphic;
 
+import race.system.Racer;
 import race.system.Team;
 import util.CreateReport;
 
@@ -24,6 +25,11 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
+
+import database.RacerDao;
+import database.TeamDao;
+import exception.IdenticalDataException;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
@@ -221,6 +227,7 @@ public class MainTeamGUI extends JFrame {
             URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
             toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
+            toDataBaseBtn.addActionListener(new ToDataBaseEventListener());
             toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
             toDataBaseBtn.setFocusable(false);
 
@@ -282,6 +289,84 @@ public class MainTeamGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    /**
+     * Сlass for implementing a toDataBase button listener
+     */
+    private class ToDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                logger.info("Deploy data to database");
+                int emptyResult = 1, result = 1;
+                if (parentWindow.getMainRacerGUI().getAllRacers().size() == 0) {
+                    logger.warn("Deploy empty table!");
+                    parentWindow.getMainRacerGUI().checkIdenticalData();
+                    emptyResult = JOptionPane.showConfirmDialog(mainTeamGUI,
+                            "Таблица пуста! При выгрузке в базу все данные в ней удалятся!\nПродолжить?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                } else {
+                    result = JOptionPane.showConfirmDialog(mainTeamGUI,
+                            "Выгрузить данные в базу?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+
+                }
+                if (result == JOptionPane.YES_OPTION || emptyResult == JOptionPane.YES_OPTION) {
+                    em.getTransaction().begin();
+                    syncronizeData();
+                    em.getTransaction().commit();
+                }
+            } catch (IdenticalDataException exception) {
+                logger.warn("Full Identical data");
+            }
+        }
+    }
+
+    public void syncronizeData() {
+        RacerDao racerDao = new RacerDao(em);
+        TeamDao teamDao = new TeamDao(em);
+        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
+        List<Racer> allRacers = parentWindow.getMainRacerGUI().getAllRacers();
+
+        if (parentWindow.getMainRacerGUI().getIsOpenFile()) {
+            racerDao.clearRacer();
+            teamDao.clearTeam();
+            parentWindow.getMainRacerGUI().setIsOpenFile(false);
+        }
+        for (Team team : allTeams) {
+            if (em.find(Team.class, team.getTeamID()) == null) {
+                team.setTeamID(null);
+                em.persist(team);
+            }
+        }
+
+        for (Racer racer : allRacers) {
+            if (em.find(Racer.class, racer.getRacerID()) == null) {
+                racer.setRacerID(null);
+                em.persist(racer);
+            }
+        }
+
+        List<Racer> dbRacers = racerDao.getAllRacers();
+        List<Team> dbTeams = teamDao.getAllTeams();
+        for (Racer racer : dbRacers) {
+            if (MainRacerGUI.isAtRacerList(allRacers, racer) == null)
+                racerDao.deleteRacer(racer);
+        }
+
+        for (Team team : dbTeams) {
+            if (MainRacerGUI.isAtTeamList(allTeams, team) == null)
+                teamDao.deleteTeam(team);
+        }
+
     }
 
     private boolean getEditingPermit() {

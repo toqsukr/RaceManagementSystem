@@ -619,6 +619,8 @@ public class MainRacerGUI extends JFrame {
                                         addRacerWindow.deleteItemComboTeam(allTeams.indexOf(removingTeam));
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     }
+                                    parentWindow.getMainTeamGUI().setTeamTable();
+
                                 }
                                 break;
                             }
@@ -1367,6 +1369,10 @@ public class MainRacerGUI extends JFrame {
 
     }
 
+    public boolean getIsOpenFile() {
+        return isOpenFile;
+    }
+
     public List<Team> getAllTeams() {
         return allTeams;
     }
@@ -1469,7 +1475,7 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private void checkIdenticalData() throws IdenticalDataException {
+    public void checkIdenticalData() throws IdenticalDataException {
         RacerDao racerDao = new RacerDao(em);
         TeamDao teamDao = new TeamDao(em);
         List<Racer> dbRacers = racerDao.getAllRacers();
@@ -1505,4 +1511,15 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
+    public void deployToDataBase() {
+        toDataBaseBtn.doClick();
+    }
+
+    public void downloadFromDataBase() {
+        fromDataBaseBtn.doClick();
+    }
+
+    public MainMenuGUI getParentWindow() {
+        return parentWindow;
+    }
 }
