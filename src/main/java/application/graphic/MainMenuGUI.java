@@ -137,16 +137,13 @@ public class MainMenuGUI {
 
     private void closeOperation() {
         try {
-
-            if (mainRacerWindow.getMainRacerVisibility()) {
-                mainRacerWindow.stopEditCell();
-                mainRacerWindow.checkEditedData();
-                mainRacerWindow.saveBeforeClose(
-                        "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
-
+            mainRacerWindow.stopEditCell();
+            mainRacerWindow.checkEditedData();
+            int result = mainRacerWindow.saveBeforeClose(
+                    "Сохранить изменения в списке гонщиков?\nПосле закрытия окна\nнесохраненные данные будут утеряны!");
+            if (result != -1) {
+                System.exit(1);
             }
-            System.exit(1);
-
         } catch (Exception exception) {
             int confirm = JOptionPane.showConfirmDialog(mainMenuGUI,
                     "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
