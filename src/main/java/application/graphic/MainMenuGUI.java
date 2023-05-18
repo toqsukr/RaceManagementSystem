@@ -28,6 +28,8 @@ public class MainMenuGUI {
 
     private static MainRacerGUI mainRacerWindow;
 
+    private static MainTeamGUI mainTeamWindow;
+
     public MainMenuGUI() {
 
         mainMenuGUI.addWindowListener((WindowListener) new WindowAdapter() {
@@ -43,6 +45,7 @@ public class MainMenuGUI {
         URL mainMenuIcon = this.getClass().getClassLoader().getResource("img/favicon.png");
         mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainMenuIcon));
         mainRacerWindow = new MainRacerGUI(this);
+        mainTeamWindow = new MainTeamGUI(this);
 
         URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -54,6 +57,7 @@ public class MainMenuGUI {
         URL teamIcon = this.getClass().getClassLoader().getResource("img/team.png");
         teamBtn.setIcon(new ImageIcon(new ImageIcon(teamIcon).getImage().getScaledInstance(22, 22, 4)));
         teamBtn.setBackground(new Color(0xDFD9D9D9, false));
+        teamBtn.addActionListener(new TeamEventListener());
         teamBtn.setFocusable(false);
         teamBtn.setMargin(new Insets(1, 2, 1, 10));
 
@@ -162,6 +166,17 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainRacerWindow.setVisible(true);
+        }
+    }
+
+    private static class TeamEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            mainTeamWindow.setVisible(true);
         }
     }
 
