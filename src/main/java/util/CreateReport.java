@@ -34,7 +34,12 @@ public class CreateReport {
         if (table.getRowCount() == 0)
             throw new Exception("Нет данных для отчета!");
         FileDialog save = new FileDialog(parent, "Сохранение отчета", FileDialog.SAVE);
-        save.setFile("race_report.pdf");
+        String fileTitle;
+        if (parent.getTitle().contains("гонщиков"))
+            fileTitle = "racers";
+        else
+            fileTitle = "teams";
+        save.setFile(fileTitle + "_report.pdf");
         save.setVisible(true);
         if (save.getFile() != null) {
             String filename = save.getDirectory() + save.getFile();

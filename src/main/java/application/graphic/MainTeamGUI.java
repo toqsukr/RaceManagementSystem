@@ -1,11 +1,14 @@
 package application.graphic;
 
 import race.system.Team;
+import util.CreateReport;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -85,7 +88,7 @@ public class MainTeamGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "Название команды", "Количество участников", "Очки" };
+    private static final String[] columns = { "Название команды", "Количество участников", "Всего очков" };
 
     /**
      * Fields of the table
@@ -211,6 +214,7 @@ public class MainTeamGUI extends JFrame {
             URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
             reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
             reportBtn.setToolTipText("Сформировать отчет");
+            reportBtn.addActionListener(new ReportEventListener());
             reportBtn.setBackground(new Color(0xDFD9D9D9, false));
             reportBtn.setFocusable(false);
 
@@ -254,6 +258,29 @@ public class MainTeamGUI extends JFrame {
             container.add(scroll, BorderLayout.CENTER);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    /**
+     * Сlass for implementing a report button listener
+     */
+    private static class ReportEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                URL boldFontPath = this.getClass().getClassLoader()
+                        .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
+                CreateReport.printReport(teamTable, mainTeamGUI, "Отчет по списку команд\n\n\n\n\n",
+                        new float[] { 1f, 1f, 1f },
+                        new String[] { "\nНазвание команды\n", "\nКоличество участников\n", "\nВсего очков\n" },
+                        boldFontPath);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка формирования отчета",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

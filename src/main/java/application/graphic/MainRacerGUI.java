@@ -671,6 +671,7 @@ public class MainRacerGUI extends JFrame {
                         allRacers.clear();
                         allTeams.clear();
                         setTeamsAndRacers();
+                        parentWindow.getMainTeamGUI().setTeamTable();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
                             addRacerWindow.setTeamCheckBoxVisibility(false);
