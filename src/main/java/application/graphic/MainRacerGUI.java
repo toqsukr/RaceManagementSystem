@@ -47,7 +47,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
-import exception.EmptySearchInputException;
 import exception.FileFormatException;
 import exception.IdenticalDataException;
 import exception.InvalidAgeInputException;
@@ -294,7 +293,7 @@ public class MainRacerGUI extends JFrame {
                 em.getTransaction().begin();
                 allTeams = getTeamData();
                 allRacers = getRacerData();
-                em.getTransaction().commit();
+                em.getTransaction().rollback();
                 setRacerTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -439,7 +438,7 @@ public class MainRacerGUI extends JFrame {
                 logger.info("Downloading data from database");
                 checkIdenticalData();
                 int result = saveBeforeClose(
-                        "Сохранить изменения в списке гонщиков локально?\nПосле загрузки данных из базы несохраненные данные будут утеряны!");
+                        "Сохранить изменения в списке гонщиков?\nПосле загрузки данных из базы несохраненные данные будут утеряны!");
                 if (result != -1) {
                     setIsOpenFile(false);
                     mainRacerGUI.setTitle("Список гонщиков (База данных)");
@@ -451,8 +450,10 @@ public class MainRacerGUI extends JFrame {
                     allTeams.clear();
                     allRacers.clear();
                     clearTable(racerTable);
+                    em.getTransaction().begin();
                     allTeams = getTeamData();
                     allRacers = getRacerData();
+                    em.getTransaction().rollback();
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
@@ -523,11 +524,11 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                checkIdenticalData();
                 logger.info("Deploy data to database");
                 int emptyResult = 1, result = 1;
                 if (allRacers.size() == 0) {
                     logger.warn("Deploy empty table!");
-                    checkIdenticalData();
                     emptyResult = JOptionPane.showConfirmDialog(mainRacerGUI,
                             "Таблица пуста! При выгрузке в базу все данные в ней удалятся!\nПродолжить?",
                             "Подтверждение действия",
@@ -545,6 +546,7 @@ public class MainRacerGUI extends JFrame {
                     em.getTransaction().begin();
                     syncronizeData();
                     em.getTransaction().commit();
+
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn("Full Identical data");
@@ -839,7 +841,6 @@ public class MainRacerGUI extends JFrame {
                 if (getEditingPermit())
                     confirmBtn.doClick();
                 copyTable(fullSearchTable, racerTable);
-                checkEmptyInput();
                 copyTable(racerTable, fullSearchTable);
                 for (int i = racerTable.getRowCount() - 1; i > -1; i--) {
                     if (!searchNameField.getText().equals("Имя гонщика") & !racerTable.getValueAt(i, 0).toString()
@@ -853,11 +854,6 @@ public class MainRacerGUI extends JFrame {
                                     .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
                         racerTable.removeRow(i);
                 }
-
-            } catch (EmptySearchInputException exception) {
-
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
-                        JOptionPane.PLAIN_MESSAGE);
             } catch (NothingDataException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
@@ -887,6 +883,7 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             setInput(searchNameField, "Имя гонщика");
+            searchTeam.setSelectedIndex(0);
         }
     }
 
@@ -1195,17 +1192,6 @@ public class MainRacerGUI extends JFrame {
                 }
             }
         }
-    }
-
-    /***
-     * The function checks whether search inputs aren't empty
-     * 
-     * @throws EmptySearchInputException the exception throws if any of search
-     *                                   inputs is empty
-     */
-    private void checkEmptyInput() throws EmptySearchInputException {
-        if (searchTeam.getSelectedItem().toString().equals("Команда") & searchNameField.getText().equals("Имя гонщика"))
-            throw new EmptySearchInputException();
     }
 
     /***
