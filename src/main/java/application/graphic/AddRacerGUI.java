@@ -219,21 +219,19 @@ public class AddRacerGUI {
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
                 if (team == null) {
                     team = new Team(teamName);
-                    parentWindow.addItemComboTeam(teamName);
-                    comboTeam.addItem(teamName);
-                    team.addPoints(Integer.parseInt(inputPointField.getText()));
                     parentWindow.addtoAllTeam(team);
-                    parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
-                } else {
-                    team.addPoints(Integer.parseInt(inputPointField.getText()));
+                    parentWindow.updateComboTeam();
+                    comboTeam.addItem(teamName);
+                } else
                     team.expandRacerNumber();
-                }
 
                 Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                         Integer.parseInt(inputPointField.getText()));
                 if (MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), racer) == null) {
                     parentWindow.addToAllRacer(racer);
+                    team.addPoints(Integer.parseInt(inputPointField.getText()));
                 }
+                parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
                 clearInputs();
                 parentWindow.addRacer(racer);
             } catch (EmptyAddInputException exception) {

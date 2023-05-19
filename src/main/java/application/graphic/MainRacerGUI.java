@@ -131,6 +131,8 @@ public class MainRacerGUI extends JFrame {
 
     private static final JButton fromDataBaseBtn = new JButton();
 
+    private JComboBox<String> comboTeam = new JComboBox<>();
+
     /**
      * This input is used to search for an entry in the table by the name of the
      * racer
@@ -141,7 +143,7 @@ public class MainRacerGUI extends JFrame {
      * This input is used to search for an entry in the table by the team of the
      * racer
      */
-    private static final JTextField searchTeamField = new JTextField("Команда", 15);
+    private JComboBox<String> searchTeam = new JComboBox<>();
 
     /**
      * This bar is used to store buttons
@@ -210,9 +212,6 @@ public class MainRacerGUI extends JFrame {
     private List<Team> allTeams;
 
     private List<Racer> allRacers;
-
-    private JComboBox<String> comboTeam = new JComboBox<>();
-
     /***
      * The logger variable
      */
@@ -303,7 +302,6 @@ public class MainRacerGUI extends JFrame {
             }
 
             updateComboTeam();
-
             DefaultCellEditor editor = new DefaultCellEditor(comboTeam);
             racers.getColumnModel().getColumn(2).setCellEditor(editor);
 
@@ -314,12 +312,9 @@ public class MainRacerGUI extends JFrame {
             clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
             disruptInputBtn.setBackground(new Color(0xDFD9D9D9, false));
 
-            searchTeamField.addFocusListener(new TeamInputFocusListener());
-
             searchNameField.addFocusListener(new RacerInputFocusListener());
 
             searchNameField.setMargin(new Insets(2, 2, 3, 0));
-            searchTeamField.setMargin(new Insets(2, 2, 3, 0));
 
             searchBtn.addActionListener(new SearchEventListener());
             searchBtn.setMargin(new Insets(1, 6, 1, 6));
@@ -331,7 +326,7 @@ public class MainRacerGUI extends JFrame {
             clearInputBtn.setMargin(new Insets(1, 6, 1, 6));
 
             filterPanel.add(searchNameField);
-            filterPanel.add(searchTeamField);
+            filterPanel.add(searchTeam);
             filterPanel.add(searchBtn);
             filterPanel.add(clearInputBtn);
             filterPanel.add(disruptInputBtn);
@@ -450,6 +445,8 @@ public class MainRacerGUI extends JFrame {
                     mainRacerGUI.setTitle("Список гонщиков (База данных)");
                     comboTeam.removeAllItems();
                     comboTeam.setSelectedItem(null);
+                    searchTeam.removeAllItems();
+                    searchTeam.setSelectedItem(null);
                     addRacerWindow.clearComboTeam();
                     allTeams.clear();
                     allRacers.clear();
@@ -609,17 +606,18 @@ public class MainRacerGUI extends JFrame {
                                         removingPoints);
                                 Team removingTeam = isAtTeamList(allTeams, new Team(removingTeamName));
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
-                                removingTeam.deductPoints(Integer.parseInt(removingPoints));
-
-                                removingTeam.reduceRacerNumber();
                                 Racer removingRacer = isAtRacerList(allRacers, new Racer(removingName,
                                         Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
                                         comboTeam.removeItemAt(allTeams.indexOf(removingTeam));
+                                        searchTeam.removeItemAt(allTeams.indexOf(removingTeam) + 1);
                                         addRacerWindow.deleteItemComboTeam(allTeams.indexOf(removingTeam));
                                         allTeams.remove(allTeams.indexOf(removingTeam));
+                                    } else {
+                                        removingTeam.deductPoints(Integer.parseInt(removingPoints));
+                                        removingTeam.reduceRacerNumber();
                                     }
                                     parentWindow.getMainTeamGUI().setTeamTable();
 
@@ -671,10 +669,13 @@ public class MainRacerGUI extends JFrame {
                             FileManage.readRacerFromXmlFile(racerTable, filename);
                         comboTeam.removeAllItems();
                         comboTeam.setSelectedItem(null);
+                        searchTeam.removeAllItems();
+                        searchTeam.setSelectedItem(null);
                         addRacerWindow.clearComboTeam();
                         allRacers.clear();
                         allTeams.clear();
                         setTeamsAndRacers();
+                        updateComboTeam();
                         parentWindow.getMainTeamGUI().setTeamTable();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
@@ -847,8 +848,9 @@ public class MainRacerGUI extends JFrame {
                         continue;
                     }
 
-                    if (!searchTeamField.getText().equals("Команда") & !racerTable.getValueAt(i, 2).toString()
-                            .toLowerCase().contains(searchTeamField.getText().toLowerCase()))
+                    if (!searchTeam.getSelectedItem().toString().equals("Не выбрано")
+                            & !racerTable.getValueAt(i, 2).toString()
+                                    .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
                         racerTable.removeRow(i);
                 }
 
@@ -884,31 +886,8 @@ public class MainRacerGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            setInput(searchTeamField, "Команда");
             setInput(searchNameField, "Имя гонщика");
         }
-    }
-
-    /**
-     * Сlass for implementing a team input focus listener
-     */
-    public static class TeamInputFocusListener implements FocusListener {
-        /***
-         * @param e the event to be processed
-         */
-        public void focusGained(FocusEvent e) {
-            if (searchTeamField.getText().equals("Команда"))
-                setInput(searchTeamField, "");
-        }
-
-        /***
-         * @param e the event to be processed
-         */
-        public void focusLost(FocusEvent e) {
-            if (searchTeamField.getText().equals(""))
-                setInput(searchTeamField, "Команда");
-        }
-
     }
 
     /**
@@ -1225,7 +1204,7 @@ public class MainRacerGUI extends JFrame {
      *                                   inputs is empty
      */
     private void checkEmptyInput() throws EmptySearchInputException {
-        if (searchTeamField.getText().equals("Команда") & searchNameField.getText().equals("Имя гонщика"))
+        if (searchTeam.getSelectedItem().toString().equals("Команда") & searchNameField.getText().equals("Имя гонщика"))
             throw new EmptySearchInputException();
     }
 
@@ -1325,10 +1304,17 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
-    private void updateComboTeam() {
+    public void updateComboTeam() {
+        addItemSearchTeam("Не выбрано");
+        searchTeam.setSelectedIndex(0);
         for (Team team : allTeams) {
             addItemComboTeam(team.getTeamName());
+            addItemSearchTeam(team.getTeamName());
         }
+    }
+
+    private void addItemSearchTeam(String item) {
+        searchTeam.addItem(item);
     }
 
     public void addItemComboTeam(String item) {
