@@ -7,6 +7,8 @@ import javax.swing.JOptionPane;
 import org.hibernate.HibernateException;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.Query;
 import race.system.Racer;
 
 public class RacerDao {
@@ -23,7 +25,9 @@ public class RacerDao {
 
     public List<Racer> getAllRacers() throws HibernateException {
         try {
-            return em.createQuery("FROM Racer", Racer.class).getResultList();
+            Query q = em.createQuery("FROM Racer", Racer.class);
+            q.setFlushMode(FlushModeType.COMMIT);
+            return q.getResultList();
 
         } catch (HibernateException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());

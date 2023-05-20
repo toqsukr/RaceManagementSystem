@@ -50,7 +50,7 @@ import jakarta.persistence.Persistence;
  * GUI of Race Management System
  */
 public class MainTeamGUI extends JFrame {
-    private static JFrame mainTeamGUI = new JFrame("Список команд (База данных)");
+    private static JFrame mainTeamGUI = new JFrame("Список команд");
 
     /**
      * This button opens file
@@ -399,6 +399,10 @@ public class MainTeamGUI extends JFrame {
             teamTable.addRow(new String[] { team.getTeamName(), team.getRacerNumber().toString(),
                     team.getTotalPoints().toString() });
         }
+    }
+
+    public DefaultTableModel getTeamTable() {
+        return teamTable;
     }
 
     /***

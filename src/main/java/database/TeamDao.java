@@ -7,6 +7,8 @@ import javax.swing.JOptionPane;
 import org.hibernate.HibernateException;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.Query;
 import race.system.Team;
 
 public class TeamDao {
@@ -23,7 +25,9 @@ public class TeamDao {
 
     public List<Team> getAllTeams() throws HibernateException {
         try {
-            return em.createQuery("FROM Team", Team.class).getResultList();
+            Query q = em.createQuery("FROM Team", Team.class);
+            q.setFlushMode(FlushModeType.COMMIT);
+            return q.getResultList();
 
         } catch (HibernateException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());

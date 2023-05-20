@@ -1,9 +1,12 @@
 package race.system;
 
+import org.hibernate.annotations.Immutable;
+
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "teams")
+@Immutable
 public class Team {
     private Integer teamID;
     private String teamName;

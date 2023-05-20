@@ -17,7 +17,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
@@ -57,6 +56,7 @@ import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.FlushModeType;
 import jakarta.persistence.Persistence;
 import exception.NothingDataException;
 import race.system.Racer;
@@ -290,6 +290,7 @@ public class MainRacerGUI extends JFrame {
             racers.getTableHeader().setReorderingAllowed(false);
 
             try {
+                em.setFlushMode(FlushModeType.COMMIT);
                 em.getTransaction().begin();
                 allTeams = getTeamData();
                 allRacers = getRacerData();
@@ -450,6 +451,7 @@ public class MainRacerGUI extends JFrame {
                     allTeams.clear();
                     allRacers.clear();
                     clearTable(racerTable);
+                    clearTable(parentWindow.getMainTeamGUI().getTeamTable());
                     em.getTransaction().begin();
                     allTeams = getTeamData();
                     allRacers = getRacerData();
@@ -458,6 +460,8 @@ public class MainRacerGUI extends JFrame {
                     updateComboTeam();
                     setRacerTable();
                     parentWindow.getMainTeamGUI().setTeamTable();
+                    attachAllRacers();
+                    attachAllTeams();
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn(exception.getMessage());
@@ -524,6 +528,8 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             try {
+                detachAllTeams();
+                detachAllRacers();
                 checkIdenticalData();
                 logger.info("Deploy data to database");
                 int emptyResult = 1, result = 1;
@@ -546,7 +552,6 @@ public class MainRacerGUI extends JFrame {
                     em.getTransaction().begin();
                     syncronizeData();
                     em.getTransaction().commit();
-
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn("Full Identical data");
@@ -1226,21 +1231,11 @@ public class MainRacerGUI extends JFrame {
     }
 
     public List<Team> getTeamData() throws InterruptedException {
-        List<Team> teams = new ArrayList<>();
-        List<Team> dbTeams = em.createQuery("FROM Team", Team.class).getResultList();
-        for (Team team : dbTeams) {
-            teams.add(team);
-        }
-        return teams;
+        return em.createQuery("FROM Team", Team.class).getResultList();
     }
 
     public List<Racer> getRacerData() throws InterruptedException {
-        List<Racer> racers = new ArrayList<>();
-        List<Racer> dbRacers = em.createQuery("FROM Racer", Racer.class).getResultList();
-        for (Racer racer : dbRacers) {
-            racers.add(racer);
-        }
-        return racers;
+        return em.createQuery("FROM Racer", Racer.class).getResultList();
     }
 
     public static Racer isAtRacerList(List<Racer> racers, Racer racer) {
@@ -1483,6 +1478,30 @@ public class MainRacerGUI extends JFrame {
                 team.addPoints(Integer.parseInt(points));
                 allRacers.add(racer);
             }
+        }
+    }
+
+    private void detachAllRacers() {
+        for (Racer racer : allRacers) {
+            em.detach(racer);
+        }
+    }
+
+    private void detachAllTeams() {
+        for (Team team : allTeams) {
+            em.detach(team);
+        }
+    }
+
+    private void attachAllRacers() {
+        for (Racer racer : allRacers) {
+            em.merge(racer);
+        }
+    }
+
+    private void attachAllTeams() {
+        for (Team team : allTeams) {
+            em.merge(team);
         }
     }
 
