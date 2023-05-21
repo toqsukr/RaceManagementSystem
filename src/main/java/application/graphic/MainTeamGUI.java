@@ -26,10 +26,8 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import application.App;
-import database.RacerDao;
-import database.TeamDao;
-import exception.IdenticalDataException;
+import exception.NothingDataException;
+import exception.UnselectedDeleteException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -199,6 +197,7 @@ public class MainTeamGUI extends JFrame {
             URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_team.png");
             deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
             deleteBtn.setToolTipText("Удалить гонщика");
+            deleteBtn.addActionListener(new DeleteEventListener());
             deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
             deleteBtn.setFocusable(false);
 
@@ -292,31 +291,7 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            try {
-                logger.info("Deploy data to database");
-                int emptyResult = 1, result = 1;
-                if (parentWindow.getMainRacerGUI().getAllRacers().size() == 0) {
-                    logger.warn("Deploy empty table!");
-                    parentWindow.getMainRacerGUI().checkIdenticalData();
-                    emptyResult = JOptionPane.showConfirmDialog(mainTeamGUI,
-                            "Таблица пуста! При выгрузке в базу все данные в ней удалятся!\nПродолжить?",
-                            "Подтверждение действия",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                } else {
-                    result = JOptionPane.showConfirmDialog(mainTeamGUI,
-                            "Выгрузить данные в базу?",
-                            "Подтверждение действия",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-
-                }
-                if (result == JOptionPane.YES_OPTION || emptyResult == JOptionPane.YES_OPTION) {
-                    syncronizeData();
-                }
-            } catch (IdenticalDataException exception) {
-                logger.warn("Full Identical data");
-            }
+            parentWindow.getMainRacerGUI().deployToDataBase();
         }
     }
 
@@ -330,47 +305,73 @@ public class MainTeamGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             parentWindow.getMainRacerGUI().downloadFromDataBase();
-            setTeamTable();
         }
     }
 
-    public void syncronizeData() {
-        RacerDao racerDao = new RacerDao(App.getEntityManager());
-        TeamDao teamDao = new TeamDao(App.getEntityManager());
-        List<Team> allTeams = teamDao.getAllTeams();
-        List<Racer> allRacers = racerDao.getAllRacers();
+    private class DeleteEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", teamTable);
+                MainRacerGUI.checkDeleteSelect(teams);
 
-        if (parentWindow.getMainRacerGUI().getIsOpenFile()) {
-            racerDao.clearRacer();
-            teamDao.clearTeam();
-            parentWindow.getMainRacerGUI().setIsOpenFile(false);
-        }
-        for (Team team : allTeams) {
-            if (teamDao.findTeam(team.getTeamID()) == null) {
-                team.setTeamID(null);
-                teamDao.saveTeam(team);
+                String message = teams.getSelectedRows().length == 1
+                        ? "Вы действительно хотите удалить выбранную команду?\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные команды?\nОтменить действие будет невозможно!";
+                int result = JOptionPane.showConfirmDialog(mainTeamGUI,
+                        message,
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    int i = teams.getSelectedRows().length - 1;
+                    while (teams.getSelectedRows().length > 0) {
+                        int j = teams.getRowCount() - 1;
+                        while (j > -1) {
+                            if (j == teams.getSelectedRows()[i]) {
+                                String removingName = teams.getValueAt(teams.getSelectedRows()[i], 0).toString();
+                                Team removingTeam = MainRacerGUI.isAtTeamList(
+                                        parentWindow.getMainRacerGUI().getAllTeams(), new Team(removingName));
+                                teamTable.removeRow(teams.getSelectedRows()[i]);
+                                parentWindow.getMainRacerGUI().getComboTeam()
+                                        .removeItemAt(
+                                                parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+
+                                System.out.println(parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+                                System.out.println(parentWindow.getMainRacerGUI().getComboTeam().getItemCount());
+
+                                MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
+                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+
+                                MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getSearchTeam(),
+                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam) + 1);
+
+                                MainRacerGUI.deleteItemComboBox(
+                                        parentWindow.getMainRacerGUI().getAddRacerWindow().getComboTeam(),
+                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+                                updateRacers(removingName);
+                                parentWindow.getMainRacerGUI().getAllTeams()
+                                        .remove(parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+                                parentWindow.getMainRacerGUI().setRacerTable();
+                                setTeamTable();
+                                break;
+                            }
+                            j--;
+                        }
+                        i--;
+                    }
+                }
+            } catch (UnselectedDeleteException exception) {
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
             }
         }
-
-        for (Racer racer : allRacers) {
-            if (racerDao.findRacer(racer.getRacerID()) == null) {
-                racer.setRacerID(null);
-                racerDao.saveRacer(racer);
-            }
-        }
-
-        List<Racer> dbRacers = racerDao.getAllRacers();
-        List<Team> dbTeams = teamDao.getAllTeams();
-        for (Racer racer : dbRacers) {
-            if (MainRacerGUI.isAtRacerList(allRacers, racer) == null)
-                racerDao.deleteRacer(racer);
-        }
-
-        for (Team team : dbTeams) {
-            if (MainRacerGUI.isAtTeamList(allTeams, team) == null)
-                teamDao.deleteTeam(team);
-        }
-
     }
 
     private boolean getEditingPermit() {
@@ -417,5 +418,14 @@ public class MainTeamGUI extends JFrame {
     public static void stopLogging(LoggerContext context) {
         logger.log(Level.INFO, "Stop logging MainTeamGUI");
         context.close();
+    }
+
+    private void updateRacers(String teamName) {
+        List<Racer> racers = parentWindow.getMainRacerGUI().getAllRacers();
+        for (Racer racer : racers) {
+            if (racer.getTeam() != null && racer.getTeam().getTeamName().equals(teamName))
+                racer.setTeam(null);
+        }
+        parentWindow.getMainRacerGUI().setAllRacers(racers);
     }
 }

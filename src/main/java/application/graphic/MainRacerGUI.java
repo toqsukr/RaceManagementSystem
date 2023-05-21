@@ -568,7 +568,7 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 checkEmptyData("Данные для удаления не найдены!", fullSearchTable);
-                checkDeleteSelect();
+                checkDeleteSelect(racers);
 
                 String message = racers.getSelectedRows().length == 1
                         ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
@@ -598,9 +598,10 @@ public class MainRacerGUI extends JFrame {
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
-                                        comboTeam.removeItemAt(allTeams.indexOf(removingTeam));
-                                        searchTeam.removeItemAt(allTeams.indexOf(removingTeam) + 1);
-                                        addRacerWindow.deleteItemComboTeam(allTeams.indexOf(removingTeam));
+                                        MainRacerGUI.deleteItemComboBox(comboTeam, allTeams.indexOf(removingTeam));
+                                        MainRacerGUI.deleteItemComboBox(searchTeam, allTeams.indexOf(removingTeam) + 1);
+                                        MainRacerGUI.deleteItemComboBox(addRacerWindow.getComboTeam(),
+                                                allTeams.indexOf(removingTeam));
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     } else {
                                         removingTeam.deductPoints(Integer.parseInt(removingPoints));
@@ -833,12 +834,12 @@ public class MainRacerGUI extends JFrame {
                         continue;
                     }
 
-                    if (!searchTeam.getSelectedItem().toString().equals("Не выбрано")
-                            & !racerTable.getValueAt(i, 2).toString()
-                                    .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
+                    if (!racerTable.getValueAt(i, 2).toString()
+                            .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
                         racerTable.removeRow(i);
                 }
             } catch (NothingDataException exception) {
+                logger.info("NothingDataException exception");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка поиска",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -993,8 +994,8 @@ public class MainRacerGUI extends JFrame {
      * @throws UnselectedDeleteException the exception throws if there aren't
      *                                   selected rows
      */
-    private void checkDeleteSelect() throws UnselectedDeleteException {
-        if (racers.getSelectedRow() == -1)
+    public static void checkDeleteSelect(JTable table) throws UnselectedDeleteException {
+        if (table.getSelectedRow() == -1)
             throw new UnselectedDeleteException();
     }
 
@@ -1089,9 +1090,8 @@ public class MainRacerGUI extends JFrame {
      * @param table the table to be checked
      * @throws NothingDataException the exception to be thrown if the table is empty
      */
-    private void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
+    public static void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
         if (table.getRowCount() == 0) {
-            logger.warn("Table is empty");
             throw new NothingDataException(msg);
         }
     }
@@ -1282,11 +1282,17 @@ public class MainRacerGUI extends JFrame {
 
     public void updateComboTeam() {
         addItemSearchTeam("Не выбрано");
+        addItemComboTeam("Не выбрано");
+        comboTeam.setSelectedIndex(0);
         searchTeam.setSelectedIndex(0);
         for (Team team : allTeams) {
             addItemComboTeam(team.getTeamName());
             addItemSearchTeam(team.getTeamName());
         }
+    }
+
+    public void deleteFromComboTeam(int index) {
+
     }
 
     private void addItemSearchTeam(String item) {
@@ -1366,8 +1372,13 @@ public class MainRacerGUI extends JFrame {
             clearTable(racerTable);
 
         for (Racer racer : allRacers) {
+            String team;
+            if (racer.getTeam() == null)
+                team = "Не выбрано";
+            else
+                team = racer.getTeam().getTeamName();
             racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
-                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
+                    team, racer.getRacerPoints().toString() });
         }
         copyTable(racerTable, fullSearchTable);
     }
@@ -1396,8 +1407,8 @@ public class MainRacerGUI extends JFrame {
     private void checkEmptyTeam() {
         for (int i = allTeams.size() - 1; i > -1; i--) {
             if (!isTeamAtRacerList(allRacers, allTeams.get(i).getTeamID())) {
-                comboTeam.removeItemAt(i);
-                addRacerWindow.deleteItemComboTeam(i);
+                MainRacerGUI.deleteItemComboBox(comboTeam, i);
+                MainRacerGUI.deleteItemComboBox(addRacerWindow.getComboTeam(), i);
                 allTeams.remove(i);
             }
         }
@@ -1487,6 +1498,10 @@ public class MainRacerGUI extends JFrame {
         fromDataBaseBtn.doClick();
     }
 
+    public void deployToDataBase() {
+        toDataBaseBtn.doClick();
+    }
+
     public MainMenuGUI getParentWindow() {
         return parentWindow;
     }
@@ -1501,5 +1516,24 @@ public class MainRacerGUI extends JFrame {
             }
         }
         return answer;
+    }
+
+    public static void deleteItemComboBox(JComboBox<String> combo, int index) {
+        int itemCount = combo.getItemCount();
+        if (index >= 0 && index < itemCount) {
+            combo.removeItemAt(index);
+        }
+    }
+
+    public JComboBox<String> getComboTeam() {
+        return comboTeam;
+    }
+
+    public JComboBox<String> getSearchTeam() {
+        return searchTeam;
+    }
+
+    public AddRacerGUI getAddRacerWindow() {
+        return addRacerWindow;
     }
 }

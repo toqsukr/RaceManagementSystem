@@ -280,10 +280,6 @@ public class AddRacerGUI {
         comboTeam.addItem(item);
     }
 
-    public void deleteItemComboTeam(int index) {
-        comboTeam.removeItemAt(index);
-    }
-
     public void clearComboTeam() {
         comboTeam.removeAllItems();
         comboTeam.setSelectedItem(null);
@@ -302,4 +298,9 @@ public class AddRacerGUI {
             addItemComboTeam(team.getTeamName());
         }
     }
+
+    public JComboBox<String> getComboTeam() {
+        return comboTeam;
+    }
+
 }
