@@ -1,9 +1,6 @@
 package application.graphic;
 
-import race.system.Racer;
-import race.system.Team;
 import util.CreateReport;
-import util.Validation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,7 +14,6 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -26,10 +22,6 @@ import org.apache.logging.log4j.core.config.ConfigurationFactory;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
-
-import exception.InvalidTeamInputException;
-import exception.NothingDataException;
-import exception.UnselectedDeleteException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -48,6 +40,11 @@ import javax.swing.table.DefaultTableModel;
  */
 public class MainTrackGUI extends JFrame {
     private static JFrame mainTrackGUI = new JFrame("Список трасс");
+
+    /**
+     * This button adds new field into table
+     */
+    private static final JButton addBtn = new JButton();
 
     /**
      * This button deletes selected field
@@ -184,6 +181,12 @@ public class MainTrackGUI extends JFrame {
             Container container = mainTrackGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
+            URL addIcon = this.getClass().getClassLoader().getResource("img/add_track.png");
+            addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
+            addBtn.setToolTipText("Добавить трассу");
+            addBtn.setBackground(new Color(0xDFD9D9D9, false));
+            addBtn.setFocusable(false);
+
             URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_track.png");
             deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
             deleteBtn.setToolTipText("Удалить трассу");
@@ -238,6 +241,7 @@ public class MainTrackGUI extends JFrame {
 
             toolBar.add(fromDataBaseBtn);
             toolBar.add(toDataBaseBtn);
+            toolBar.add(addBtn);
             toolBar.add(deleteBtn);
             toolBar.add(editBtn);
             toolBar.add(reportBtn);
@@ -362,6 +366,7 @@ public class MainTrackGUI extends JFrame {
      * The function make visible confirm bar while editing
      */
     private static void setConfirmbarVisible() {
+        addBtn.setVisible(false);
         toDataBaseBtn.setVisible(false);
         fromDataBaseBtn.setVisible(false);
         deleteBtn.setVisible(false);
@@ -375,6 +380,7 @@ public class MainTrackGUI extends JFrame {
      * The function make unvisible confirm bar while editing
      */
     private static void setConfirmbarUnvisible() {
+        addBtn.setVisible(true);
         toDataBaseBtn.setVisible(true);
         fromDataBaseBtn.setVisible(true);
         deleteBtn.setVisible(true);

@@ -1,7 +1,6 @@
 package util;
 
 import java.io.*;
-import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -14,7 +13,6 @@ import org.xml.sax.SAXException;
 
 import application.graphic.MainRacerGUI;
 import exception.ReadFileException;
-import race.system.Racer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
