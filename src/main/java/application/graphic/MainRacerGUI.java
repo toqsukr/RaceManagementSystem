@@ -591,10 +591,10 @@ public class MainRacerGUI extends JFrame {
                                 String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
                                 additionalSearchDelete(fullSearchTable, removingName, removingAge, removingTeamName,
                                         removingPoints);
-                                Team removingTeam = isAtTeamList(allTeams, new Team(removingTeamName));
+                                Team removingTeam = isAtTeamList(allTeams, removingTeamName);
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
-                                Racer removingRacer = isAtRacerList(allRacers, new Racer(removingName,
-                                        Integer.parseInt(removingAge), removingTeam, Integer.parseInt(removingPoints)));
+                                Racer removingRacer = isAtRacerList(allRacers, removingName,
+                                        removingAge, removingTeamName, removingPoints);
                                 if (removingRacer != null) {
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
@@ -655,10 +655,6 @@ public class MainRacerGUI extends JFrame {
                             FileManage.readRacerFromTextFile(racerTable, filename);
                         else
                             FileManage.readRacerFromXmlFile(racerTable, filename);
-                        comboTeam.removeAllItems();
-                        comboTeam.setSelectedItem(null);
-                        searchTeam.removeAllItems();
-                        searchTeam.setSelectedItem(null);
                         addRacerWindow.clearComboTeam();
                         allRacers.clear();
                         allTeams.clear();
@@ -728,19 +724,19 @@ public class MainRacerGUI extends JFrame {
                     changeEditingPermit();
                 }
             } catch (InvalidNameInputException exception) {
-                logger.warn("Enterd invalid name while editing");
+                logger.warn("Entered invalid name while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidAgeInputException exception) {
-                logger.warn("Enterd invalid age while editing");
+                logger.warn("Entered invalid age while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTeamInputException exception) {
-                logger.warn("Enterd invalid team while editing");
+                logger.warn("Entered invalid team while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidPointInputException exception) {
-                logger.warn("Enterd invalid point while editing");
+                logger.warn("Entered invalid point while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -1065,7 +1061,7 @@ public class MainRacerGUI extends JFrame {
      * @param prevTable the second table to be compared
      * @return result of table comparing
      */
-    private boolean isEqualTable(DefaultTableModel table, DefaultTableModel prevTable) {
+    public static boolean isEqualTable(DefaultTableModel table, DefaultTableModel prevTable) {
         boolean isEqual = true;
         if (table.getRowCount() != prevTable.getRowCount() || table.getColumnCount() != prevTable.getColumnCount())
             isEqual = false;
@@ -1223,10 +1219,8 @@ public class MainRacerGUI extends JFrame {
     public static Racer isAtRacerList(List<Racer> racers, Racer racer) {
         Racer answer = null;
         for (int i = 0; i < racers.size(); i++) {
-            if (racers.get(i).getRacerName().equals(racer.getRacerName())
-                    && racers.get(i).getRacerAge().equals(racer.getRacerAge())
-                    && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
-                answer = racers.get(i);
+            if (racers.get(i).getRacerID() == racer.getRacerID()) {
+                answer = racer;
                 break;
             }
         }
@@ -1261,7 +1255,10 @@ public class MainRacerGUI extends JFrame {
     public static Team isAtTeamList(List<Team> teams, Team team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
-            if (teams.get(i) != null && teams.get(i).getTeamName().equals(team.getTeamName())) {
+            if (teams.get(i).getTeamID() == team.getTeamID()) {
+                answer = team;
+                break;
+            } else if (teams.get(i).getTeamName().equals(team.getTeamName())) {
                 answer = teams.get(i);
                 break;
             }
@@ -1281,6 +1278,10 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void updateComboTeam() {
+        comboTeam.removeAllItems();
+        comboTeam.setSelectedItem(null);
+        searchTeam.removeAllItems();
+        searchTeam.setSelectedItem(null);
         addItemSearchTeam("Не выбрано");
         searchTeam.setSelectedIndex(0);
         for (Team team : allTeams) {
@@ -1310,20 +1311,23 @@ public class MainRacerGUI extends JFrame {
             if (teamDao.findTeam(team.getTeamID()) == null) {
                 teamDao.updateTeamID(team, null);
                 teamDao.saveTeam(team);
-            }
+            } else
+                teamDao.updateTeam(team);
         }
 
         for (Racer racer : allRacers) {
             if (racerDao.findRacer(racer.getRacerID()) == null) {
                 racer.setRacerID(null);
                 racerDao.saveRacer(racer);
-            }
+            } else
+                racerDao.updateRacer(racer);
         }
 
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
         for (Racer racer : dbRacers) {
-            if (isAtRacerList(allRacers, racer) == null)
+            if (isAtRacerList(allRacers, racer.getRacerName(), racer.getRacerAge().toString(),
+                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString()) == null)
                 racerDao.deleteRacer(racer);
         }
 
@@ -1366,13 +1370,8 @@ public class MainRacerGUI extends JFrame {
             clearTable(racerTable);
 
         for (Racer racer : allRacers) {
-            String team;
-            if (racer.getTeam() == null)
-                team = "Не выбрано";
-            else
-                team = racer.getTeam().getTeamName();
             racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
-                    team, racer.getRacerPoints().toString() });
+                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
         }
         copyTable(racerTable, fullSearchTable);
     }
@@ -1477,9 +1476,9 @@ public class MainRacerGUI extends JFrame {
             } else
                 isTeam = true;
 
-            Racer racer = new Racer(name, Integer.parseInt(age), team,
-                    Integer.parseInt(points));
-            if (isAtRacerList(allRacers, racer) == null) {
+            if (isAtRacerList(allRacers, name, age, teamName, points) == null) {
+                Racer racer = new Racer(name, Integer.parseInt(age), team,
+                        Integer.parseInt(points));
                 team.addPoints(Integer.parseInt(points));
                 if (isTeam)
                     team.expandRacerNumber();

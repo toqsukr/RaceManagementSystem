@@ -3,6 +3,7 @@ package application.graphic;
 import race.system.Racer;
 import race.system.Team;
 import util.CreateReport;
+import util.Validation;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -26,6 +27,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import exception.InvalidTeamInputException;
 import exception.NothingDataException;
 import exception.UnselectedDeleteException;
 
@@ -337,8 +339,32 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            setEditingPermit(false);
-            setConfirmbarUnvisible();
+            try {
+                if (teams.getSelectedRow() != -1)
+                    teams.getCellEditor(teams.getSelectedRow(), teams.getSelectedColumn()).stopCellEditing();
+                if (!MainRacerGUI.isEqualTable(teamTable, previousTeamTable)) {
+                    checkEditedData();
+                    int result = JOptionPane.showConfirmDialog(mainTeamGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        compareEditedData();
+                        // mainTeamGUI
+                        // .setTitle(mainTeamGUI.getTitle().substring(0, mainTeamGUI.getTitle().length()
+                        // - 23));
+                        setEditingPermit(false);
+                        setConfirmbarUnvisible();
+                    }
+                } else {
+                    setEditingPermit(false);
+                    setConfirmbarUnvisible();
+                }
+            } catch (InvalidTeamInputException exception) {
+                logger.warn("Entered invalid team name while editing");
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -351,6 +377,7 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            MainRacerGUI.copyTable(previousTeamTable, teamTable);
             setEditingPermit(false);
             setConfirmbarUnvisible();
         }
@@ -416,8 +443,31 @@ public class MainTeamGUI extends JFrame {
         }
     }
 
+    /***
+     * The function checks whether table data is valid
+     * 
+     * @throws InvalidTeamInputException the exception throws if any edited team
+     *                                   isn't valid
+     */
+    private void checkEditedData() throws InvalidTeamInputException {
+        for (int i = 0; i < teamTable.getRowCount(); i++)
+            if (!Validation.isValidTeam(teamTable.getValueAt(i, 0).toString()))
+                throw new InvalidTeamInputException(i + 1);
+    }
+
     public void setEditingPermit(boolean value) {
         editingPermit = value;
+    }
+
+    private void compareEditedData() {
+        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
+        for (int i = 0; i < teamTable.getRowCount(); i++) {
+            if (!allTeams.get(i).getTeamName().equals(teamTable.getValueAt(i, 0)))
+                allTeams.get(i).setTeamName(teamTable.getValueAt(i, 0).toString());
+        }
+        parentWindow.getMainRacerGUI().setRacerTable();
+        parentWindow.getMainRacerGUI().updateComboTeam();
+        parentWindow.getMainRacerGUI().getAddRacerWindow().updateComboTeam();
     }
 
     /***

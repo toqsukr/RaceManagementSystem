@@ -54,6 +54,16 @@ public class TeamDao {
 
     }
 
+    public void updateTeam(Team team) {
+        try {
+            em.getTransaction().begin();
+            em.merge(team);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
     public void updateTeamID(Team team, Integer value) {
         em.getTransaction().begin();
         team.setTeamID(value);

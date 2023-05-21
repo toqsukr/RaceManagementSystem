@@ -294,6 +294,8 @@ public class AddRacerGUI {
     }
 
     public void updateComboTeam() {
+        comboTeam.removeAllItems();
+        comboTeam.setSelectedItem(null);
         for (Team team : parentWindow.getAllTeams()) {
             addItemComboTeam(team.getTeamName());
         }
