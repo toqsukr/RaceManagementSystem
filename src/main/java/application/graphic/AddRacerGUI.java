@@ -225,15 +225,18 @@ public class AddRacerGUI {
                 } else
                     team.expandRacerNumber();
 
-                Racer racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
-                        Integer.parseInt(inputPointField.getText()));
-                if (MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), racer) == null) {
+                Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), inputNameField.getText(),
+                        inputAgeField.getText(), teamName,
+                        inputPointField.getText());
+                if (racer == null) {
+                    racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
+                            Integer.parseInt(inputPointField.getText()));
                     parentWindow.addToAllRacer(racer);
                     team.addPoints(Integer.parseInt(inputPointField.getText()));
+                    parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
+                    clearInputs();
+                    parentWindow.addRacer(racer);
                 }
-                parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
-                clearInputs();
-                parentWindow.addRacer(racer);
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);

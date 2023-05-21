@@ -46,13 +46,8 @@ import javax.swing.table.DefaultTableModel;
 /**
  * GUI of Race Management System
  */
-public class MainTeamGUI extends JFrame {
-    private static JFrame mainTeamGUI = new JFrame("Список команд");
-
-    /**
-     * This button opens file
-     */
-    private static final JButton squadBtn = new JButton();
+public class MainTrackGUI extends JFrame {
+    private static JFrame mainTrackGUI = new JFrame("Список трасс");
 
     /**
      * This button deletes selected field
@@ -91,7 +86,7 @@ public class MainTeamGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "Название команды", "Количество участников", "Всего очков" };
+    private static final String[] columns = { "Название трассы", "Длина трассы", "Лучший гонщик" };
 
     /**
      * Fields of the table
@@ -101,20 +96,20 @@ public class MainTeamGUI extends JFrame {
     /**
      * The table model storing displaying data
      */
-    private static DefaultTableModel teamTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel trackTable = new DefaultTableModel(data, columns);
 
     /**
      * The table model storing the version of the table before editing
      */
-    private static DefaultTableModel previousTeamTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel previousTrackTable = new DefaultTableModel(data, columns);
 
     /**
      * Create the table
      */
-    private final JTable teams = new JTable(teamTable) {
+    private final JTable teams = new JTable(trackTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
-            return j == 0 ? getEditingPermit() : false;
+            return getEditingPermit();
         }
     };
 
@@ -136,9 +131,9 @@ public class MainTeamGUI extends JFrame {
     private MainMenuGUI parentWindow;
 
     /***
-     * The function creating mainTeamGUI
+     * The function creating mainTrackGUI
      */
-    public MainTeamGUI(MainMenuGUI parent) {
+    public MainTrackGUI(MainMenuGUI parent) {
         parentWindow = parent;
 
         try {
@@ -158,47 +153,40 @@ public class MainTeamGUI extends JFrame {
             LoggerContext context = new LoggerContext("JournalDevLoggerContext");
             startLogging(context, configuration);
 
-            mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
+            mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     parentWindow.setMainMenuEnable(true);
                     stopLogging(context);
-                    mainTeamGUI.dispose();
+                    mainTrackGUI.dispose();
                 }
             });
 
-            mainTeamGUI.setBounds(200, 150, 800, 600);
-            mainTeamGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            mainTeamGUI.setResizable(false);
-            URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/team.png");
-            mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
+            mainTrackGUI.setBounds(200, 150, 800, 600);
+            mainTrackGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+            mainTrackGUI.setResizable(false);
+            URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/track.png");
+            mainTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
             toolBar.setFloatable(false);
             teams.getTableHeader().setReorderingAllowed(false);
 
             try {
                 parentWindow.getMainRacerGUI().setAllTeams(parentWindow.getMainRacerGUI().getTeamData());
                 parentWindow.getMainRacerGUI().setAllRacers(parentWindow.getMainRacerGUI().getRacerData());
-                setTeamTable();
                 logger.info("Data were downloaded successful!");
             } catch (InterruptedException exception) {
-                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
                 logger.error("Error reading database!");
 
             }
 
-            Container container = mainTeamGUI.getContentPane();
+            Container container = mainTrackGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
-            URL squadIcon = this.getClass().getClassLoader().getResource("img/squad.png");
-            squadBtn.setIcon(new ImageIcon(new ImageIcon(squadIcon).getImage().getScaledInstance(50, 50, 4)));
-            squadBtn.setToolTipText("Посмотреть состав команды");
-            squadBtn.setBackground(new Color(0xDFD9D9D9, false));
-            squadBtn.setFocusable(false);
-
-            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_team.png");
+            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_track.png");
             deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
-            deleteBtn.setToolTipText("Удалить команду");
+            deleteBtn.setToolTipText("Удалить трассу");
             deleteBtn.addActionListener(new DeleteEventListener());
             deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
             deleteBtn.setFocusable(false);
@@ -275,12 +263,12 @@ public class MainTeamGUI extends JFrame {
             try {
                 URL boldFontPath = this.getClass().getClassLoader()
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
-                CreateReport.printReport(teamTable, mainTeamGUI, "Отчет по списку команд\n\n\n\n\n",
+                CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
                         new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание команды\n", "\nКоличество участников\n", "\nВсего очков\n" },
+                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nЛучший результат\n" },
                         boldFontPath);
             } catch (Exception exception) {
-                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка формирования отчета",
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка формирования отчета",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -321,7 +309,7 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(teamTable, previousTeamTable);
+            MainRacerGUI.copyTable(trackTable, previousTrackTable);
             setEditingPermit(true);
             setConfirmbarVisible();
         }
@@ -336,32 +324,8 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            try {
-                if (teams.getSelectedRow() != -1)
-                    teams.getCellEditor(teams.getSelectedRow(), teams.getSelectedColumn()).stopCellEditing();
-                if (!MainRacerGUI.isEqualTable(teamTable, previousTeamTable)) {
-                    checkEditedData();
-                    int result = JOptionPane.showConfirmDialog(mainTeamGUI, "Сохранить изменения?",
-                            "Подтверждение действия",
-                            JOptionPane.YES_NO_OPTION,
-                            JOptionPane.QUESTION_MESSAGE);
-                    if (result == JOptionPane.YES_OPTION) {
-                        compareEditedData();
-                        // mainTeamGUI
-                        // .setTitle(mainTeamGUI.getTitle().substring(0, mainTeamGUI.getTitle().length()
-                        // - 23));
-                        setEditingPermit(false);
-                        setConfirmbarUnvisible();
-                    }
-                } else {
-                    setEditingPermit(false);
-                    setConfirmbarUnvisible();
-                }
-            } catch (InvalidTeamInputException exception) {
-                logger.warn("Entered invalid team name while editing");
-                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
+            setEditingPermit(false);
+            setConfirmbarUnvisible();
         }
     }
 
@@ -374,7 +338,7 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(previousTeamTable, teamTable);
+            MainRacerGUI.copyTable(previousTrackTable, trackTable);
             setEditingPermit(false);
             setConfirmbarUnvisible();
         }
@@ -386,92 +350,18 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            try {
-                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", teamTable);
-                MainRacerGUI.checkDeleteSelect(teams);
 
-                String message = teams.getSelectedRows().length == 1
-                        ? "Вы действительно хотите удалить выбранную команду?\nГонщики могут выступать только в составе команды!\nВсе участники команды будут удалены из системы!\nОтменить действие будет невозможно!"
-                        : "Вы действительно хотите удалить выбранные команды?\nГонщики могут выступать только в составе команды!\nВсе участники команд будут удалены из системы!\nОтменить действие будет невозможно!";
-                int result = JOptionPane.showConfirmDialog(mainTeamGUI,
-                        message,
-                        "Подтверждение действия",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    int i = teams.getSelectedRows().length - 1;
-                    int[] deleteIndexes = teams.getSelectedRows();
-                    while (i > -1) {
-                        int j = teams.getRowCount() - 1;
-                        while (j > -1) {
-                            if (j == deleteIndexes[i]) {
-                                String removingName = teams.getValueAt(deleteIndexes[i], 0).toString();
-                                Team removingTeam = MainRacerGUI.isAtTeamList(
-                                        parentWindow.getMainRacerGUI().getAllTeams(), new Team(removingName));
-                                teamTable.removeRow(deleteIndexes[i]);
-                                MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
-                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
-
-                                MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getSearchTeam(),
-                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam) + 1);
-
-                                MainRacerGUI.deleteItemComboBox(
-                                        parentWindow.getMainRacerGUI().getAddRacerWindow().getComboTeam(),
-                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
-                                updateRacers(removingName);
-                                parentWindow.getMainRacerGUI().deleteFromAllTeams(
-                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
-                                parentWindow.getMainRacerGUI().setRacerTable();
-                                setTeamTable();
-                                break;
-                            }
-                            j--;
-                        }
-                        i--;
-                    }
-                }
-            } catch (UnselectedDeleteException exception) {
-                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка удаления",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (NothingDataException exception) {
-                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
         }
-    }
-
-    /***
-     * The function checks whether table data is valid
-     * 
-     * @throws InvalidTeamInputException the exception throws if any edited team
-     *                                   isn't valid
-     */
-    private void checkEditedData() throws InvalidTeamInputException {
-        for (int i = 0; i < teamTable.getRowCount(); i++)
-            if (!Validation.isValidTeam(teamTable.getValueAt(i, 0).toString()))
-                throw new InvalidTeamInputException(i + 1);
     }
 
     public void setEditingPermit(boolean value) {
         editingPermit = value;
     }
 
-    private void compareEditedData() {
-        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
-        for (int i = 0; i < teamTable.getRowCount(); i++) {
-            if (!allTeams.get(i).getTeamName().equals(teamTable.getValueAt(i, 0)))
-                allTeams.get(i).setTeamName(teamTable.getValueAt(i, 0).toString());
-        }
-        parentWindow.getMainRacerGUI().setRacerTable();
-        parentWindow.getMainRacerGUI().updateComboTeam();
-        parentWindow.getMainRacerGUI().getAddRacerWindow().updateComboTeam();
-    }
-
     /***
      * The function make visible confirm bar while editing
      */
     private static void setConfirmbarVisible() {
-        squadBtn.setVisible(false);
         toDataBaseBtn.setVisible(false);
         fromDataBaseBtn.setVisible(false);
         deleteBtn.setVisible(false);
@@ -485,7 +375,6 @@ public class MainTeamGUI extends JFrame {
      * The function make unvisible confirm bar while editing
      */
     private static void setConfirmbarUnvisible() {
-        squadBtn.setVisible(true);
         toDataBaseBtn.setVisible(true);
         fromDataBaseBtn.setVisible(true);
         deleteBtn.setVisible(true);
@@ -500,21 +389,11 @@ public class MainTeamGUI extends JFrame {
     }
 
     public void setVisible(boolean value) {
-        mainTeamGUI.setVisible(value);
+        mainTrackGUI.setVisible(value);
     }
 
-    public void setTeamTable() {
-        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
-        if (teamTable.getRowCount() != 0)
-            MainRacerGUI.clearTable(teamTable);
-        for (Team team : allTeams) {
-            teamTable.addRow(new String[] { team.getTeamName(), team.getRacerNumber().toString(),
-                    team.getTotalPoints().toString() });
-        }
-    }
-
-    public DefaultTableModel getTeamTable() {
-        return teamTable;
+    public DefaultTableModel getTrackTable() {
+        return trackTable;
     }
 
     /***
@@ -528,7 +407,7 @@ public class MainTeamGUI extends JFrame {
     private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
         context.start(configuration);
         logger = context.getLogger("com");
-        logger.log(Level.INFO, "Start logging MainTeamGUI");
+        logger.log(Level.INFO, "Start logging mainTrackGUI");
     }
 
     /***
@@ -537,15 +416,7 @@ public class MainTeamGUI extends JFrame {
      * @param context the logger variable
      */
     public static void stopLogging(LoggerContext context) {
-        logger.log(Level.INFO, "Stop logging MainTeamGUI");
+        logger.log(Level.INFO, "Stop logging mainTrackGUI");
         context.close();
-    }
-
-    private void updateRacers(String teamName) {
-        List<Racer> racers = parentWindow.getMainRacerGUI().getAllRacers();
-        for (int i = racers.size() - 1; i > -1; i--) {
-            if (racers.get(i).getTeam().getTeamName().equals(teamName))
-                parentWindow.getMainRacerGUI().deleteFromAllRacers(i);
-        }
     }
 }

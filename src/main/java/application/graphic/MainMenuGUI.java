@@ -24,11 +24,13 @@ public class MainMenuGUI {
 
     private final JButton exitBtn = new JButton("       Выход       ");
 
-    private static JLabel title = new JLabel("Система управления автогонками");
+    private JLabel title = new JLabel("Система управления автогонками");
 
-    private static MainRacerGUI mainRacerWindow;
+    private MainRacerGUI mainRacerWindow;
 
-    private static MainTeamGUI mainTeamWindow;
+    private MainTeamGUI mainTeamWindow;
+
+    private MainTrackGUI mainTrackWindow;
 
     public MainMenuGUI() {
 
@@ -46,6 +48,7 @@ public class MainMenuGUI {
         mainMenuGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainMenuIcon));
         mainRacerWindow = new MainRacerGUI(this);
         mainTeamWindow = new MainTeamGUI(this);
+        mainTrackWindow = new MainTrackGUI(this);
 
         URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -64,6 +67,7 @@ public class MainMenuGUI {
         URL trackIcon = this.getClass().getClassLoader().getResource("img/track.png");
         trackBtn.setIcon(new ImageIcon(new ImageIcon(trackIcon).getImage().getScaledInstance(23, 22, 4)));
         trackBtn.setBackground(new Color(0xDFD9D9D9, false));
+        trackBtn.addActionListener(new TrackEventListener());
         trackBtn.setFocusable(false);
         trackBtn.setMargin(new Insets(1, 4, 1, 10));
 
@@ -179,6 +183,18 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainTeamWindow.setVisible(true);
+            setMainMenuEnable(false);
+        }
+    }
+
+    private class TrackEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            mainTrackWindow.setVisible(true);
             setMainMenuEnable(false);
         }
     }
