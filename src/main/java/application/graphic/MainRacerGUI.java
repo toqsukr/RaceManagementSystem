@@ -834,8 +834,9 @@ public class MainRacerGUI extends JFrame {
                         continue;
                     }
 
-                    if (!racerTable.getValueAt(i, 2).toString()
-                            .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
+                    if (!searchTeam.getSelectedItem().toString().equals("Не выбрано")
+                            && !racerTable.getValueAt(i, 2).toString()
+                                    .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
                         racerTable.removeRow(i);
                 }
             } catch (NothingDataException exception) {
@@ -1281,8 +1282,6 @@ public class MainRacerGUI extends JFrame {
 
     public void updateComboTeam() {
         addItemSearchTeam("Не выбрано");
-        addItemComboTeam("Не выбрано");
-        comboTeam.setSelectedIndex(0);
         searchTeam.setSelectedIndex(0);
         for (Team team : allTeams) {
             addItemComboTeam(team.getTeamName());

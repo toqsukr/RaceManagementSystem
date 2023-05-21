@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import application.App;
 import exception.NothingDataException;
 import exception.UnselectedDeleteException;
 
@@ -322,8 +321,8 @@ public class MainTeamGUI extends JFrame {
                 MainRacerGUI.checkDeleteSelect(teams);
 
                 String message = teams.getSelectedRows().length == 1
-                        ? "Вы действительно хотите удалить выбранную команду?\nОтменить действие будет невозможно!"
-                        : "Вы действительно хотите удалить выбранные команды?\nОтменить действие будет невозможно!";
+                        ? "Вы действительно хотите удалить выбранную команду?\nГонщики могут выступать только в составе команды!\nВсе участники команды будут удалены из системы!\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные команды?\nГонщики могут выступать только в составе команды!\nВсе участники команд будут удалены из системы!\nОтменить действие будет невозможно!";
                 int result = JOptionPane.showConfirmDialog(mainTeamGUI,
                         message,
                         "Подтверждение действия",
@@ -331,19 +330,15 @@ public class MainTeamGUI extends JFrame {
                         JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
                     int i = teams.getSelectedRows().length - 1;
-                    while (teams.getSelectedRows().length > 0) {
-                        isDeleting = true;
+                    int[] deleteIndexes = teams.getSelectedRows();
+                    while (i > -1) {
                         int j = teams.getRowCount() - 1;
                         while (j > -1) {
-                            if (j == teams.getSelectedRows()[i]) {
-                                String removingName = teams.getValueAt(teams.getSelectedRows()[i], 0).toString();
+                            if (j == deleteIndexes[i]) {
+                                String removingName = teams.getValueAt(deleteIndexes[i], 0).toString();
                                 Team removingTeam = MainRacerGUI.isAtTeamList(
                                         parentWindow.getMainRacerGUI().getAllTeams(), new Team(removingName));
-                                teamTable.removeRow(teams.getSelectedRows()[i]);
-                                parentWindow.getMainRacerGUI().getComboTeam()
-                                        .removeItemAt(
-                                                parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
-
+                                teamTable.removeRow(deleteIndexes[i]);
                                 MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
 
