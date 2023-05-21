@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.App;
 import exception.NothingDataException;
 import exception.UnselectedDeleteException;
 
@@ -125,6 +126,8 @@ public class MainTeamGUI extends JFrame {
      * Variable storing table edit status
      */
     private boolean editingPermit = false;
+
+    private boolean isDeleting = false;
 
     /***
      * The logger variable
@@ -329,6 +332,7 @@ public class MainTeamGUI extends JFrame {
                 if (result == JOptionPane.YES_OPTION) {
                     int i = teams.getSelectedRows().length - 1;
                     while (teams.getSelectedRows().length > 0) {
+                        isDeleting = true;
                         int j = teams.getRowCount() - 1;
                         while (j > -1) {
                             if (j == teams.getSelectedRows()[i]) {
@@ -340,9 +344,6 @@ public class MainTeamGUI extends JFrame {
                                         .removeItemAt(
                                                 parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
 
-                                System.out.println(parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
-                                System.out.println(parentWindow.getMainRacerGUI().getComboTeam().getItemCount());
-
                                 MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
 
@@ -353,8 +354,8 @@ public class MainTeamGUI extends JFrame {
                                         parentWindow.getMainRacerGUI().getAddRacerWindow().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
                                 updateRacers(removingName);
-                                parentWindow.getMainRacerGUI().getAllTeams()
-                                        .remove(parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+                                parentWindow.getMainRacerGUI().deleteFromAllTeams(
+                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
                                 parentWindow.getMainRacerGUI().setRacerTable();
                                 setTeamTable();
                                 break;
@@ -372,6 +373,14 @@ public class MainTeamGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    public boolean getIsDeleting() {
+        return isDeleting;
+    }
+
+    public void setIsDeleting(boolean value) {
+        isDeleting = value;
     }
 
     private boolean getEditingPermit() {
@@ -422,10 +431,9 @@ public class MainTeamGUI extends JFrame {
 
     private void updateRacers(String teamName) {
         List<Racer> racers = parentWindow.getMainRacerGUI().getAllRacers();
-        for (Racer racer : racers) {
-            if (racer.getTeam() != null && racer.getTeam().getTeamName().equals(teamName))
-                racer.setTeam(null);
+        for (int i = racers.size() - 1; i > -1; i--) {
+            if (racers.get(i).getTeam().getTeamName().equals(teamName))
+                parentWindow.getMainRacerGUI().deleteFromAllRacers(i);
         }
-        parentWindow.getMainRacerGUI().setAllRacers(racers);
     }
 }

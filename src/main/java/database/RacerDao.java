@@ -56,6 +56,16 @@ public class RacerDao {
         }
     }
 
+    public void updateRacer(Racer racer) {
+        try {
+            em.getTransaction().begin();
+            em.merge(racer);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
     public void deleteRacer(Racer racer) {
         try {
             em.getTransaction().begin();

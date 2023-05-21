@@ -1224,7 +1224,6 @@ public class MainRacerGUI extends JFrame {
         for (int i = 0; i < racers.size(); i++) {
             if (racers.get(i).getRacerName().equals(racer.getRacerName())
                     && racers.get(i).getRacerAge().equals(racer.getRacerAge())
-                    && racers.get(i).getTeam().getTeamName().equals(racer.getTeam().getTeamName())
                     && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
                 answer = racers.get(i);
                 break;
@@ -1261,7 +1260,7 @@ public class MainRacerGUI extends JFrame {
     public static Team isAtTeamList(List<Team> teams, Team team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
-            if (teams.get(i).getTeamName().equals(team.getTeamName())) {
+            if (teams.get(i) != null && teams.get(i).getTeamName().equals(team.getTeamName())) {
                 answer = teams.get(i);
                 break;
             }
@@ -1291,10 +1290,6 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
-    public void deleteFromComboTeam(int index) {
-
-    }
-
     private void addItemSearchTeam(String item) {
         searchTeam.addItem(item);
     }
@@ -1311,6 +1306,7 @@ public class MainRacerGUI extends JFrame {
             teamDao.clearTeam();
             setIsOpenFile(false);
         }
+
         for (Team team : allTeams) {
             if (teamDao.findTeam(team.getTeamID()) == null) {
                 teamDao.updateTeamID(team, null);
@@ -1336,7 +1332,6 @@ public class MainRacerGUI extends JFrame {
             if (isAtTeamList(allTeams, team) == null)
                 teamDao.deleteTeam(team);
         }
-
     }
 
     public boolean getIsOpenFile() {
@@ -1535,5 +1530,13 @@ public class MainRacerGUI extends JFrame {
 
     public AddRacerGUI getAddRacerWindow() {
         return addRacerWindow;
+    }
+
+    public void deleteFromAllTeams(int index) {
+        allTeams.remove(index);
+    }
+
+    public void deleteFromAllRacers(int index) {
+        allRacers.remove(index);
     }
 }
