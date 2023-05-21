@@ -322,6 +322,7 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            MainRacerGUI.copyTable(teamTable, previousTeamTable);
             setEditingPermit(true);
             setConfirmbarVisible();
         }

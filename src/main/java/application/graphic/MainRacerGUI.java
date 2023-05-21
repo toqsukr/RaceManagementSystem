@@ -966,14 +966,14 @@ public class MainRacerGUI extends JFrame {
      * @param table    the table containing data to be copied
      * @param newTable the table to which data to be copied
      */
-    private void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
+    public static void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
         clearTable(newTable);
         for (int i = 0; i < table.getRowCount(); i++) {
-            String name = table.getValueAt(i, 0).toString();
-            String age = table.getValueAt(i, 1).toString();
-            String team = table.getValueAt(i, 2).toString();
-            String points = table.getValueAt(i, 3).toString();
-            newTable.addRow(new String[] { name, age, team, points }); // Запись строки в таблицу
+            String[] row = new String[table.getColumnCount()];
+            for (int j = 0; j < table.getColumnCount(); j++) {
+                row[j] = table.getValueAt(i, j).toString();
+            }
+            newTable.addRow(row); // Запись строки в таблицу
         }
     }
 

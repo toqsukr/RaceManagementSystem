@@ -674,3 +674,8 @@
 2023-05-21 21:26:20.475 [main] INFO  com - Start logging MainTeamGUI
 2023-05-21 21:26:20.515 [main] INFO  com - Data were downloaded successful!
 2023-05-21 21:26:27.517 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
+2023-05-21 21:32:20.101 [main] INFO  com - Start logging MainRacerGUI
+2023-05-21 21:32:20.916 [main] INFO  com - Start logging MainTeamGUI
+2023-05-21 21:32:20.942 [main] INFO  com - Data were downloaded successful!
+2023-05-21 21:32:42.441 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-21 21:32:47.332 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
