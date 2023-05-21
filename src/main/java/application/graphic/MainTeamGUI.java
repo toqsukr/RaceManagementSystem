@@ -26,6 +26,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.App;
 import database.RacerDao;
 import database.TeamDao;
 import exception.IdenticalDataException;
@@ -41,10 +42,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 
 /**
  * GUI of Race Management System
@@ -131,10 +128,6 @@ public class MainTeamGUI extends JFrame {
      */
     private boolean editingPermit = false;
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
-
-    private EntityManager em = emf.createEntityManager();
-
     /***
      * The logger variable
      */
@@ -183,10 +176,8 @@ public class MainTeamGUI extends JFrame {
             teams.getTableHeader().setReorderingAllowed(false);
 
             try {
-                em.getTransaction().begin();
                 parentWindow.getMainRacerGUI().setAllTeams(parentWindow.getMainRacerGUI().getTeamData());
                 parentWindow.getMainRacerGUI().setAllRacers(parentWindow.getMainRacerGUI().getRacerData());
-                em.getTransaction().commit();
                 setTeamTable();
                 logger.info("Data were downloaded successful!");
             } catch (InterruptedException exception) {
@@ -321,9 +312,7 @@ public class MainTeamGUI extends JFrame {
 
                 }
                 if (result == JOptionPane.YES_OPTION || emptyResult == JOptionPane.YES_OPTION) {
-                    em.getTransaction().begin();
                     syncronizeData();
-                    em.getTransaction().commit();
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn("Full Identical data");
@@ -341,14 +330,15 @@ public class MainTeamGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             parentWindow.getMainRacerGUI().downloadFromDataBase();
+            setTeamTable();
         }
     }
 
     public void syncronizeData() {
-        RacerDao racerDao = new RacerDao(em);
-        TeamDao teamDao = new TeamDao(em);
-        List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
-        List<Racer> allRacers = parentWindow.getMainRacerGUI().getAllRacers();
+        RacerDao racerDao = new RacerDao(App.getEntityManager());
+        TeamDao teamDao = new TeamDao(App.getEntityManager());
+        List<Team> allTeams = teamDao.getAllTeams();
+        List<Racer> allRacers = racerDao.getAllRacers();
 
         if (parentWindow.getMainRacerGUI().getIsOpenFile()) {
             racerDao.clearRacer();
@@ -356,16 +346,16 @@ public class MainTeamGUI extends JFrame {
             parentWindow.getMainRacerGUI().setIsOpenFile(false);
         }
         for (Team team : allTeams) {
-            if (em.find(Team.class, team.getTeamID()) == null) {
+            if (teamDao.findTeam(team.getTeamID()) == null) {
                 team.setTeamID(null);
-                em.persist(team);
+                teamDao.saveTeam(team);
             }
         }
 
         for (Racer racer : allRacers) {
-            if (em.find(Racer.class, racer.getRacerID()) == null) {
+            if (racerDao.findRacer(racer.getRacerID()) == null) {
                 racer.setRacerID(null);
-                em.persist(racer);
+                racerDao.saveRacer(racer);
             }
         }
 

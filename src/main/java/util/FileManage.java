@@ -1,6 +1,7 @@
 package util;
 
 import java.io.*;
+import java.util.List;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -11,7 +12,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import application.graphic.MainRacerGUI;
 import exception.ReadFileException;
+import race.system.Racer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -125,7 +128,8 @@ public class FileManage {
             String team = attrs.getNamedItem("team").getNodeValue();
             String points = attrs.getNamedItem("points").getNodeValue();
             // Запись данных в таблицу
-            table.addRow(new String[] { name, age, team, points });
+            if (!MainRacerGUI.isAtTable(table, name, age, team, points))
+                table.addRow(new String[] { name, age, team, points });
         }
     }
 

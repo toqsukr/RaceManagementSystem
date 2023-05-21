@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.App;
 import database.RacerDao;
 import database.TeamDao;
 
@@ -54,10 +55,6 @@ import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.FlushModeType;
-import jakarta.persistence.Persistence;
 import exception.NothingDataException;
 import race.system.Racer;
 import race.system.Team;
@@ -204,10 +201,6 @@ public class MainRacerGUI extends JFrame {
      */
     private AddRacerGUI addRacerWindow;
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
-
-    private EntityManager em = emf.createEntityManager();
-
     private List<Team> allTeams;
 
     private List<Racer> allRacers;
@@ -290,11 +283,8 @@ public class MainRacerGUI extends JFrame {
             racers.getTableHeader().setReorderingAllowed(false);
 
             try {
-                em.setFlushMode(FlushModeType.COMMIT);
-                em.getTransaction().begin();
                 allTeams = getTeamData();
                 allRacers = getRacerData();
-                em.getTransaction().rollback();
                 setRacerTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -450,18 +440,12 @@ public class MainRacerGUI extends JFrame {
                     addRacerWindow.clearComboTeam();
                     allTeams.clear();
                     allRacers.clear();
-                    clearTable(racerTable);
-                    clearTable(parentWindow.getMainTeamGUI().getTeamTable());
-                    em.getTransaction().begin();
-                    allTeams = getTeamData();
-                    allRacers = getRacerData();
-                    em.getTransaction().rollback();
+                    allTeams = getTeamData(); // очки команды идут по пизде
+                    allRacers = getRacerData(); // гонщиков он получает нормально
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
                     parentWindow.getMainTeamGUI().setTeamTable();
-                    attachAllRacers();
-                    attachAllTeams();
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn(exception.getMessage());
@@ -528,8 +512,6 @@ public class MainRacerGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             try {
-                detachAllTeams();
-                detachAllRacers();
                 checkIdenticalData();
                 logger.info("Deploy data to database");
                 int emptyResult = 1, result = 1;
@@ -549,9 +531,7 @@ public class MainRacerGUI extends JFrame {
 
                 }
                 if (result == JOptionPane.YES_OPTION || emptyResult == JOptionPane.YES_OPTION) {
-                    em.getTransaction().begin();
                     syncronizeData();
-                    em.getTransaction().commit();
                 }
             } catch (IdenticalDataException exception) {
                 logger.warn("Full Identical data");
@@ -683,7 +663,6 @@ public class MainRacerGUI extends JFrame {
                         allTeams.clear();
                         setTeamsAndRacers();
                         updateComboTeam();
-                        parentWindow.getMainTeamGUI().setTeamTable();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
                             addRacerWindow.setTeamCheckBoxVisibility(false);
@@ -692,7 +671,7 @@ public class MainRacerGUI extends JFrame {
                             addRacerWindow.setComboTeamVisibility(true);
                             addRacerWindow.setTeamCheckBoxVisibility(true);
                         }
-
+                        parentWindow.getMainTeamGUI().setTeamTable();
                         copyTable(racerTable, fullSearchTable);
                         logger.debug("Data is opened successful");
                         mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
@@ -1231,11 +1210,13 @@ public class MainRacerGUI extends JFrame {
     }
 
     public List<Team> getTeamData() throws InterruptedException {
-        return em.createQuery("FROM Team", Team.class).getResultList();
+        TeamDao teamdDao = new TeamDao(App.getEntityManager());
+        return teamdDao.getAllTeams();
     }
 
     public List<Racer> getRacerData() throws InterruptedException {
-        return em.createQuery("FROM Racer", Racer.class).getResultList();
+        RacerDao racerDao = new RacerDao(App.getEntityManager());
+        return racerDao.getAllRacers();
     }
 
     public static Racer isAtRacerList(List<Racer> racers, Racer racer) {
@@ -1245,6 +1226,20 @@ public class MainRacerGUI extends JFrame {
                     && racers.get(i).getRacerAge().equals(racer.getRacerAge())
                     && racers.get(i).getTeam().getTeamName().equals(racer.getTeam().getTeamName())
                     && racers.get(i).getRacerPoints().equals(racer.getRacerPoints())) {
+                answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    public static Racer isAtRacerList(List<Racer> racers, String name, String age, String team, String points) {
+        Racer answer = null;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getRacerName().equals(name)
+                    && racers.get(i).getRacerAge().toString().equals(age)
+                    && racers.get(i).getTeam().getTeamName().equals(team)
+                    && racers.get(i).getRacerPoints().toString().equals(points)) {
                 answer = racers.get(i);
                 break;
             }
@@ -1303,24 +1298,24 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void syncronizeData() {
-        RacerDao racerDao = new RacerDao(em);
-        TeamDao teamDao = new TeamDao(em);
+        RacerDao racerDao = new RacerDao(App.getEntityManager());
+        TeamDao teamDao = new TeamDao(App.getEntityManager());
         if (isOpenFile) {
             racerDao.clearRacer();
             teamDao.clearTeam();
             setIsOpenFile(false);
         }
         for (Team team : allTeams) {
-            if (em.find(Team.class, team.getTeamID()) == null) {
-                team.setTeamID(null);
-                em.persist(team);
+            if (teamDao.findTeam(team.getTeamID()) == null) {
+                teamDao.updateTeamID(team, null);
+                teamDao.saveTeam(team);
             }
         }
 
         for (Racer racer : allRacers) {
-            if (em.find(Racer.class, racer.getRacerID()) == null) {
+            if (racerDao.findRacer(racer.getRacerID()) == null) {
                 racer.setRacerID(null);
-                em.persist(racer);
+                racerDao.saveRacer(racer);
             }
         }
 
@@ -1367,6 +1362,9 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void setRacerTable() {
+        if (racerTable.getRowCount() != 0)
+            clearTable(racerTable);
+
         for (Racer racer : allRacers) {
             racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
                     racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
@@ -1445,8 +1443,8 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void checkIdenticalData() throws IdenticalDataException {
-        RacerDao racerDao = new RacerDao(em);
-        TeamDao teamDao = new TeamDao(em);
+        RacerDao racerDao = new RacerDao(App.getEntityManager());
+        TeamDao teamDao = new TeamDao(App.getEntityManager());
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
         if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
@@ -1458,7 +1456,9 @@ public class MainRacerGUI extends JFrame {
     }
 
     private void setTeamsAndRacers() {
+        boolean isTeam;
         for (int i = 0; i < racerTable.getRowCount(); i++) {
+            isTeam = false;
             String name = racerTable.getValueAt(i, 0).toString();
             String age = racerTable.getValueAt(i, 1).toString();
             String teamName = racerTable.getValueAt(i, 2).toString();
@@ -1470,38 +1470,16 @@ public class MainRacerGUI extends JFrame {
                 addItemComboTeam(teamName);
                 addRacerWindow.addItemComboTeam(teamName);
             } else
-                team.expandRacerNumber();
+                isTeam = true;
 
             Racer racer = new Racer(name, Integer.parseInt(age), team,
                     Integer.parseInt(points));
             if (isAtRacerList(allRacers, racer) == null) {
                 team.addPoints(Integer.parseInt(points));
+                if (isTeam)
+                    team.expandRacerNumber();
                 allRacers.add(racer);
             }
-        }
-    }
-
-    private void detachAllRacers() {
-        for (Racer racer : allRacers) {
-            em.detach(racer);
-        }
-    }
-
-    private void detachAllTeams() {
-        for (Team team : allTeams) {
-            em.detach(team);
-        }
-    }
-
-    private void attachAllRacers() {
-        for (Racer racer : allRacers) {
-            em.merge(racer);
-        }
-    }
-
-    private void attachAllTeams() {
-        for (Team team : allTeams) {
-            em.merge(team);
         }
     }
 
@@ -1511,5 +1489,17 @@ public class MainRacerGUI extends JFrame {
 
     public MainMenuGUI getParentWindow() {
         return parentWindow;
+    }
+
+    public static boolean isAtTable(DefaultTableModel table, String name, String age, String team, String points) {
+        boolean answer = false;
+        for (int i = 0; i < table.getRowCount(); i++) {
+            if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
+                    && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
+                answer = true;
+                break;
+            }
+        }
+        return answer;
     }
 }
