@@ -112,7 +112,7 @@ public class MainTeamGUI extends JFrame {
     private final JTable teams = new JTable(teamTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
-            return getEditingPermit();
+            return j == 0 ? getEditingPermit() : false;
         }
     };
 
@@ -206,6 +206,7 @@ public class MainTeamGUI extends JFrame {
             URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
             editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
             editBtn.setToolTipText("Редактировать запись");
+            editBtn.addActionListener(new EditEventListener());
             editBtn.setBackground(new Color(0xDFD9D9D9, false));
             editBtn.setFocusable(false);
 
@@ -234,6 +235,7 @@ public class MainTeamGUI extends JFrame {
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
             confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
             confirmBtn.setVisible(false);
+            confirmBtn.addActionListener(new ConfirmEventListener());
             confirmBtn.setToolTipText("Ок");
             confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
             confirmBtn.setFocusable(false);
@@ -241,6 +243,7 @@ public class MainTeamGUI extends JFrame {
             URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
             cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
             cancelBtn.setVisible(false);
+            cancelBtn.addActionListener(new CancelEventListener());
             cancelBtn.setToolTipText("Отмена");
             cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
             cancelBtn.setFocusable(false);
@@ -310,6 +313,48 @@ public class MainTeamGUI extends JFrame {
         }
     }
 
+    /**
+     * Сlass for implementing a editBtn button listener
+     */
+    private class EditEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            setEditingPermit(true);
+            setConfirmbarVisible();
+        }
+    }
+
+    /**
+     * Сlass for implementing a confirmBtn button listener
+     */
+    private class ConfirmEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            setEditingPermit(false);
+            setConfirmbarUnvisible();
+        }
+    }
+
+    /**
+     * Сlass for implementing a cancelBtn button listener
+     */
+    private class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            setEditingPermit(false);
+            setConfirmbarUnvisible();
+        }
+    }
+
     private class DeleteEventListener implements ActionListener {
         /***
          *
@@ -368,6 +413,38 @@ public class MainTeamGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    public void setEditingPermit(boolean value) {
+        editingPermit = value;
+    }
+
+    /***
+     * The function make visible confirm bar while editing
+     */
+    private static void setConfirmbarVisible() {
+        squadBtn.setVisible(false);
+        toDataBaseBtn.setVisible(false);
+        fromDataBaseBtn.setVisible(false);
+        deleteBtn.setVisible(false);
+        editBtn.setVisible(false);
+        reportBtn.setVisible(false);
+        confirmBtn.setVisible(true);
+        cancelBtn.setVisible(true);
+    }
+
+    /***
+     * The function make unvisible confirm bar while editing
+     */
+    private static void setConfirmbarUnvisible() {
+        squadBtn.setVisible(true);
+        toDataBaseBtn.setVisible(true);
+        fromDataBaseBtn.setVisible(true);
+        deleteBtn.setVisible(true);
+        editBtn.setVisible(true);
+        reportBtn.setVisible(true);
+        confirmBtn.setVisible(false);
+        cancelBtn.setVisible(false);
     }
 
     public boolean getIsDeleting() {
