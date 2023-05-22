@@ -10,8 +10,6 @@ import exception.InvalidTeamInputException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import race.system.Racer;
-import race.system.Team;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -23,7 +21,7 @@ import util.Validation;
 
 public class AddTrackGUI {
 
-    public JFrame AddTrackGUI = new JFrame("Добавление гонщика");
+    public JFrame AddTrackGUI = new JFrame("Добавление трассы");
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -100,21 +98,21 @@ public class AddTrackGUI {
         toolBox.add(Box.createRigidArea(new Dimension(20, 0)));
         toolBox.add(cancelBtn);
 
-        centerBox.add(Box.createRigidArea(new Dimension(20, 45)));
+        centerBox.add(Box.createRigidArea(new Dimension(20, 60)));
 
         nameBox.add(Box.createRigidArea(new Dimension(45, 0)));
         nameBox.add(nameLabel);
-        nameBox.add(Box.createRigidArea(new Dimension(20, 0)));
+        nameBox.add(Box.createRigidArea(new Dimension(16, 0)));
         nameBox.add(inputNameField);
         centerBox.add(nameBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         lengthBox.add(Box.createRigidArea(new Dimension(45, 0)));
         lengthBox.add(lengthLabel);
-        lengthBox.add(Box.createRigidArea(new Dimension(51, 0)));
+        lengthBox.add(Box.createRigidArea(new Dimension(34, 0)));
         lengthBox.add(inputLengthField);
         centerBox.add(lengthBox);
-        centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         winnerBox.add(Box.createRigidArea(new Dimension(15, 0)));
         Box winnerLabelBox = Box.createHorizontalBox();
@@ -126,13 +124,13 @@ public class AddTrackGUI {
         winnerBox.add(teamInnerBox);
         winnerBox.add(Box.createRigidArea(new Dimension(16, 0)));
 
+        winnerBox.add(Box.createRigidArea(new Dimension(10, 0)));
         winnerBox.add(comboRacer);
         centerBox.add(winnerBox);
-        centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
+        centerBox.add(Box.createRigidArea(new Dimension(0, 60)));
 
-        centerBox.add(Box.createRigidArea(new Dimension(0, 20)));
         centerBox.add(toolBox);
-        centerBox.add(Box.createRigidArea(new Dimension(0, 50)));
+        centerBox.add(Box.createRigidArea(new Dimension(0, 40)));
 
         rightBox.add(Box.createRigidArea(new Dimension(45, 0)));
 
