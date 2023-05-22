@@ -23,7 +23,7 @@ import util.Validation;
 
 public class AddRacerGUI {
 
-    public JFrame addRacerGUI = new JFrame("Добавление гонщика");
+    private JFrame addRacerGUI = new JFrame("Добавление гонщика");
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -264,7 +264,7 @@ public class AddRacerGUI {
         public void actionPerformed(ActionEvent e) {
             clearInputs();
             parentWindow.setMainRacerEnable(true);
-            parentWindow.setAddRacerVisible(false);
+            addRacerGUI.setVisible(false);
         }
     }
 
@@ -306,6 +306,10 @@ public class AddRacerGUI {
 
     public JComboBox<String> getComboTeam() {
         return comboTeam;
+    }
+
+    public void setAddRacerVisibility(boolean value) {
+        addRacerGUI.setVisible(value);
     }
 
 }

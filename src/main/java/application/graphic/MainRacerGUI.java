@@ -199,7 +199,7 @@ public class MainRacerGUI extends JFrame {
     /***
      * The add racer window
      */
-    private AddRacerGUI addRacerWindow;
+    private AddRacerGUI addRacerWindow = new AddRacerGUI(this);;
 
     private List<Team> allTeams;
 
@@ -278,7 +278,6 @@ public class MainRacerGUI extends JFrame {
             mainRacerGUI.setResizable(false);
             URL mainRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
             mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
-            addRacerWindow = new AddRacerGUI(this);
             toolBar.setFloatable(false);
             racers.getTableHeader().setReorderingAllowed(false);
 
@@ -551,7 +550,7 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             logger.info("Opening window AddRacerGUI");
             setMainRacerEnable(false);
-            setAddRacerVisible(true);
+            addRacerWindow.setAddRacerVisibility(true);
             copyTable(fullSearchTable, racerTable);
         }
     }
@@ -1132,15 +1131,6 @@ public class MainRacerGUI extends JFrame {
      */
     public static void setInput(JTextField input, String text) {
         input.setText(text);
-    }
-
-    /***
-     * The function sets visibility options of AddRacerGUI window
-     * 
-     * @param value the value to be setted
-     */
-    public void setAddRacerVisible(boolean value) {
-        addRacerWindow.addRacerGUI.setVisible(value);
     }
 
     /***

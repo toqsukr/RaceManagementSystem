@@ -127,6 +127,8 @@ public class MainTrackGUI extends JFrame {
 
     private MainMenuGUI parentWindow;
 
+    private AddTrackGUI addTrackWindow = new AddTrackGUI(this);
+
     /***
      * The function creating mainTrackGUI
      */
@@ -184,6 +186,7 @@ public class MainTrackGUI extends JFrame {
             URL addIcon = this.getClass().getClassLoader().getResource("img/add_track.png");
             addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
             addBtn.setToolTipText("Добавить трассу");
+            addBtn.addActionListener(new AddEventListener());
             addBtn.setBackground(new Color(0xDFD9D9D9, false));
             addBtn.setFocusable(false);
 
@@ -301,6 +304,21 @@ public class MainTrackGUI extends JFrame {
          */
         public void actionPerformed(ActionEvent e) {
             parentWindow.getMainRacerGUI().downloadFromDataBase();
+        }
+    }
+
+    /**
+     * Сlass for implementing a addBtn button listener
+     */
+    private class AddEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            logger.info("Opening window AddRacerGUI");
+            setMainTrackEnable(false);
+            addTrackWindow.setAddTrackVisibility(true);
         }
     }
 
@@ -424,5 +442,14 @@ public class MainTrackGUI extends JFrame {
     public static void stopLogging(LoggerContext context) {
         logger.log(Level.INFO, "Stop logging mainTrackGUI");
         context.close();
+    }
+
+    /***
+     * The function sets enability options of MainTrackGUI window
+     * 
+     * @param value the value to be setted
+     */
+    public void setMainTrackEnable(boolean value) {
+        mainTrackGUI.setEnabled(value);
     }
 }
