@@ -136,3 +136,27 @@
 2023-05-22 02:30:41.041 [AWT-EventQueue-0] INFO  com - Stop logging mainTrackGUI
 2023-05-22 02:30:43.463 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
 2023-05-22 02:30:49.631 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-22 13:00:04.271 [main] INFO  com - Start logging MainRacerGUI
+2023-05-22 13:00:05.413 [main] INFO  com - Start logging MainTeamGUI
+2023-05-22 13:00:05.469 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:00:05.633 [main] INFO  com - Start logging mainTrackGUI
+2023-05-22 13:00:05.666 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:00:09.274 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
+2023-05-22 13:00:11.746 [AWT-EventQueue-0] INFO  com - Stop logging mainTrackGUI
+2023-05-22 13:00:21.047 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-22 13:05:25.062 [main] INFO  com - Start logging MainRacerGUI
+2023-05-22 13:05:26.354 [main] INFO  com - Start logging MainTeamGUI
+2023-05-22 13:05:26.402 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:05:26.553 [main] INFO  com - Start logging mainTrackGUI
+2023-05-22 13:05:26.585 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:05:38.791 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-22 13:05:41.139 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
+2023-05-22 13:09:20.342 [main] INFO  com - Start logging MainRacerGUI
+2023-05-22 13:09:21.670 [main] INFO  com - Start logging MainTeamGUI
+2023-05-22 13:09:21.702 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:09:21.854 [main] INFO  com - Start logging mainTrackGUI
+2023-05-22 13:09:21.902 [main] INFO  com - Data were downloaded successful!
+2023-05-22 13:09:27.572 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-22 13:09:37.009 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-22 13:09:39.313 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
+2023-05-22 13:09:45.475 [AWT-EventQueue-0] INFO  com - Stop logging mainTrackGUI
