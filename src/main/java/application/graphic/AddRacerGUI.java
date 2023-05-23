@@ -212,6 +212,7 @@ public class AddRacerGUI {
             try {
                 checkEmptyInputs();
                 checkRacerInputDate();
+                parentWindow.getRacerDao().updateFreeID(parentWindow.getAllRacers());
 
                 String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
                         : comboTeam.getSelectedItem().toString();

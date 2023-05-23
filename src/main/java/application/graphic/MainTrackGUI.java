@@ -503,6 +503,17 @@ public class MainTrackGUI extends JFrame {
         return answer;
     }
 
+    public static Track isAtTrackList(List<Track> tracks, Integer id) {
+        Track answer = null;
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).getTrackID().equals(id)) {
+                answer = tracks.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
     public void addToAllTracks(Track track) {
         allTracks.add(track);
     }

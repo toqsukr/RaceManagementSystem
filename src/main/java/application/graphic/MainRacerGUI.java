@@ -672,8 +672,6 @@ public class MainRacerGUI extends JFrame {
                         allRacers.clear();
                         allTeams.clear();
                         setTeamsAndRacers();
-                        racerDao.updateFreeID(allRacers);
-                        teamDao.updateFreeID(allTeams);
                         updateComboTeam();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
@@ -1271,10 +1269,7 @@ public class MainRacerGUI extends JFrame {
     public static Team isAtTeamList(List<Team> teams, Team team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
-            if (teams.get(i).getTeamID() == team.getTeamID()) {
-                answer = team;
-                break;
-            } else if (teams.get(i).getTeamName().equals(team.getTeamName())) {
+            if (teams.get(i).getTeamName().equals(team.getTeamName())) {
                 answer = teams.get(i);
                 break;
             }
@@ -1286,6 +1281,17 @@ public class MainRacerGUI extends JFrame {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
             if (teams.get(i).getTeamName().equals(team)) {
+                answer = teams.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    public static Team isAtTeamList(List<Team> teams, Integer id) {
+        Team answer = null;
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getTeamID().equals(id)) {
                 answer = teams.get(i);
                 break;
             }
@@ -1324,7 +1330,6 @@ public class MainRacerGUI extends JFrame {
         List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
         for (Track track : allTracks) {
             if (trackDao.findTrack(track.getTrackID()) == null) {
-                trackDao.updateTrackID(track, null);
                 trackDao.saveTrack(track);
             } else
                 trackDao.updateTrack(track);
@@ -1332,7 +1337,6 @@ public class MainRacerGUI extends JFrame {
 
         for (Team team : allTeams) {
             if (teamDao.findTeam(team.getTeamID()) == null) {
-                teamDao.updateTeamID(team, null);
                 teamDao.saveTeam(team);
             } else
                 teamDao.updateTeam(team);
@@ -1349,18 +1353,17 @@ public class MainRacerGUI extends JFrame {
         List<Team> dbTeams = teamDao.getAllTeams();
         List<Track> dbTracks = trackDao.getAllTracks();
         for (Racer racer : dbRacers) {
-            if (isAtRacerList(allRacers, racer.getRacerName(), racer.getRacerAge().toString(),
-                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString()) == null)
+            if (isAtRacerList(allRacers, racer.getRacerID()) == null)
                 racerDao.deleteRacer(racer);
         }
 
         for (Team team : dbTeams) {
-            if (isAtTeamList(allTeams, team) == null)
+            if (isAtTeamList(allTeams, team.getTeamID()) == null)
                 teamDao.deleteTeam(team);
         }
 
         for (Track track : dbTracks) {
-            if (MainTrackGUI.isAtTrackList(allTracks, track) == null)
+            if (MainTrackGUI.isAtTrackList(allTracks, track.getTrackID()) == null)
                 trackDao.deleteTrack(track);
         }
     }
@@ -1500,7 +1503,9 @@ public class MainRacerGUI extends JFrame {
             Team team = isAtTeamList(allTeams, teamName);
             if (team == null) {
                 team = new Team(teamName);
+                team.setTeamID(teamDao.getFreeID());
                 allTeams.add(team);
+                teamDao.updateFreeID(allTeams);
                 addItemComboTeam(teamName);
                 addRacerWindow.addItemComboTeam(teamName);
             } else
@@ -1514,8 +1519,11 @@ public class MainRacerGUI extends JFrame {
                 if (isTeam)
                     team.expandRacerNumber();
                 allRacers.add(racer);
+                racerDao.updateFreeID(allRacers);
             }
         }
+        teamDao.updateFreeID(allTeams);
+        racerDao.updateFreeID(allRacers);
     }
 
     public void downloadFromDataBase() {
