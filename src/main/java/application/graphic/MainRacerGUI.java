@@ -149,7 +149,7 @@ public class MainRacerGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "Имя гонщика", "Возраст", "Команда", "Очки" };
+    private static final String[] columns = { "ID", "Имя гонщика", "Возраст", "Команда", "Очки" };
 
     /**
      * Fields of the table
@@ -177,7 +177,7 @@ public class MainRacerGUI extends JFrame {
     private final JTable racers = new JTable(racerTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
-            return getEditingPermit();
+            return j != 0 && getEditingPermit();
         }
     };
 
@@ -292,7 +292,7 @@ public class MainRacerGUI extends JFrame {
 
             updateComboTeam();
             DefaultCellEditor editor = new DefaultCellEditor(comboTeam);
-            racers.getColumnModel().getColumn(2).setCellEditor(editor);
+            racers.getColumnModel().getColumn(3).setCellEditor(editor);
 
             Container container = mainRacerGUI.getContentPane();
             container.setLayout(new BorderLayout());
@@ -584,10 +584,10 @@ public class MainRacerGUI extends JFrame {
                         int j = racers.getRowCount() - 1;
                         while (j > -1) {
                             if (j == racers.getSelectedRows()[i]) {
-                                String removingName = racers.getValueAt(racers.getSelectedRows()[i], 0).toString();
-                                String removingAge = racers.getValueAt(racers.getSelectedRows()[i], 1).toString();
-                                String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 2).toString();
-                                String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
+                                String removingName = racers.getValueAt(racers.getSelectedRows()[i], 1).toString();
+                                String removingAge = racers.getValueAt(racers.getSelectedRows()[i], 2).toString();
+                                String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
+                                String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 4).toString();
                                 additionalSearchDelete(fullSearchTable, removingName, removingAge, removingTeamName,
                                         removingPoints);
                                 Team removingTeam = isAtTeamList(allTeams, removingTeamName);
@@ -797,8 +797,9 @@ public class MainRacerGUI extends JFrame {
                 URL boldFontPath = this.getClass().getClassLoader()
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(fullSearchTable, mainRacerGUI, "Отчет по списку гонщиков\n\n\n\n\n",
-                        new float[] { 1f, 0.6f, 1f, 0.4f },
-                        new String[] { "\nИмя гонщика\n\n", "\nВозраст", "\nКоманда", "\nОчки" }, boldFontPath);
+                        new float[] { 0.4f, 1f, 0.6f, 1f, 0.4f },
+                        new String[] { "\nID\n", "\nИмя гонщика\n\n", "\nВозраст", "\nКоманда", "\nОчки" },
+                        boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка формирования отчета",
                         JOptionPane.PLAIN_MESSAGE);
@@ -823,14 +824,14 @@ public class MainRacerGUI extends JFrame {
                 copyTable(fullSearchTable, racerTable);
                 copyTable(racerTable, fullSearchTable);
                 for (int i = racerTable.getRowCount() - 1; i > -1; i--) {
-                    if (!searchNameField.getText().equals("Имя гонщика") & !racerTable.getValueAt(i, 0).toString()
+                    if (!searchNameField.getText().equals("Имя гонщика") & !racerTable.getValueAt(i, 1).toString()
                             .toLowerCase().contains(searchNameField.getText().toLowerCase())) {
                         racerTable.removeRow(i);
                         continue;
                     }
 
                     if (!searchTeam.getSelectedItem().toString().equals("Не выбрано")
-                            && !racerTable.getValueAt(i, 2).toString()
+                            && !racerTable.getValueAt(i, 3).toString()
                                     .toLowerCase().contains(searchTeam.getSelectedItem().toString().toLowerCase()))
                         racerTable.removeRow(i);
                 }
@@ -1010,13 +1011,13 @@ public class MainRacerGUI extends JFrame {
     public void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
             InvalidTeamInputException, InvalidPointInputException {
         for (int i = 0; i < racerTable.getRowCount(); i++) {
-            if (!Validation.isValidName(racerTable.getValueAt(i, 0).toString()))
+            if (!Validation.isValidName(racerTable.getValueAt(i, 1).toString()))
                 throw new InvalidNameInputException(i + 1);
-            if (!Validation.isValidAge(racerTable.getValueAt(i, 1).toString()))
+            if (!Validation.isValidAge(racerTable.getValueAt(i, 2).toString()))
                 throw new InvalidAgeInputException(i + 1);
-            if (!Validation.isValidTeam(racerTable.getValueAt(i, 2).toString()))
+            if (!Validation.isValidTeam(racerTable.getValueAt(i, 3).toString()))
                 throw new InvalidTeamInputException(i + 1);
-            if (!Validation.isValidPoint(racerTable.getValueAt(i, 3).toString()))
+            if (!Validation.isValidPoint(racerTable.getValueAt(i, 4).toString()))
                 throw new InvalidPointInputException(i + 1);
         }
     }
@@ -1157,8 +1158,8 @@ public class MainRacerGUI extends JFrame {
             String points) {
         for (int i = 0; i < table.getRowCount(); i++) {
             if (!name.isEmpty() && !age.isEmpty() && !team.isEmpty() && !points.isEmpty()) {
-                if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
-                        && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
+                if (table.getValueAt(i, 1).equals(name) && table.getValueAt(i, 2).equals(age)
+                        && table.getValueAt(i, 3).equals(team) && table.getValueAt(i, 4).equals(points)) {
                     table.removeRow(i);
                 }
             }
@@ -1360,18 +1361,19 @@ public class MainRacerGUI extends JFrame {
             clearTable(racerTable);
 
         for (Racer racer : allRacers) {
-            racerTable.addRow(new String[] { racer.getRacerName(), racer.getRacerAge().toString(),
-                    racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
+            racerTable.addRow(
+                    new String[] { racer.getRacerID().toString(), racer.getRacerName(), racer.getRacerAge().toString(),
+                            racer.getTeam().getTeamName(), racer.getRacerPoints().toString() });
         }
         copyTable(racerTable, fullSearchTable);
     }
 
     private void compareEditedData() {
         for (int i = 0; i < fullSearchTable.getRowCount(); i++) {
-            String name = fullSearchTable.getValueAt(i, 0).toString();
-            String age = fullSearchTable.getValueAt(i, 1).toString();
-            String team = fullSearchTable.getValueAt(i, 2).toString();
-            String point = fullSearchTable.getValueAt(i, 3).toString();
+            String name = fullSearchTable.getValueAt(i, 1).toString();
+            String age = fullSearchTable.getValueAt(i, 2).toString();
+            String team = fullSearchTable.getValueAt(i, 3).toString();
+            String point = fullSearchTable.getValueAt(i, 4).toString();
             if (!name.equals(allRacers.get(i).getRacerName()))
                 allRacers.get(i).setRacerName(name);
             if (!age.equals(allRacers.get(i).getRacerAge().toString()))
@@ -1453,10 +1455,10 @@ public class MainRacerGUI extends JFrame {
         boolean isTeam;
         for (int i = 0; i < racerTable.getRowCount(); i++) {
             isTeam = false;
-            String name = racerTable.getValueAt(i, 0).toString();
-            String age = racerTable.getValueAt(i, 1).toString();
-            String teamName = racerTable.getValueAt(i, 2).toString();
-            String points = racerTable.getValueAt(i, 3).toString();
+            String name = racerTable.getValueAt(i, 1).toString();
+            String age = racerTable.getValueAt(i, 2).toString();
+            String teamName = racerTable.getValueAt(i, 3).toString();
+            String points = racerTable.getValueAt(i, 4).toString();
             Team team = isAtTeamList(allTeams, teamName);
             if (team == null) {
                 team = new Team(teamName);
@@ -1492,8 +1494,8 @@ public class MainRacerGUI extends JFrame {
     public static boolean isAtTable(DefaultTableModel table, String name, String age, String team, String points) {
         boolean answer = false;
         for (int i = 0; i < table.getRowCount(); i++) {
-            if (table.getValueAt(i, 0).equals(name) && table.getValueAt(i, 1).equals(age)
-                    && table.getValueAt(i, 2).equals(team) && table.getValueAt(i, 3).equals(points)) {
+            if (table.getValueAt(i, 1).equals(name) && table.getValueAt(i, 2).equals(age)
+                    && table.getValueAt(i, 3).equals(team) && table.getValueAt(i, 4).equals(points)) {
                 answer = true;
                 break;
             }

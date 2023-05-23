@@ -14,6 +14,7 @@ import race.system.Racer;
 import race.system.Team;
 import race.system.Track;
 
+import java.util.HashMap;
 import java.util.List;
 
 import java.awt.*;
@@ -165,18 +166,20 @@ public class AddTrackGUI {
                 checkEmptyInputs();
                 checkTrackInputDate();
 
-                Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
-                        new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText())));
+                // Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
+                // new Track(inputNameField.getText(),
+                // Integer.parseInt(inputLengthField.getText())));
 
-                if (track == null) {
-                    track = new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText()));
-                    if (comboRacer.getSelectedIndex() != 0) {
-                        Racer racer = MainRacerGUI.isAtRacerList();
-                    }
-                    parentWindow.addToAllTracks(track);
-                    clearInputs();
-                    parentWindow.setTrackTable();
-                }
+                // if (track == null) {
+                // track = new Track(inputNameField.getText(),
+                // Integer.parseInt(inputLengthField.getText()));
+                // if (comboRacer.getSelectedIndex() != 0) {
+                // Racer racer = MainRacerGUI.isAtRacerList();
+                // }
+                // parentWindow.addToAllTracks(track);
+                // clearInputs();
+                // parentWindow.setTrackTable();
+                // }
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
@@ -220,7 +223,7 @@ public class AddTrackGUI {
         comboRacer.setSelectedIndex(0);
         List<Racer> allRacers = parentWindow.getParentWindow().getMainRacerGUI().getAllRacers();
         for (Racer racer : allRacers) {
-            comboRacer.addItem(racer.getRacerName());
+            comboRacer.addItem(racer.getRacerName() + " (ID: " + racer.getRacerID() + ")");
         }
     }
 
