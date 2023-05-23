@@ -729,7 +729,10 @@ public class MainRacerGUI extends JFrame {
                     if (result == JOptionPane.YES_OPTION) {
                         additionalSearchEdit();
                         compareEditedData();
-                        checkEmptyTeam();
+                        deleteEmptyTeams();
+                        parentWindow.getMainTeamGUI().setTeamTable();
+                        updateComboTeam();
+                        addRacerWindow.updateComboTeam();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                         mainRacerGUI
@@ -1427,22 +1430,17 @@ public class MainRacerGUI extends JFrame {
                 allRacers.get(i).setRacerAge(Integer.parseInt(age));
             if (!team.equals(allRacers.get(i).getTeam().getTeamName())) {
                 Team newTeam = isAtTeamList(allTeams, team);
-                if (newTeam == null)
-                    newTeam = new Team(team);
+                allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
+                allRacers.get(i).getTeam().reduceRacerNumber();
                 allRacers.get(i).setTeam(newTeam);
+                newTeam.expandRacerNumber();
+                if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
+                    Integer.parseInt(point);
+                else
+                    newTeam.addPoints(allRacers.get(i).getRacerPoints());
             }
             if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
-        }
-    }
-
-    private void checkEmptyTeam() {
-        for (int i = allTeams.size() - 1; i > -1; i--) {
-            if (!isTeamAtRacerList(allRacers, allTeams.get(i).getTeamID())) {
-                MainRacerGUI.deleteItemComboBox(comboTeam, i);
-                MainRacerGUI.deleteItemComboBox(addRacerWindow.getComboTeam(), i);
-                allTeams.remove(i);
-            }
         }
     }
 
@@ -1606,5 +1604,12 @@ public class MainRacerGUI extends JFrame {
 
     public TrackDao getTrackDao() {
         return trackDao;
+    }
+
+    private void deleteEmptyTeams() {
+        for (int i = allTeams.size() - 1; i > -1; i--) {
+            if (!isTeamAtRacerList(allRacers, allTeams.get(i).getTeamID()))
+                allTeams.remove(i);
+        }
     }
 }
