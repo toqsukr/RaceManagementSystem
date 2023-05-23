@@ -218,6 +218,7 @@ public class AddRacerGUI {
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
                 if (team == null) {
                     team = new Team(teamName);
+                    team.setTeamID(parentWindow.getTeamDao().getFreeID());
                     parentWindow.addtoAllTeam(team);
                     parentWindow.updateComboTeam();
                     comboTeam.addItem(teamName);

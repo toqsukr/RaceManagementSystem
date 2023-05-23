@@ -419,8 +419,7 @@ public class MainTeamGUI extends JFrame {
                                         parentWindow.getMainRacerGUI().getAddRacerWindow().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
                                 updateRacers(removingName);
-                                parentWindow.getMainRacerGUI().deleteFromAllTeams(
-                                        parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
+                                parentWindow.getMainRacerGUI().deleteFromAllTeams(removingTeam.getTeamID());
                                 parentWindow.getMainRacerGUI().setRacerTable();
                                 setTeamTable();
                                 break;
@@ -545,7 +544,7 @@ public class MainTeamGUI extends JFrame {
         List<Racer> racers = parentWindow.getMainRacerGUI().getAllRacers();
         for (int i = racers.size() - 1; i > -1; i--) {
             if (racers.get(i).getTeam().getTeamName().equals(teamName))
-                parentWindow.getMainRacerGUI().deleteFromAllRacers(i);
+                parentWindow.getMainRacerGUI().deleteFromAllRacers(racers.get(i).getRacerID());
         }
     }
 }

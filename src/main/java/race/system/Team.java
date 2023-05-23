@@ -12,7 +12,6 @@ public class Team {
 
     @Id
     @Column(name = "teamID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getTeamID() {
         return teamID;
     }

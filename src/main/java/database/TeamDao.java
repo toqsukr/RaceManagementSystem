@@ -14,9 +14,14 @@ public class TeamDao {
 
     private EntityManager em;
 
+    private boolean[] freeIDs;
+
     public TeamDao(EntityManager em) {
         this.em = em;
         em.setFlushMode(FlushModeType.COMMIT);
+        freeIDs = new boolean[2000];
+        for (int i = 0; i < 2000; i++)
+            freeIDs[i] = true;
     }
 
     public EntityManager getEntityManager() {
@@ -94,6 +99,29 @@ public class TeamDao {
             em.getTransaction().commit();
         } catch (HibernateException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public int getFreeID() {
+        int id = 0;
+        em.getTransaction().begin();
+        for (int i = 0; i < freeIDs.length; i++) {
+            if (freeIDs[i]) {
+                id = i;
+                break;
+            }
+        }
+        em.getTransaction().commit();
+        return id;
+    }
+
+    public void addFreeID(int id) {
+        freeIDs[id] = true;
+    }
+
+    public void updateFreeID(List<Team> teams) {
+        for (Team team : teams) {
+            freeIDs[team.getTeamID()] = false;
         }
     }
 }

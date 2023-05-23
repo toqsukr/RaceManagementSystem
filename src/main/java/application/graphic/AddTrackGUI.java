@@ -174,6 +174,7 @@ public class AddTrackGUI {
                     track = new Track(inputNameField.getText(),
                             Integer.parseInt(inputLengthField.getText()));
                     if (comboRacer.getSelectedIndex() != 0) {
+                        track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
                         String string = comboRacer.getSelectedItem().toString();
                         Racer racer = MainRacerGUI.isAtRacerList(
                                 parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),

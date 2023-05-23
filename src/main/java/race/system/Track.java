@@ -12,7 +12,6 @@ public class Track {
 
     @Id
     @Column(name = "trackID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getTrackID() {
         return trackID;
     }

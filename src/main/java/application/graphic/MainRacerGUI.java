@@ -294,6 +294,7 @@ public class MainRacerGUI extends JFrame {
                 allRacers = getRacerData();
                 setRacerTable();
                 racerDao.updateFreeID(allRacers);
+                teamDao.updateFreeID(allTeams);
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
@@ -451,6 +452,7 @@ public class MainRacerGUI extends JFrame {
                     allTeams = getTeamData();
                     allRacers = getRacerData();
                     racerDao.updateFreeID(allRacers);
+                    teamDao.updateFreeID(allTeams);
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
@@ -612,6 +614,7 @@ public class MainRacerGUI extends JFrame {
                                         MainRacerGUI.deleteItemComboBox(searchTeam, allTeams.indexOf(removingTeam) + 1);
                                         MainRacerGUI.deleteItemComboBox(addRacerWindow.getComboTeam(),
                                                 allTeams.indexOf(removingTeam));
+                                        teamDao.addFreeID(removingTeam.getTeamID());
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     } else {
                                         removingTeam.deductPoints(Integer.parseInt(removingPoints));
@@ -670,6 +673,7 @@ public class MainRacerGUI extends JFrame {
                         allTeams.clear();
                         setTeamsAndRacers();
                         racerDao.updateFreeID(allRacers);
+                        teamDao.updateFreeID(allTeams);
                         updateComboTeam();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
@@ -1383,6 +1387,7 @@ public class MainRacerGUI extends JFrame {
 
     public void addtoAllTeam(Team team) {
         allTeams.add(team);
+        teamDao.updateFreeID(allTeams);
     }
 
     public void addToAllRacer(Racer racer) {
@@ -1558,15 +1563,35 @@ public class MainRacerGUI extends JFrame {
         return addRacerWindow;
     }
 
-    public void deleteFromAllTeams(int index) {
-        allTeams.remove(index);
+    public void deleteFromAllTeams(int id) {
+        teamDao.addFreeID(id);
+        for (Team team : allTeams) {
+            if (team.getTeamID() == id) {
+                allTeams.remove(team);
+                break;
+            }
+        }
     }
 
-    public void deleteFromAllRacers(int index) {
-        allRacers.remove(index);
+    public void deleteFromAllRacers(int id) {
+        racerDao.addFreeID(id);
+        for (Racer racer : allRacers) {
+            if (racer.getRacerID() == id) {
+                allRacers.remove(racer);
+                break;
+            }
+        }
     }
 
     public RacerDao getRacerDao() {
         return racerDao;
+    }
+
+    public TeamDao getTeamDao() {
+        return teamDao;
+    }
+
+    public TrackDao getTrackDao() {
+        return trackDao;
     }
 }
