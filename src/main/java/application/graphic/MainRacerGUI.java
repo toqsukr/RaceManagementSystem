@@ -625,6 +625,7 @@ public class MainRacerGUI extends JFrame {
                                         removingTeam.deductPoints(Integer.parseInt(removingPoints));
                                         removingTeam.reduceRacerNumber();
                                     }
+
                                     parentWindow.getMainTeamGUI().setTeamTable();
 
                                 }
@@ -735,6 +736,8 @@ public class MainRacerGUI extends JFrame {
                         parentWindow.getMainTeamGUI().setTeamTable();
                         updateComboTeam();
                         addRacerWindow.updateComboTeam();
+                        parentWindow.getMainTrackGUI().updateComboRacer();
+                        parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                         mainRacerGUI
@@ -1434,15 +1437,19 @@ public class MainRacerGUI extends JFrame {
                 Team newTeam = isAtTeamList(allTeams, team);
                 allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
                 allRacers.get(i).getTeam().reduceRacerNumber();
-                allRacers.get(i).setTeam(newTeam);
                 newTeam.expandRacerNumber();
                 if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
-                    Integer.parseInt(point);
-                else
-                    newTeam.addPoints(allRacers.get(i).getRacerPoints());
-            }
-            if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
+                    allRacers.get(i).setRacerPoints(Integer.parseInt(point));
+
+                newTeam.addPoints(allRacers.get(i).getRacerPoints());
+
+                allRacers.get(i).setTeam(newTeam);
+            } else if (!point.equals(allRacers.get(i).getRacerPoints().toString())) {
+                allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
+                allRacers.get(i).getTeam().addPoints(allRacers.get(i).getRacerPoints());
+            }
+
         }
     }
 

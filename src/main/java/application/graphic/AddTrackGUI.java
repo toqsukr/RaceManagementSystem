@@ -3,9 +3,6 @@ package application.graphic;
 import exception.EmptyAddInputException;
 import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import race.system.Racer;
 import race.system.Track;
 
@@ -44,8 +41,6 @@ public class AddTrackGUI {
     private static final JLabel nameLabel = new JLabel("Название трассы:");
     private static final JLabel lengthLabel = new JLabel("Длина трассы:");
     private static final JLabel winnerLabel = new JLabel("Лучший гонщик:");
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
-    private EntityManager em = emf.createEntityManager();
     private MainTrackGUI parentWindow;
 
     /**

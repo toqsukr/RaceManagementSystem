@@ -7,9 +7,6 @@ import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import race.system.Racer;
 import race.system.Team;
 
@@ -52,8 +49,6 @@ public class AddRacerGUI {
     private static final JLabel ageLabel = new JLabel("Возраст:");
     private static final JLabel pointLabel = new JLabel("Очки:");
     private static final JCheckBox teamCheckBox = new JCheckBox("Другое", null, false);
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("rms_persistence");
-    private EntityManager em = emf.createEntityManager();
     private MainRacerGUI parentWindow;
 
     /**
