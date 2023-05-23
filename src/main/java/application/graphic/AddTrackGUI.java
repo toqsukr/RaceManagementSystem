@@ -1,15 +1,20 @@
 package application.graphic;
 
-import java.util.List;
-
 import exception.EmptyAddInputException;
 import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
+import exception.InvalidTrackLengthInputException;
+import exception.InvalidTrackNameInputException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import race.system.Racer;
+import race.system.Team;
+import race.system.Track;
+
+import java.util.List;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -68,7 +73,7 @@ public class AddTrackGUI {
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/track.png");
         AddTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
-        // setComboBox();
+        updateComboRacer();
         comboRacer.setBackground(new Color(0xFFFFFF, false));
         comboRacer.setFocusable(false);
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -149,14 +154,6 @@ public class AddTrackGUI {
             throw new EmptyAddInputException();
     }
 
-    private void checkRacerInputDate() throws InvalidNameInputException, InvalidAgeInputException,
-            InvalidTeamInputException, InvalidPointInputException {
-        if (!Validation.isValidName(inputNameField.getText()))
-            throw new InvalidNameInputException();
-        if (!Validation.isValidAge(inputLengthField.getText()))
-            throw new InvalidAgeInputException();
-    }
-
     private class AddEventListener implements ActionListener {
 
         /***
@@ -164,56 +161,32 @@ public class AddTrackGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // try {
-            // checkEmptyInputs();
-            // checkRacerInputDate();
+            try {
+                checkEmptyInputs();
+                checkTrackInputDate();
 
-            // String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
-            // : comboTeam.getSelectedItem().toString();
-            // Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
-            // if (team == null) {
-            // team = new Team(teamName);
-            // parentWindow.addtoAllTeam(team);
-            // parentWindow.updateComboTeam();
-            // comboTeam.addItem(teamName);
-            // } else
-            // team.expandRacerNumber();
+                Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
+                        new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText())));
 
-            // Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(),
-            // inputNameField.getText(),
-            // inputAgeField.getText(), teamName,
-            // inputPointField.getText());
-            // if (racer == null) {
-            // racer = new Racer(inputNameField.getText(),
-            // Integer.parseInt(inputAgeField.getText()), team,
-            // Integer.parseInt(inputPointField.getText()));
-            // parentWindow.addToAllRacer(racer);
-            // team.addPoints(Integer.parseInt(inputPointField.getText()));
-            // parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
-            // clearInputs();
-            // parentWindow.addRacer(racer);
-            // }
-            // } catch (EmptyAddInputException exception) {
-            // JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidNameInputException exception) {
-            // JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidAgeInputException exception) {
-            // JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTeamInputException exception) {
-            // JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidPointInputException exception) {
-            // JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // }
+                if (track == null) {
+                    track = new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText()));
+                    if (comboRacer.getSelectedIndex() != 0) {
+                        Racer racer = MainRacerGUI.isAtRacerList();
+                    }
+                    parentWindow.addToAllTracks(track);
+                    clearInputs();
+                    parentWindow.setTrackTable();
+                }
+            } catch (EmptyAddInputException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTrackNameInputException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTrackLengthInputException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -229,8 +202,26 @@ public class AddTrackGUI {
         }
     }
 
+    private void checkTrackInputDate() throws InvalidTrackNameInputException, InvalidTrackLengthInputException {
+        if (!Validation.isValidTrackName(inputNameField.getText()))
+            throw new InvalidTrackNameInputException();
+        if (!Validation.isValidTrackLength(inputLengthField.getText()))
+            throw new InvalidTrackLengthInputException();
+    }
+
     public void setAddTrackVisibility(boolean value) {
         AddTrackGUI.setVisible(value);
+    }
+
+    private void updateComboRacer() {
+        comboRacer.removeAllItems();
+        comboRacer.setSelectedItem(null);
+        comboRacer.addItem("Нет");
+        comboRacer.setSelectedIndex(0);
+        List<Racer> allRacers = parentWindow.getParentWindow().getMainRacerGUI().getAllRacers();
+        for (Racer racer : allRacers) {
+            comboRacer.addItem(racer.getRacerName());
+        }
     }
 
     // private void setComboBox() {

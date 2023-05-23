@@ -44,4 +44,22 @@ public class Validation {
         return input.matches("^0|([1-9]\\d{0,5})$");
     }
 
+    /***
+     * 
+     * @param input track name passed
+     * @return true if the correct track name is passed else false
+     */
+    public static boolean isValidTrackName(String input) {
+        return input.matches("^[А-Яа-яA-Za-z0-9 _-]*$");
+    }
+
+    /***
+     * 
+     * @param input track length passed
+     * @return true if the correct track length is passed else false
+     */
+    public static boolean isValidTrackLength(String input) {
+        return input.matches("^([1-9]\\d{0,5})$");
+    }
+
 }

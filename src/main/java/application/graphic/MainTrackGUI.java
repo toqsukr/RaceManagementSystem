@@ -1,6 +1,8 @@
 package application.graphic;
 
 import util.CreateReport;
+import race.system.Racer;
+import race.system.Track;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -14,6 +16,7 @@ import java.awt.event.WindowListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.appender.ConsoleAppender;
@@ -23,11 +26,16 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.App;
+import database.TrackDao;
+
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -75,6 +83,8 @@ public class MainTrackGUI extends JFrame {
 
     private static final JButton fromDataBaseBtn = new JButton();
 
+    private JComboBox<String> comboRacer = new JComboBox<>();
+
     /**
      * This bar is used to store buttons
      */
@@ -103,7 +113,7 @@ public class MainTrackGUI extends JFrame {
     /**
      * Create the table
      */
-    private final JTable teams = new JTable(trackTable) {
+    private final JTable tracks = new JTable(trackTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
             return getEditingPermit();
@@ -113,7 +123,7 @@ public class MainTrackGUI extends JFrame {
     /**
      * Creation of the scroll panel
      */
-    private final JScrollPane scroll = new JScrollPane(teams);
+    private final JScrollPane scroll = new JScrollPane(tracks);
 
     /***
      * Variable storing table edit status
@@ -127,7 +137,9 @@ public class MainTrackGUI extends JFrame {
 
     private MainMenuGUI parentWindow;
 
-    private AddTrackGUI addTrackWindow = new AddTrackGUI(this);
+    private AddTrackGUI addTrackWindow;
+
+    private List<Track> allTracks;
 
     /***
      * The function creating mainTrackGUI
@@ -167,21 +179,24 @@ public class MainTrackGUI extends JFrame {
             URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/track.png");
             mainTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
             toolBar.setFloatable(false);
-            teams.getTableHeader().setReorderingAllowed(false);
+            tracks.getTableHeader().setReorderingAllowed(false);
 
             try {
-                parentWindow.getMainRacerGUI().setAllTeams(parentWindow.getMainRacerGUI().getTeamData());
-                parentWindow.getMainRacerGUI().setAllRacers(parentWindow.getMainRacerGUI().getRacerData());
-                logger.info("Data were downloaded successful!");
+                allTracks = getTrackData();
+                setTrackTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
-                logger.error("Error reading database!");
-
             }
 
+            addTrackWindow = new AddTrackGUI(this);
+
+            updateComboRacer();
             Container container = mainTrackGUI.getContentPane();
             container.setLayout(new BorderLayout());
+
+            DefaultCellEditor editor = new DefaultCellEditor(comboRacer);
+            tracks.getColumnModel().getColumn(2).setCellEditor(editor);
 
             URL addIcon = this.getClass().getClassLoader().getResource("img/add_track.png");
             addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
@@ -451,5 +466,55 @@ public class MainTrackGUI extends JFrame {
      */
     public void setMainTrackEnable(boolean value) {
         mainTrackGUI.setEnabled(value);
+    }
+
+    public MainMenuGUI getParentWindow() {
+        return parentWindow;
+    }
+
+    public List<Track> getTrackData() throws InterruptedException {
+        TrackDao trackDao = new TrackDao(App.getEntityManager());
+        return trackDao.getAllTracks();
+    }
+
+    public List<Track> getAllTracks() {
+        return allTracks;
+    }
+
+    public void setTrackTable() {
+        if (trackTable.getRowCount() != 0)
+            MainRacerGUI.clearTable(trackTable);
+
+        for (Track track : allTracks) {
+            trackTable.addRow(new String[] { track.getTrackName(), track.getTrackLength().toString(),
+                    track.getWinner().getRacerName() });
+        }
+    }
+
+    public static Track isAtTrackList(List<Track> tracks, Track track) {
+        Track answer = null;
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).getTrackName().equals(track.getTrackName())
+                    && tracks.get(i).getTrackLength().equals(track.getTrackLength())) {
+                answer = tracks.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    public void addToAllTracks(Track track) {
+        allTracks.add(track);
+    }
+
+    private void updateComboRacer() {
+        comboRacer.removeAllItems();
+        comboRacer.setSelectedItem(null);
+        comboRacer.addItem("Нет");
+        comboRacer.setSelectedIndex(0);
+        List<Racer> allRacers = parentWindow.getMainRacerGUI().getAllRacers();
+        for (Racer racer : allRacers) {
+            comboRacer.addItem(racer.getRacerName());
+        }
     }
 }

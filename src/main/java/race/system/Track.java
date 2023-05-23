@@ -48,4 +48,14 @@ public class Track {
     public void setWinner(Racer racer) {
         trackWinner = racer;
     }
+
+    public Track() {
+        trackName = null;
+        trackLength = 0;
+    }
+
+    public Track(String name, int length) {
+        trackName = name;
+        trackLength = length;
+    }
 }
