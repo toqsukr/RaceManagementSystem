@@ -18,6 +18,9 @@ import java.awt.event.*;
 import java.net.URL;
 
 import javax.swing.*;
+
+import application.App;
+import database.TeamDao;
 import util.Validation;
 
 public class AddRacerGUI {
@@ -80,7 +83,7 @@ public class AddRacerGUI {
         teamCheckBox.setFocusable(false);
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
         cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
-        inputTeamField.setVisible(false);
+        setInputTeamVisibility(false);
 
         Box leftBox = Box.createVerticalBox();
         Box centerBox = Box.createVerticalBox();
@@ -196,8 +199,8 @@ public class AddRacerGUI {
 
         @Override
         public void itemStateChanged(ItemEvent e) {
-            inputTeamField.setVisible(!inputTeamField.isVisible());
-            comboTeam.setVisible(!comboTeam.isVisible());
+            setInputTeamVisibility(!inputTeamField.isVisible());
+            setComboTeamVisibility(!comboTeam.isVisible());
         }
 
     }
@@ -213,7 +216,11 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
                 parentWindow.getRacerDao().updateFreeID(parentWindow.getAllRacers());
-
+                if (!comboTeam.isVisible() && !teamCheckBox.isVisible()) {
+                    setComboTeamVisibility(true);
+                    setTeamCheckBoxVisibility(true);
+                    setInputTeamVisibility(false);
+                }
                 String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
                         : comboTeam.getSelectedItem().toString();
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
@@ -266,19 +273,18 @@ public class AddRacerGUI {
         public void actionPerformed(ActionEvent e) {
             clearInputs();
             parentWindow.setMainRacerEnable(true);
-            addRacerGUI.setVisible(false);
+            setAddRacerVisibility(false);
         }
     }
 
     private void setComboBox() {
-        em.getTransaction().begin();
-        List<Team> allTeams = em.createQuery("FROM Team", Team.class).getResultList();
+        TeamDao teamDao = new TeamDao(App.getEntityManager());
+        List<Team> allTeams = teamDao.getAllTeams();
         String[] arr = new String[allTeams.size()];
         for (int i = 0; i < allTeams.size(); i++) {
             arr[i] = allTeams.get(i).getTeamName();
         }
         comboTeam = new JComboBox<String>(arr);
-        em.getTransaction().commit();
     }
 
     public void addItemComboTeam(String item) {
@@ -304,6 +310,13 @@ public class AddRacerGUI {
         for (Team team : parentWindow.getAllTeams()) {
             addItemComboTeam(team.getTeamName());
         }
+        if (comboTeam.getItemAt(0) == null) {
+            setTeamCheckBoxVisibility(false);
+            setComboTeamVisibility(false);
+        } else {
+            setTeamCheckBoxVisibility(true);
+            setComboTeamVisibility(true);
+        }
     }
 
     public JComboBox<String> getComboTeam() {
@@ -312,6 +325,10 @@ public class AddRacerGUI {
 
     public void setAddRacerVisibility(boolean value) {
         addRacerGUI.setVisible(value);
+    }
+
+    public void setInputTeamVisibility(boolean value) {
+        inputTeamField.setVisible(value);
     }
 
 }

@@ -1,20 +1,14 @@
 package application.graphic;
 
 import exception.EmptyAddInputException;
-import exception.InvalidAgeInputException;
-import exception.InvalidNameInputException;
-import exception.InvalidPointInputException;
-import exception.InvalidTeamInputException;
 import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import race.system.Racer;
-import race.system.Team;
 import race.system.Track;
 
-import java.util.HashMap;
 import java.util.List;
 
 import java.awt.*;
@@ -106,14 +100,14 @@ public class AddTrackGUI {
 
         centerBox.add(Box.createRigidArea(new Dimension(20, 60)));
 
-        nameBox.add(Box.createRigidArea(new Dimension(45, 0)));
+        nameBox.add(Box.createRigidArea(new Dimension(35, 0)));
         nameBox.add(nameLabel);
         nameBox.add(Box.createRigidArea(new Dimension(16, 0)));
         nameBox.add(inputNameField);
         centerBox.add(nameBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        lengthBox.add(Box.createRigidArea(new Dimension(45, 0)));
+        lengthBox.add(Box.createRigidArea(new Dimension(35, 0)));
         lengthBox.add(lengthLabel);
         lengthBox.add(Box.createRigidArea(new Dimension(34, 0)));
         lengthBox.add(inputLengthField);
@@ -122,7 +116,7 @@ public class AddTrackGUI {
 
         winnerBox.add(Box.createRigidArea(new Dimension(15, 0)));
         Box winnerLabelBox = Box.createHorizontalBox();
-        winnerLabelBox.add(Box.createRigidArea(new Dimension(30, 0)));
+        winnerLabelBox.add(Box.createRigidArea(new Dimension(20, 0)));
         winnerLabelBox.add(winnerLabel);
 
         Box teamInnerBox = Box.createVerticalBox();
@@ -138,7 +132,7 @@ public class AddTrackGUI {
         centerBox.add(toolBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 40)));
 
-        rightBox.add(Box.createRigidArea(new Dimension(45, 0)));
+        rightBox.add(Box.createRigidArea(new Dimension(35, 0)));
 
         container.add(leftBox, BorderLayout.WEST);
         container.add(centerBox, BorderLayout.CENTER);

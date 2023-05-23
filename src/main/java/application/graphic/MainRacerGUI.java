@@ -614,6 +614,11 @@ public class MainRacerGUI extends JFrame {
                                         MainRacerGUI.deleteItemComboBox(searchTeam, allTeams.indexOf(removingTeam) + 1);
                                         MainRacerGUI.deleteItemComboBox(addRacerWindow.getComboTeam(),
                                                 allTeams.indexOf(removingTeam));
+                                        if (addRacerWindow.getComboTeam().getItemAt(0) == null) {
+                                            addRacerWindow.setComboTeamVisibility(false);
+                                            addRacerWindow.setTeamCheckBoxVisibility(false);
+                                            addRacerWindow.setInputTeamVisibility(true);
+                                        }
                                         teamDao.addFreeID(removingTeam.getTeamID());
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     } else {
