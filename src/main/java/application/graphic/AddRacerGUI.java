@@ -18,7 +18,6 @@ import java.awt.event.*;
 import java.net.URL;
 
 import javax.swing.*;
-
 import util.Validation;
 
 public class AddRacerGUI {
@@ -231,6 +230,7 @@ public class AddRacerGUI {
                 if (racer == null) {
                     racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
                             Integer.parseInt(inputPointField.getText()));
+                    racer.setRacerID(parentWindow.getRacerDao().getFreeID());
                     parentWindow.addToAllRacer(racer);
                     team.addPoints(Integer.parseInt(inputPointField.getText()));
                     parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();

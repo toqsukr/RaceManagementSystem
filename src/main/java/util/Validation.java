@@ -5,6 +5,11 @@ package util;
  */
 
 public class Validation {
+
+    public static boolean isValidID(String input) {
+        return input.matches("^(?:[0-9]|[1-9][0-9]{1,2}|2000)$");
+    }
+
     /***
      * 
      * @param input name passed
@@ -59,7 +64,7 @@ public class Validation {
      * @return true if the correct track length is passed else false
      */
     public static boolean isValidTrackLength(String input) {
-        return input.matches("^([1-9]\\d{0,5})$");
+        return input.matches("^([1-9]\\d{0,4})$");
     }
 
 }

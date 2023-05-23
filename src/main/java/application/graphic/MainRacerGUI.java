@@ -215,6 +215,12 @@ public class MainRacerGUI extends JFrame {
 
     private MainMenuGUI parentWindow;
 
+    private RacerDao racerDao = new RacerDao(App.getEntityManager());
+
+    private TeamDao teamDao = new TeamDao(App.getEntityManager());
+
+    private TrackDao trackDao = new TrackDao(App.getEntityManager());
+
     /***
      * The function creating MainRacerGUI
      */
@@ -287,6 +293,7 @@ public class MainRacerGUI extends JFrame {
                 allTeams = getTeamData();
                 allRacers = getRacerData();
                 setRacerTable();
+                racerDao.updateFreeID(allRacers);
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
                         JOptionPane.PLAIN_MESSAGE);
@@ -441,8 +448,9 @@ public class MainRacerGUI extends JFrame {
                     addRacerWindow.clearComboTeam();
                     allTeams.clear();
                     allRacers.clear();
-                    allTeams = getTeamData(); // очки команды идут по пизде
-                    allRacers = getRacerData(); // гонщиков он получает нормально
+                    allTeams = getTeamData();
+                    allRacers = getRacerData();
+                    racerDao.updateFreeID(allRacers);
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
@@ -586,17 +594,18 @@ public class MainRacerGUI extends JFrame {
                         int j = racers.getRowCount() - 1;
                         while (j > -1) {
                             if (j == racers.getSelectedRows()[i]) {
+                                String removingId = racers.getValueAt(racers.getSelectedRows()[i], 0).toString();
                                 String removingName = racers.getValueAt(racers.getSelectedRows()[i], 1).toString();
                                 String removingAge = racers.getValueAt(racers.getSelectedRows()[i], 2).toString();
                                 String removingTeamName = racers.getValueAt(racers.getSelectedRows()[i], 3).toString();
                                 String removingPoints = racers.getValueAt(racers.getSelectedRows()[i], 4).toString();
-                                additionalSearchDelete(fullSearchTable, removingName, removingAge, removingTeamName,
-                                        removingPoints);
+                                additionalSearchDelete(fullSearchTable, removingId);
                                 Team removingTeam = isAtTeamList(allTeams, removingTeamName);
                                 racerTable.removeRow(racers.getSelectedRows()[i]);
                                 Racer removingRacer = isAtRacerList(allRacers, removingName,
                                         removingAge, removingTeamName, removingPoints);
                                 if (removingRacer != null) {
+                                    racerDao.addFreeID(removingRacer.getRacerID());
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
                                         MainRacerGUI.deleteItemComboBox(comboTeam, allTeams.indexOf(removingTeam));
@@ -660,6 +669,7 @@ public class MainRacerGUI extends JFrame {
                         allRacers.clear();
                         allTeams.clear();
                         setTeamsAndRacers();
+                        racerDao.updateFreeID(allRacers);
                         updateComboTeam();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
@@ -1102,10 +1112,12 @@ public class MainRacerGUI extends JFrame {
      */
     public void addRacer(Racer racer) {
         racerTable.addRow(
-                new String[] { racer.getRacerName(), racer.getRacerAge().toString(), racer.getTeam().getTeamName(),
+                new String[] { racer.getRacerID().toString(), racer.getRacerName(), racer.getRacerAge().toString(),
+                        racer.getTeam().getTeamName(),
                         racer.getRacerPoints().toString() });
         fullSearchTable.addRow(
-                new String[] { racer.getRacerName(), racer.getRacerAge().toString(), racer.getTeam().getTeamName(),
+                new String[] { racer.getRacerID().toString(), racer.getRacerName(), racer.getRacerAge().toString(),
+                        racer.getTeam().getTeamName(),
                         racer.getRacerPoints().toString() });
     }
 
@@ -1156,12 +1168,10 @@ public class MainRacerGUI extends JFrame {
      * @param team   the value of column team of transfered row
      * @param points the value of column points of transfered row
      */
-    private void additionalSearchDelete(DefaultTableModel table, String name, String age, String team,
-            String points) {
+    private void additionalSearchDelete(DefaultTableModel table, String id) {
         for (int i = 0; i < table.getRowCount(); i++) {
-            if (!name.isEmpty() && !age.isEmpty() && !team.isEmpty() && !points.isEmpty()) {
-                if (table.getValueAt(i, 1).equals(name) && table.getValueAt(i, 2).equals(age)
-                        && table.getValueAt(i, 3).equals(team) && table.getValueAt(i, 4).equals(points)) {
+            if (!id.isEmpty()) {
+                if (table.getValueAt(i, 0).equals(id)) {
                     table.removeRow(i);
                 }
             }
@@ -1200,12 +1210,10 @@ public class MainRacerGUI extends JFrame {
     }
 
     public List<Team> getTeamData() throws InterruptedException {
-        TeamDao teamdDao = new TeamDao(App.getEntityManager());
-        return teamdDao.getAllTeams();
+        return teamDao.getAllTeams();
     }
 
     public List<Racer> getRacerData() throws InterruptedException {
-        RacerDao racerDao = new RacerDao(App.getEntityManager());
         return racerDao.getAllRacers();
     }
 
@@ -1303,9 +1311,6 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void syncronizeData() {
-        RacerDao racerDao = new RacerDao(App.getEntityManager());
-        TeamDao teamDao = new TeamDao(App.getEntityManager());
-        TrackDao trackDao = new TrackDao(App.getEntityManager());
         if (isOpenFile) {
             racerDao.clearRacer();
             teamDao.clearTeam();
@@ -1331,7 +1336,6 @@ public class MainRacerGUI extends JFrame {
 
         for (Racer racer : allRacers) {
             if (racerDao.findRacer(racer.getRacerID()) == null) {
-                racer.setRacerID(null);
                 racerDao.saveRacer(racer);
             } else
                 racerDao.updateRacer(racer);
@@ -1383,6 +1387,7 @@ public class MainRacerGUI extends JFrame {
 
     public void addToAllRacer(Racer racer) {
         allRacers.add(racer);
+        racerDao.updateFreeID(allRacers);
     }
 
     public void setRacerTable() {
@@ -1468,8 +1473,6 @@ public class MainRacerGUI extends JFrame {
     }
 
     public void checkIdenticalData() throws IdenticalDataException {
-        RacerDao racerDao = new RacerDao(App.getEntityManager());
-        TeamDao teamDao = new TeamDao(App.getEntityManager());
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
         if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
@@ -1484,6 +1487,7 @@ public class MainRacerGUI extends JFrame {
         boolean isTeam;
         for (int i = 0; i < racerTable.getRowCount(); i++) {
             isTeam = false;
+            String id = racerTable.getValueAt(i, 0).toString();
             String name = racerTable.getValueAt(i, 1).toString();
             String age = racerTable.getValueAt(i, 2).toString();
             String teamName = racerTable.getValueAt(i, 3).toString();
@@ -1500,6 +1504,7 @@ public class MainRacerGUI extends JFrame {
             if (isAtRacerList(allRacers, name, age, teamName, points) == null) {
                 Racer racer = new Racer(name, Integer.parseInt(age), team,
                         Integer.parseInt(points));
+                racer.setRacerID(Integer.parseInt(id));
                 team.addPoints(Integer.parseInt(points));
                 if (isTeam)
                     team.expandRacerNumber();
@@ -1520,10 +1525,12 @@ public class MainRacerGUI extends JFrame {
         return parentWindow;
     }
 
-    public static boolean isAtTable(DefaultTableModel table, String name, String age, String team, String points) {
+    public static boolean isAtTable(DefaultTableModel table, String id, String name, String age, String team,
+            String points) {
         boolean answer = false;
         for (int i = 0; i < table.getRowCount(); i++) {
-            if (table.getValueAt(i, 1).equals(name) && table.getValueAt(i, 2).equals(age)
+            if (table.getValueAt(i, 0).equals(id) && table.getValueAt(i, 1).equals(name)
+                    && table.getValueAt(i, 2).equals(age)
                     && table.getValueAt(i, 3).equals(team) && table.getValueAt(i, 4).equals(points)) {
                 answer = true;
                 break;
@@ -1557,5 +1564,9 @@ public class MainRacerGUI extends JFrame {
 
     public void deleteFromAllRacers(int index) {
         allRacers.remove(index);
+    }
+
+    public RacerDao getRacerDao() {
+        return racerDao;
     }
 }

@@ -13,7 +13,6 @@ public class Racer {
 
     @Id
     @Column(name = "racerID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getRacerID() {
         return racerID;
     }
@@ -60,6 +59,7 @@ public class Racer {
     }
 
     public Racer() {
+        racerID = 0;
     };
 
     public Racer(String name, Integer age, Team team, Integer points) {

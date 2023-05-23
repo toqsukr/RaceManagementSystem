@@ -41,9 +41,9 @@ public class FileManage {
             throw new FileNotFoundException("Файл " + fileName + " не найден!");
         BufferedReader reader = new BufferedReader(new FileReader(fileName));
         int rows = table.getRowCount();
-        String racer;
-        racer = reader.readLine();
-        if (racer != null) {
+        String id;
+        id = reader.readLine();
+        if (id != null) {
             for (int i = 0; i < rows; i++)
                 table.removeRow(0); // Очистка таблицы
         } else {
@@ -51,20 +51,22 @@ public class FileManage {
             throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
         }
         do {
-            if (racer != null) {
+            if (id != null) {
+                String name = reader.readLine();
                 String age = reader.readLine();
                 String team = reader.readLine();
                 String points = reader.readLine();
-                if (!Validation.isValidName(racer) || !Validation.isValidAge(age) || !Validation.isValidTeam(team)
+                if (!Validation.isValidID(id) || !Validation.isValidName(name) || !Validation.isValidAge(age)
+                        || !Validation.isValidTeam(team)
                         || !Validation.isValidPoint(points)) {
                     reader.close();
                     throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
                 }
-                table.addRow(new String[] { racer, age, team, points }); // Запись строки в таблицу
+                table.addRow(new String[] { id, name, age, team, points }); // Запись строки в таблицу
             }
-            racer = reader.readLine();
+            id = reader.readLine();
 
-        } while (racer != null);
+        } while (id != null);
         reader.close();
     }
 
@@ -118,16 +120,18 @@ public class FileManage {
             // Получение списка атрибутов элемента
             NamedNodeMap attrs = elem.getAttributes();
             // Чтение атрибутов элемента
-            if (attrs.getNamedItem("name") == null || attrs.getNamedItem("age") == null
+            if (attrs.getNamedItem("id") == null || attrs.getNamedItem("name") == null
+                    || attrs.getNamedItem("age") == null
                     || attrs.getNamedItem("team") == null || attrs.getNamedItem("points") == null)
                 throw new ReadFileException("Ошибка чтения файла!\nПроверьте корректность данных!");
+            String id = attrs.getNamedItem("id").getNodeValue();
             String name = attrs.getNamedItem("name").getNodeValue();
             String age = attrs.getNamedItem("age").getNodeValue();
             String team = attrs.getNamedItem("team").getNodeValue();
             String points = attrs.getNamedItem("points").getNodeValue();
             // Запись данных в таблицу
-            if (!MainRacerGUI.isAtTable(table, name, age, team, points))
-                table.addRow(new String[] { name, age, team, points });
+            if (!MainRacerGUI.isAtTable(table, id, name, age, team, points))
+                table.addRow(new String[] { id, name, age, team, points });
         }
     }
 
@@ -144,10 +148,11 @@ public class FileManage {
             for (int i = 0; i < table.getRowCount(); i++) {
                 Element racer = doc.createElement("racer");
                 racerlist.appendChild(racer);
-                racer.setAttribute("name", (String) table.getValueAt(i, 0));
-                racer.setAttribute("age", (String) table.getValueAt(i, 1));
-                racer.setAttribute("team", (String) table.getValueAt(i, 2));
-                racer.setAttribute("points", (String) table.getValueAt(i, 3));
+                racer.setAttribute("id", (String) table.getValueAt(i, 0));
+                racer.setAttribute("name", (String) table.getValueAt(i, 1));
+                racer.setAttribute("age", (String) table.getValueAt(i, 2));
+                racer.setAttribute("team", (String) table.getValueAt(i, 3));
+                racer.setAttribute("points", (String) table.getValueAt(i, 4));
             }
             // Создание преобразователя документа
             Transformer trans = TransformerFactory.newInstance().newTransformer();
