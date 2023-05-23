@@ -634,6 +634,8 @@ public class MainRacerGUI extends JFrame {
                         }
                         i--;
                     }
+                    parentWindow.getMainTrackGUI().updateComboRacer();
+                    parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                 }
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка удаления",

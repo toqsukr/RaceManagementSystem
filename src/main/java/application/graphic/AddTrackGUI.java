@@ -216,7 +216,7 @@ public class AddTrackGUI {
         AddTrackGUI.setVisible(value);
     }
 
-    private void updateComboRacer() {
+    public void updateComboRacer() {
         comboRacer.removeAllItems();
         comboRacer.setSelectedItem(null);
         comboRacer.addItem("Нет");

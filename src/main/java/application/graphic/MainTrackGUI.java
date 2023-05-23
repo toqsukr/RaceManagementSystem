@@ -517,7 +517,7 @@ public class MainTrackGUI extends JFrame {
         allTracks.add(track);
     }
 
-    private void updateComboRacer() {
+    public void updateComboRacer() {
         comboRacer.removeAllItems();
         comboRacer.setSelectedItem(null);
         comboRacer.addItem("Нет");
@@ -526,5 +526,13 @@ public class MainTrackGUI extends JFrame {
         for (Racer racer : allRacers) {
             comboRacer.addItem(racer.getRacerName());
         }
+    }
+
+    public JComboBox<String> getComboRacer() {
+        return comboRacer;
+    }
+
+    public AddTrackGUI getAddTrackWindow() {
+        return addTrackWindow;
     }
 }
