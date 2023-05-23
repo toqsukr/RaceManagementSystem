@@ -50,11 +50,13 @@ public class Track {
     }
 
     public Track() {
+        trackID = 0;
         trackName = null;
         trackLength = 0;
     }
 
     public Track(String name, int length) {
+        trackID = 0;
         trackName = name;
         trackLength = length;
     }

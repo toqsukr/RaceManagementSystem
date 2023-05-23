@@ -166,20 +166,25 @@ public class AddTrackGUI {
                 checkEmptyInputs();
                 checkTrackInputDate();
 
-                // Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
-                // new Track(inputNameField.getText(),
-                // Integer.parseInt(inputLengthField.getText())));
+                Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
+                        new Track(inputNameField.getText(),
+                                Integer.parseInt(inputLengthField.getText())));
 
-                // if (track == null) {
-                // track = new Track(inputNameField.getText(),
-                // Integer.parseInt(inputLengthField.getText()));
-                // if (comboRacer.getSelectedIndex() != 0) {
-                // Racer racer = MainRacerGUI.isAtRacerList();
-                // }
-                // parentWindow.addToAllTracks(track);
-                // clearInputs();
-                // parentWindow.setTrackTable();
-                // }
+                if (track == null) {
+                    track = new Track(inputNameField.getText(),
+                            Integer.parseInt(inputLengthField.getText()));
+                    if (comboRacer.getSelectedIndex() != 0) {
+                        String string = comboRacer.getSelectedItem().toString();
+                        Racer racer = MainRacerGUI.isAtRacerList(
+                                parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
+                                Integer.parseInt(
+                                        string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
+                        track.setWinner(racer);
+                    }
+                    parentWindow.addToAllTracks(track);
+                    clearInputs();
+                    parentWindow.setTrackTable();
+                }
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);

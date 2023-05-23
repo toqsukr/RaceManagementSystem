@@ -221,4 +221,8 @@ public class MainMenuGUI {
     public MainTeamGUI getMainTeamGUI() {
         return mainTeamWindow;
     }
+
+    public MainTrackGUI getMainTrackGUI() {
+        return mainTrackWindow;
+    }
 }

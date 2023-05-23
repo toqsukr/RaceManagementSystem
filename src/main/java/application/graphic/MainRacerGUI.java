@@ -30,6 +30,7 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import application.App;
 import database.RacerDao;
 import database.TeamDao;
+import database.TrackDao;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -58,6 +59,7 @@ import exception.UnselectedDeleteException;
 import exception.NothingDataException;
 import race.system.Racer;
 import race.system.Team;
+import race.system.Track;
 import util.CreateReport;
 import util.FileManage;
 import util.Validation;
@@ -1218,6 +1220,17 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
+    public static Racer isAtRacerList(List<Racer> racers, Integer id) {
+        Racer answer = null;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getRacerID().equals(id)) {
+                answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
     public static Racer isAtRacerList(List<Racer> racers, String name, String age, String team, String points) {
         Racer answer = null;
         for (int i = 0; i < racers.size(); i++) {
@@ -1292,10 +1305,20 @@ public class MainRacerGUI extends JFrame {
     public void syncronizeData() {
         RacerDao racerDao = new RacerDao(App.getEntityManager());
         TeamDao teamDao = new TeamDao(App.getEntityManager());
+        TrackDao trackDao = new TrackDao(App.getEntityManager());
         if (isOpenFile) {
             racerDao.clearRacer();
             teamDao.clearTeam();
+            trackDao.clearTrack();
             setIsOpenFile(false);
+        }
+        List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
+        for (Track track : allTracks) {
+            if (trackDao.findTrack(track.getTrackID()) == null) {
+                trackDao.updateTrackID(track, null);
+                trackDao.saveTrack(track);
+            } else
+                trackDao.updateTrack(track);
         }
 
         for (Team team : allTeams) {
@@ -1316,6 +1339,7 @@ public class MainRacerGUI extends JFrame {
 
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
+        List<Track> dbTracks = trackDao.getAllTracks();
         for (Racer racer : dbRacers) {
             if (isAtRacerList(allRacers, racer.getRacerName(), racer.getRacerAge().toString(),
                     racer.getTeam().getTeamName(), racer.getRacerPoints().toString()) == null)
@@ -1325,6 +1349,11 @@ public class MainRacerGUI extends JFrame {
         for (Team team : dbTeams) {
             if (isAtTeamList(allTeams, team) == null)
                 teamDao.deleteTeam(team);
+        }
+
+        for (Track track : dbTracks) {
+            if (MainTrackGUI.isAtTrackList(allTracks, track) == null)
+                trackDao.deleteTrack(track);
         }
     }
 

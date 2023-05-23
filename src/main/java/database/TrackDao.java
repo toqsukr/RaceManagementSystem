@@ -54,6 +54,12 @@ public class TrackDao {
 
     }
 
+    public void updateTrackID(Track track, Integer value) {
+        em.getTransaction().begin();
+        track.setTrackID(value);
+        em.getTransaction().commit();
+    }
+
     public void updateTrack(Track track) {
         try {
             em.getTransaction().begin();
