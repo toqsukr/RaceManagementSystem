@@ -161,7 +161,6 @@ public class MainTeamGUI extends JFrame {
             mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    parentWindow.setMainMenuEnable(true);
                     stopLogging(context);
                     mainTeamGUI.dispose();
                 }

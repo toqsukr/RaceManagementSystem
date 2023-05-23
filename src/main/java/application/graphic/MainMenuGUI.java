@@ -171,7 +171,6 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainRacerWindow.setVisible(true);
-            setMainMenuEnable(false);
         }
     }
 
@@ -183,7 +182,6 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainTeamWindow.setVisible(true);
-            setMainMenuEnable(false);
         }
     }
 
@@ -195,7 +193,6 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainTrackWindow.setVisible(true);
-            setMainMenuEnable(false);
         }
     }
 

@@ -216,13 +216,16 @@ public class AddRacerGUI {
                 checkEmptyInputs();
                 checkRacerInputDate();
                 parentWindow.getRacerDao().updateFreeID(parentWindow.getAllRacers());
+                String teamName;
                 if (!comboTeam.isVisible() && !teamCheckBox.isVisible()) {
                     setComboTeamVisibility(true);
                     setTeamCheckBoxVisibility(true);
                     setInputTeamVisibility(false);
+                    teamName = inputTeamField.getText();
+                } else {
+                    teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
+                            : comboTeam.getSelectedItem().toString();
                 }
-                String teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
-                        : comboTeam.getSelectedItem().toString();
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
                 if (team == null) {
                     team = new Team(teamName);
@@ -331,4 +334,7 @@ public class AddRacerGUI {
         inputTeamField.setVisible(value);
     }
 
+    public void setCheckBoxValue(boolean value) {
+        teamCheckBox.setSelected(value);
+    }
 }

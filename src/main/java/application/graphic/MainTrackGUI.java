@@ -167,7 +167,6 @@ public class MainTrackGUI extends JFrame {
             mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    parentWindow.setMainMenuEnable(true);
                     stopLogging(context);
                     mainTrackGUI.dispose();
                 }
