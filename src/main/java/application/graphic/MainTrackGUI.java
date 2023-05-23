@@ -182,6 +182,7 @@ public class MainTrackGUI extends JFrame {
 
             try {
                 allTracks = getTrackData();
+                parentWindow.getMainRacerGUI().getTrackDao().updateFreeID(allTracks);
                 setTrackTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -485,8 +486,13 @@ public class MainTrackGUI extends JFrame {
             MainRacerGUI.clearTable(trackTable);
 
         for (Track track : allTracks) {
-            trackTable.addRow(new String[] { track.getTrackName(), track.getTrackLength().toString(),
-                    track.getWinner().getRacerName() });
+            String winner;
+            if (track.getWinner() != null)
+                winner = track.getWinner().getRacerName() + " (ID: " + track.getWinner().getRacerID() + ")";
+            else
+                winner = "Нет";
+
+            trackTable.addRow(new String[] { track.getTrackName(), track.getTrackLength().toString(), winner });
         }
     }
 
@@ -524,7 +530,7 @@ public class MainTrackGUI extends JFrame {
         comboRacer.setSelectedIndex(0);
         List<Racer> allRacers = parentWindow.getMainRacerGUI().getAllRacers();
         for (Racer racer : allRacers) {
-            comboRacer.addItem(racer.getRacerName());
+            comboRacer.addItem(racer.getRacerName() + " (ID: " + racer.getRacerID() + ")");
         }
     }
 

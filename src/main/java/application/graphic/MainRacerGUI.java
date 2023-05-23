@@ -453,6 +453,7 @@ public class MainRacerGUI extends JFrame {
                     allRacers = getRacerData();
                     racerDao.updateFreeID(allRacers);
                     teamDao.updateFreeID(allTeams);
+                    trackDao.updateFreeID(parentWindow.getMainTrackGUI().getAllTracks());
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
@@ -681,6 +682,8 @@ public class MainRacerGUI extends JFrame {
                         allTeams.clear();
                         setTeamsAndRacers();
                         updateComboTeam();
+                        parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                        parentWindow.getMainTrackGUI().updateComboRacer();
                         if (comboTeam.getComponentCount() == 0) {
                             addRacerWindow.setComboTeamVisibility(false);
                             addRacerWindow.setTeamCheckBoxVisibility(false);
@@ -1523,7 +1526,7 @@ public class MainRacerGUI extends JFrame {
             } else
                 isTeam = true;
 
-            if (isAtRacerList(allRacers, name, age, teamName, points) == null) {
+            if (isAtRacerList(allRacers, Integer.parseInt(id)) == null) {
                 Racer racer = new Racer(name, Integer.parseInt(age), team,
                         Integer.parseInt(points));
                 racer.setRacerID(Integer.parseInt(id));

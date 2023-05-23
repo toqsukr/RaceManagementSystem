@@ -172,6 +172,8 @@ public class AddTrackGUI {
                         track.setWinner(racer);
                     }
                     parentWindow.addToAllTracks(track);
+                    parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
+                            .updateFreeID(parentWindow.getAllTracks());
                     clearInputs();
                     parentWindow.setTrackTable();
                 }
