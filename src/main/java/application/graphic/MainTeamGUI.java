@@ -407,6 +407,7 @@ public class MainTeamGUI extends JFrame {
                                 String removingName = teams.getValueAt(deleteIndexes[i], 0).toString();
                                 Team removingTeam = MainRacerGUI.isAtTeamList(
                                         parentWindow.getMainRacerGUI().getAllTeams(), new Team(removingName));
+                                updateTeamTrackWinners(removingTeam);
                                 teamTable.removeRow(deleteIndexes[i]);
                                 MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
@@ -419,6 +420,7 @@ public class MainTeamGUI extends JFrame {
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
                                 updateRacers(removingName);
                                 parentWindow.getMainRacerGUI().deleteFromAllTeams(removingTeam.getTeamID());
+
                                 parentWindow.getMainRacerGUI().setRacerTable();
                                 setTeamTable();
                                 break;
@@ -427,6 +429,9 @@ public class MainTeamGUI extends JFrame {
                         }
                         i--;
                     }
+                    parentWindow.getMainTrackGUI().updateComboRacer();
+                    parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                    parentWindow.getMainTrackGUI().setTrackTable();
                 }
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка удаления",
@@ -544,6 +549,14 @@ public class MainTeamGUI extends JFrame {
         for (int i = racers.size() - 1; i > -1; i--) {
             if (racers.get(i).getTeam().getTeamName().equals(teamName))
                 parentWindow.getMainRacerGUI().deleteFromAllRacers(racers.get(i).getRacerID());
+        }
+    }
+
+    public void updateTeamTrackWinners(Team team) {
+        for (Racer racer : parentWindow.getMainRacerGUI().getAllRacers()) {
+            if (racer.getTeam().getTeamID() == team.getTeamID()) {
+                parentWindow.getMainRacerGUI().updateTrackWinner(racer);
+            }
         }
     }
 }

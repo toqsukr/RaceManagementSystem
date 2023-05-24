@@ -609,6 +609,7 @@ public class MainRacerGUI extends JFrame {
                                         removingAge, removingTeamName, removingPoints);
                                 if (removingRacer != null) {
                                     racerDao.addFreeID(removingRacer.getRacerID());
+                                    updateTrackWinner(removingRacer);
                                     allRacers.remove(allRacers.indexOf(removingRacer));
                                     if (!isTeamAtRacerList(allRacers, removingTeam.getTeamID())) {
                                         MainRacerGUI.deleteItemComboBox(comboTeam, allTeams.indexOf(removingTeam));
@@ -636,6 +637,7 @@ public class MainRacerGUI extends JFrame {
                         }
                         i--;
                     }
+                    parentWindow.getMainTrackGUI().setTrackTable();
                     parentWindow.getMainTrackGUI().updateComboRacer();
                     parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                 }
@@ -1622,6 +1624,13 @@ public class MainRacerGUI extends JFrame {
         for (int i = allTeams.size() - 1; i > -1; i--) {
             if (!isTeamAtRacerList(allRacers, allTeams.get(i).getTeamID()))
                 allTeams.remove(i);
+        }
+    }
+
+    public void updateTrackWinner(Racer racer) {
+        for (Track track : parentWindow.getMainTrackGUI().getAllTracks()) {
+            if (track.getWinner() != null && track.getWinner().getRacerID() == racer.getRacerID())
+                track.setWinner(null);
         }
     }
 }

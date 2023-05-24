@@ -26,7 +26,6 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
-import application.App;
 import database.TrackDao;
 
 import org.apache.logging.log4j.Level;
@@ -473,7 +472,7 @@ public class MainTrackGUI extends JFrame {
     }
 
     public List<Track> getTrackData() throws InterruptedException {
-        TrackDao trackDao = new TrackDao(App.getEntityManager());
+        TrackDao trackDao = parentWindow.getMainRacerGUI().getTrackDao();
         return trackDao.getAllTracks();
     }
 
@@ -541,4 +540,16 @@ public class MainTrackGUI extends JFrame {
     public AddTrackGUI getAddTrackWindow() {
         return addTrackWindow;
     }
+
+    public static Track isRacerAtTrackList(List<Track> tracks, Racer racer) {
+        Track answer = null;
+        for (Track track : tracks) {
+            if (track.getWinner().getRacerID() == racer.getRacerID()) {
+                answer = track;
+                break;
+            }
+        }
+        return answer;
+    }
+
 }
