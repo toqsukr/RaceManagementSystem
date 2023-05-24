@@ -1,6 +1,7 @@
 package application.graphic;
 
 import util.CreateReport;
+import util.Validation;
 import race.system.Racer;
 import race.system.Track;
 
@@ -27,10 +28,13 @@ import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import database.TrackDao;
+import exception.InvalidTrackLengthInputException;
+import exception.InvalidTrackNameInputException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import javax.naming.InvalidNameException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -360,8 +364,33 @@ public class MainTrackGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            setEditingPermit(false);
-            setConfirmbarUnvisible();
+            try {
+                if (tracks.getSelectedRow() != -1)
+                    tracks.getCellEditor(tracks.getSelectedRow(), tracks.getSelectedColumn()).stopCellEditing();
+                if (!MainRacerGUI.isEqualTable(trackTable, previousTrackTable)) {
+                    checkEditedData();
+                    int result = JOptionPane.showConfirmDialog(mainTrackGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        compareEditedData();
+                        setEditingPermit(false);
+                        setConfirmbarUnvisible();
+                    }
+                } else {
+                    setEditingPermit(false);
+                    setConfirmbarUnvisible();
+                }
+            } catch (InvalidTrackNameInputException exception) {
+                logger.warn("Entered invalid track name while editing");
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTrackLengthInputException exception) {
+                logger.warn("Entered invalid track length while editing");
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -374,6 +403,8 @@ public class MainTrackGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            if (tracks.getSelectedRow() != -1)
+                tracks.getCellEditor(tracks.getSelectedRow(), tracks.getSelectedColumn()).stopCellEditing();
             MainRacerGUI.copyTable(previousTrackTable, trackTable);
             setEditingPermit(false);
             setConfirmbarUnvisible();
@@ -552,4 +583,37 @@ public class MainTrackGUI extends JFrame {
         return answer;
     }
 
+    private void compareEditedData() {
+        for (int i = 0; i < trackTable.getRowCount(); i++) {
+            String name = trackTable.getValueAt(i, 0).toString();
+            String length = trackTable.getValueAt(i, 1).toString();
+            String winner = trackTable.getValueAt(i, 2).toString();
+            if (!name.equals(allTracks.get(i).getTrackName()))
+                allTracks.get(i).setTrackName(name);
+            if (!length.equals(allTracks.get(i).getTrackLength().toString()))
+                allTracks.get(i).setTrackLength(Integer.parseInt(length));
+            if (!winner.equals("Нет")) {
+                int id = Integer.parseInt(winner.substring(winner.indexOf(':', 0) + 2, (winner.indexOf(')', 0))));
+                if (allTracks.get(i).getWinner() == null || id != allTracks.get(i).getWinner().getRacerID()) {
+                    Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getMainRacerGUI().getAllRacers(), id);
+                    allTracks.get(i).setWinner(racer);
+                }
+            } else {
+                allTracks.get(i).setWinner(null);
+            }
+        }
+    }
+
+    /***
+     * The function checks whether table data is valid
+     */
+
+    private void checkEditedData() throws InvalidTrackNameInputException, InvalidTrackLengthInputException {
+        for (int i = 0; i < trackTable.getRowCount(); i++) {
+            if (!Validation.isValidTrackName(trackTable.getValueAt(i, 0).toString()))
+                throw new InvalidTrackNameInputException(i + 1);
+            if (!Validation.isValidTrackLength(trackTable.getValueAt(i, 1).toString()))
+                throw new InvalidTrackLengthInputException(i + 1);
+        }
+    }
 }
