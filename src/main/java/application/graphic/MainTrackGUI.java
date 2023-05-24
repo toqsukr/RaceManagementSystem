@@ -31,6 +31,8 @@ import database.TrackDao;
 import exception.InvalidDataException;
 import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
+import exception.NothingDataException;
+import exception.UnselectedDeleteException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -456,7 +458,47 @@ public class MainTrackGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
+            try {
+                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", trackTable);
+                MainRacerGUI.checkDeleteSelect(tracks);
 
+                String message = tracks.getSelectedRows().length == 1
+                        ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет невозможно!";
+                int result = JOptionPane.showConfirmDialog(mainTrackGUI,
+                        message,
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+
+                    int i = tracks.getSelectedRows().length - 1;
+                    while (tracks.getSelectedRows().length > 0) {
+                        int j = tracks.getRowCount() - 1;
+                        while (j > -1) {
+                            if (j == tracks.getSelectedRows()[i]) {
+                                String removingTrackName = tracks.getValueAt(tracks.getSelectedRows()[i], 0).toString();
+                                String removingLength = tracks.getValueAt(tracks.getSelectedRows()[i], 1).toString();
+                                trackTable.removeRow(tracks.getSelectedRows()[i]);
+                                Track removingTrack = isAtTrackList(allTracks,
+                                        new Track(removingTrackName, Integer.parseInt(removingLength)));
+                                parentWindow.getMainRacerGUI().getTrackDao().addFreeID(removingTrack.getTrackID());
+                                allTracks.remove(allTracks.indexOf(removingTrack));
+                                break;
+                            }
+                            j--;
+                        }
+                        i--;
+                    }
+                    parentWindow.getMainTrackGUI().setTrackTable();
+                }
+            } catch (UnselectedDeleteException exception) {
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
