@@ -20,7 +20,7 @@ public class MainMenuGUI {
 
     private final JButton graphicBtn = new JButton("   Расписание  ");
 
-    private final JButton infoBtn = new JButton("  О программе  ");
+    private final JButton scoreBtn = new JButton("      Рекорды     ");
 
     private final JButton exitBtn = new JButton("       Выход       ");
 
@@ -77,11 +77,11 @@ public class MainMenuGUI {
         graphicBtn.setFocusable(false);
         graphicBtn.setMargin(new Insets(1, 4, 1, 8));
 
-        URL infoIcon = this.getClass().getClassLoader().getResource("img/info.png");
-        infoBtn.setIcon(new ImageIcon(new ImageIcon(infoIcon).getImage().getScaledInstance(21, 22, 4)));
-        infoBtn.setBackground(new Color(0xDFD9D9D9, false));
-        infoBtn.setFocusable(false);
-        infoBtn.setMargin(new Insets(1, 4, 1, 6));
+        URL infoIcon = this.getClass().getClassLoader().getResource("img/score.png");
+        scoreBtn.setIcon(new ImageIcon(new ImageIcon(infoIcon).getImage().getScaledInstance(21, 22, 4)));
+        scoreBtn.setBackground(new Color(0xDFD9D9D9, false));
+        scoreBtn.setFocusable(false);
+        scoreBtn.setMargin(new Insets(1, 4, 1, 6));
 
         URL exitIcon = this.getClass().getClassLoader().getResource("img/exit.png");
         exitBtn.setIcon(new ImageIcon(new ImageIcon(exitIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -126,7 +126,7 @@ public class MainMenuGUI {
         centerBox.add(Box.createRigidArea(new Dimension(0, 10)));
         centerBox.add(graphicBox);
 
-        infoBox.add(infoBtn);
+        infoBox.add(scoreBtn);
         centerBox.add(Box.createRigidArea(new Dimension(0, 10)));
         centerBox.add(infoBox);
 
