@@ -1308,6 +1308,18 @@ public class MainRacerGUI extends JFrame {
         return answer;
     }
 
+    public static Racer isAtRacerList(List<Racer> racers, String name, String team) {
+        Racer answer = null;
+        for (int i = 0; i < racers.size(); i++) {
+            if (racers.get(i).getRacerName().toLowerCase().equals(name.toLowerCase())
+                    && racers.get(i).getTeam().getTeamName().toLowerCase().equals(team.toLowerCase())) {
+                answer = racers.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
     public static boolean isTeamAtRacerList(List<Racer> racers, Integer id) {
         boolean answer = false;
         for (int i = 0; i < racers.size(); i++) {
@@ -1333,7 +1345,7 @@ public class MainRacerGUI extends JFrame {
     public static Team isAtTeamList(List<Team> teams, String team) {
         Team answer = null;
         for (int i = 0; i < teams.size(); i++) {
-            if (teams.get(i).getTeamName().equals(team)) {
+            if (teams.get(i).getTeamName().toLowerCase().equals(team.toLowerCase())) {
                 answer = teams.get(i);
                 break;
             }

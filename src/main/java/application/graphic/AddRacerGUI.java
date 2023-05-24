@@ -2,6 +2,7 @@ package application.graphic;
 
 import java.util.List;
 
+import exception.DuplicateException;
 import exception.EmptyAddInputException;
 import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
@@ -216,11 +217,13 @@ public class AddRacerGUI {
                     setComboTeamVisibility(true);
                     setTeamCheckBoxVisibility(true);
                     setInputTeamVisibility(false);
-                    teamName = inputTeamField.getText();
+                    teamName = inputTeamField.getText().trim();
                 } else {
                     teamName = teamCheckBox.isSelected() ? inputTeamField.getText()
                             : comboTeam.getSelectedItem().toString();
                 }
+                if (teamCheckBox.isSelected())
+                    checkDuplicatTeam(inputTeamField.getText().trim());
                 Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
                 if (team == null) {
                     team = new Team(teamName);
@@ -230,12 +233,20 @@ public class AddRacerGUI {
                     comboTeam.addItem(teamName);
                 } else
                     team.expandRacerNumber();
+                Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), inputNameField.getText().trim(),
+                        teamName);
+                int result = 0;
+                if (racer != null) {
+                    result = JOptionPane.showConfirmDialog(addRacerGUI,
+                            "Гонщик с таким же именем уже существует в данной команде.\nПродолжить?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                }
 
-                Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), inputNameField.getText(),
-                        inputAgeField.getText(), teamName,
-                        inputPointField.getText());
-                if (racer == null) {
-                    racer = new Racer(inputNameField.getText(), Integer.parseInt(inputAgeField.getText()), team,
+                if (result == JOptionPane.YES_OPTION) {
+                    racer = new Racer(inputNameField.getText().trim(), Integer.parseInt(inputAgeField.getText()),
+                            team,
                             Integer.parseInt(inputPointField.getText()));
                     racer.setRacerID(parentWindow.getRacerDao().getFreeID());
                     parentWindow.addToAllRacer(racer);
@@ -257,6 +268,9 @@ public class AddRacerGUI {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidPointInputException exception) {
+                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (DuplicateException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             }
@@ -331,5 +345,11 @@ public class AddRacerGUI {
 
     public void setCheckBoxValue(boolean value) {
         teamCheckBox.setSelected(value);
+    }
+
+    private void checkDuplicatTeam(String teamName) throws DuplicateException {
+        Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
+        if (team != null)
+            throw new DuplicateException("Команда с таким названием уже существует!");
     }
 }

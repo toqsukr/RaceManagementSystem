@@ -156,7 +156,7 @@ public class AddTrackGUI {
                 checkEmptyInputs();
                 checkTrackInputDate();
                 checkDuplicatTrack(inputNameField.getText().trim());
-                Track track = new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText()));
+                Track track = new Track(inputNameField.getText().trim(), Integer.parseInt(inputLengthField.getText()));
                 track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
                 if (comboRacer.getSelectedIndex() != 0) {
                     String string = comboRacer.getSelectedItem().toString();
@@ -225,7 +225,7 @@ public class AddTrackGUI {
     private void checkDuplicatTrack(String trackName) throws DuplicateException {
         Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(), trackName);
         if (track != null)
-            throw new DuplicateException("Трасса с таким именем уже существует!");
+            throw new DuplicateException("Трасса с таким названием уже существует!");
     }
 
 }
