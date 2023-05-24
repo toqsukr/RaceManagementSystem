@@ -594,7 +594,7 @@ public class MainTeamGUI extends JFrame {
 
     public void updateTeamTrackWinners(Team team) {
         for (Racer racer : parentWindow.getMainRacerGUI().getAllRacers()) {
-            if (racer.getTeam().getTeamID() == team.getTeamID()) {
+            if (racer.getTeam().getTeamID().equals(team.getTeamID())) {
                 parentWindow.getMainRacerGUI().updateTrackWinner(racer);
             }
         }

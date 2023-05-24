@@ -697,4 +697,17 @@ public class MainTrackGUI extends JFrame {
                 throw new InvalidTrackLengthInputException(i + 1);
         }
     }
+
+    public void setAllTracks(List<Track> list) {
+        allTracks = list;
+    }
+
+    public void clearAllTracks() {
+        allTracks.clear();
+    }
+
+    public void clearComboRacer() {
+        comboRacer.removeAllItems();
+        comboRacer.setSelectedItem(null);
+    }
 }

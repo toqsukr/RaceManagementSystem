@@ -472,16 +472,25 @@ public class MainRacerGUI extends JFrame {
                     comboTeam.setSelectedItem(null);
                     searchTeam.removeAllItems();
                     searchTeam.setSelectedItem(null);
+                    parentWindow.getMainTrackGUI().clearComboRacer();
                     addRacerWindow.clearComboTeam();
+
                     allTeams.clear();
                     allRacers.clear();
+                    parentWindow.getMainTrackGUI().clearAllTracks();
+
                     allTeams = getTeamData();
                     allRacers = getRacerData();
+                    parentWindow.getMainTrackGUI().setAllTracks(parentWindow.getMainTrackGUI().getTrackData());
+
                     racerDao.updateFreeID(allRacers);
                     teamDao.updateFreeID(allTeams);
                     trackDao.updateFreeID(parentWindow.getMainTrackGUI().getAllTracks());
+
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
+
+                    parentWindow.getMainTrackGUI().setTrackTable();
                     setRacerTable();
                     parentWindow.getMainTeamGUI().setTeamTable();
                 }
@@ -1655,7 +1664,7 @@ public class MainRacerGUI extends JFrame {
 
     public void updateTrackWinner(Racer racer) {
         for (Track track : parentWindow.getMainTrackGUI().getAllTracks()) {
-            if (track.getWinner() != null && track.getWinner().getRacerID() == racer.getRacerID())
+            if (track.getWinner() != null && track.getWinner().getRacerID().equals(racer.getRacerID()))
                 track.setWinner(null);
         }
     }
