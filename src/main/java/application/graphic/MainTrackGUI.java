@@ -619,6 +619,17 @@ public class MainTrackGUI extends JFrame {
         return answer;
     }
 
+    public static Track isAtTrackList(List<Track> tracks, String trackName) {
+        Track answer = null;
+        for (int i = 0; i < tracks.size(); i++) {
+            if (tracks.get(i).getTrackName().toLowerCase().equals(trackName.toLowerCase())) {
+                answer = tracks.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
     public static Track isAtTrackList(List<Track> tracks, Integer id) {
         Track answer = null;
         for (int i = 0; i < tracks.size(); i++) {

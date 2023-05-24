@@ -1,5 +1,6 @@
 package application.graphic;
 
+import exception.DuplicateException;
 import exception.EmptyAddInputException;
 import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
@@ -18,7 +19,7 @@ import util.Validation;
 
 public class AddTrackGUI {
 
-    public JFrame AddTrackGUI = new JFrame("Добавление трассы");
+    public JFrame addTrackGUI = new JFrame("Добавление трассы");
 
     /**
      * This input is used to search for an entry in the table by the name of the
@@ -48,20 +49,20 @@ public class AddTrackGUI {
      */
     public AddTrackGUI(MainTrackGUI parent) {
         parentWindow = parent;
-        AddTrackGUI.addWindowListener(new WindowAdapter() {
+        addTrackGUI.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 parentWindow.setMainTrackEnable(true);
-                AddTrackGUI.dispose();
+                addTrackGUI.dispose();
                 clearInputs();
             }
         });
-        AddTrackGUI.setVisible(false);
-        AddTrackGUI.setBounds(200, 150, 410, 330);
-        AddTrackGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        AddTrackGUI.setResizable(false);
+        addTrackGUI.setVisible(false);
+        addTrackGUI.setBounds(200, 150, 410, 330);
+        addTrackGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addTrackGUI.setResizable(false);
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/track.png");
-        AddTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
+        addTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
         updateComboRacer();
         comboRacer.setBackground(new Color(0xFFFFFF, false));
@@ -85,7 +86,7 @@ public class AddTrackGUI {
         cancelBtn.addActionListener(new CancelEventListener());
         cancelBtn.setFocusable(false);
 
-        Container container = AddTrackGUI.getContentPane();
+        Container container = addTrackGUI.getContentPane();
         container.setLayout(new BorderLayout());
 
         toolBox.add(Box.createRigidArea(new Dimension(40, 0)));
@@ -154,37 +155,34 @@ public class AddTrackGUI {
             try {
                 checkEmptyInputs();
                 checkTrackInputDate();
-
-                Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(),
-                        new Track(inputNameField.getText(),
-                                Integer.parseInt(inputLengthField.getText())));
-
-                if (track == null) {
-                    track = new Track(inputNameField.getText(),
-                            Integer.parseInt(inputLengthField.getText()));
-                    if (comboRacer.getSelectedIndex() != 0) {
-                        track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
-                        String string = comboRacer.getSelectedItem().toString();
-                        Racer racer = MainRacerGUI.isAtRacerList(
-                                parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
-                                Integer.parseInt(
-                                        string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
-                        track.setWinner(racer);
-                    }
-                    parentWindow.addToAllTracks(track);
-                    parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
-                            .updateFreeID(parentWindow.getAllTracks());
-                    clearInputs();
-                    parentWindow.setTrackTable();
+                checkDuplicatTrack(inputNameField.getText().trim());
+                Track track = new Track(inputNameField.getText(), Integer.parseInt(inputLengthField.getText()));
+                track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
+                if (comboRacer.getSelectedIndex() != 0) {
+                    String string = comboRacer.getSelectedItem().toString();
+                    Racer racer = MainRacerGUI.isAtRacerList(
+                            parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
+                            Integer.parseInt(
+                                    string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
+                    track.setWinner(racer);
                 }
+                parentWindow.addToAllTracks(track);
+                parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
+                        .updateFreeID(parentWindow.getAllTracks());
+                clearInputs();
+                parentWindow.setTrackTable();
+
             } catch (EmptyAddInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                JOptionPane.showMessageDialog(addTrackGUI, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTrackNameInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                JOptionPane.showMessageDialog(addTrackGUI, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTrackLengthInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
+                JOptionPane.showMessageDialog(addTrackGUI, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (DuplicateException exception) {
+                JOptionPane.showMessageDialog(addTrackGUI, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
@@ -198,7 +196,7 @@ public class AddTrackGUI {
         public void actionPerformed(ActionEvent e) {
             clearInputs();
             parentWindow.setMainTrackEnable(true);
-            AddTrackGUI.setVisible(false);
+            addTrackGUI.setVisible(false);
         }
     }
 
@@ -210,7 +208,7 @@ public class AddTrackGUI {
     }
 
     public void setAddTrackVisibility(boolean value) {
-        AddTrackGUI.setVisible(value);
+        addTrackGUI.setVisible(value);
     }
 
     public void updateComboRacer() {
@@ -224,16 +222,10 @@ public class AddTrackGUI {
         }
     }
 
-    // private void setComboBox() {
-    // em.getTransaction().begin();
-    // List<Team> allTeams = em.createQuery("FROM Team",
-    // Team.class).getResultList();
-    // String[] arr = new String[allTeams.size()];
-    // for (int i = 0; i < allTeams.size(); i++) {
-    // arr[i] = allTeams.get(i).getTeamName();
-    // }
-    // comboTeam = new JComboBox<String>(arr);
-    // em.getTransaction().commit();
-    // }
+    private void checkDuplicatTrack(String trackName) throws DuplicateException {
+        Track track = MainTrackGUI.isAtTrackList(parentWindow.getAllTracks(), trackName);
+        if (track != null)
+            throw new DuplicateException("Трасса с таким именем уже существует!");
+    }
 
 }
