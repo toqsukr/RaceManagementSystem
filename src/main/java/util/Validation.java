@@ -55,7 +55,7 @@ public class Validation {
      * @return true if the correct track name is passed else false
      */
     public static boolean isValidTrackName(String input) {
-        return input.matches("^[А-Яа-яA-Za-z0-9 _-]*$");
+        return input.matches("^[А-Яа-яA-Za-z _-]*$");
     }
 
     /***

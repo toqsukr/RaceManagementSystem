@@ -28,13 +28,13 @@ import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import database.TrackDao;
+import exception.InvalidDataException;
 import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
-import javax.naming.InvalidNameException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -170,8 +170,47 @@ public class MainTrackGUI extends JFrame {
             mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    stopLogging(context);
-                    mainTrackGUI.dispose();
+                    try {
+                        MainRacerGUI.stopEditCell(tracks);
+                        int result = 0;
+                        checkEditedData();
+                        if (editingPermit) {
+                            if (tracks.getSelectedRow() != -1)
+                                tracks.getCellEditor(tracks.getSelectedRow(), tracks.getSelectedColumn())
+                                        .stopCellEditing();
+                            if (!MainRacerGUI.isEqualTable(trackTable, previousTrackTable)) {
+                                checkEditedData();
+                                result = JOptionPane.showConfirmDialog(mainTrackGUI, "Сохранить изменения?",
+                                        "Подтверждение действия",
+                                        JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE);
+                                if (result == JOptionPane.YES_OPTION) {
+                                    compareEditedData();
+                                    setEditingPermit(false);
+                                    setConfirmbarUnvisible();
+                                } else if (result == JOptionPane.NO_OPTION) {
+                                    cancelBtn.doClick();
+                                }
+                            } else {
+                                setEditingPermit(false);
+                                setConfirmbarUnvisible();
+                            }
+                        }
+                        if (result == 0 || result == 1) {
+                            stopLogging(context);
+                            mainTrackGUI.dispose();
+                        }
+                    } catch (InvalidDataException exception) {
+                        int confirm = JOptionPane.showConfirmDialog(mainTrackGUI,
+                                "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                                "Предупреждение",
+                                JOptionPane.OK_CANCEL_OPTION);
+                        if (confirm == JOptionPane.OK_OPTION) {
+                            cancelBtn.doClick();
+                            stopLogging(context);
+                            mainTrackGUI.dispose();
+                        }
+                    }
                 }
             });
 

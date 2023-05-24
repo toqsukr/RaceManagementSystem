@@ -141,7 +141,7 @@ public class MainMenuGUI {
 
     private void closeOperation() {
         try {
-            mainRacerWindow.stopEditCell();
+            MainRacerGUI.stopEditCell(mainRacerWindow.getRacerTable());
             mainRacerWindow.checkEditedData();
             int result = mainRacerWindow.saveBeforeClose(
                     "Сохранить изменения в списке гонщиков?\nПосле закрытия окна несохраненные данные будут утеряны!");

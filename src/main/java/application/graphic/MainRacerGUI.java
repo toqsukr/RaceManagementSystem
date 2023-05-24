@@ -248,19 +248,49 @@ public class MainRacerGUI extends JFrame {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     try {
-                        stopEditCell();
+                        stopEditCell(racers);
                         checkEditedData();
-                        setConfirmbarUnvisible();
-                        if (editingPermit == true) {
-                            changeEditingPermit();
-                            mainRacerGUI.setTitle(
-                                    mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
+                        int result = 0;
+                        if (editingPermit) {
+                            if (racers.getSelectedRow() != -1)
+                                racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn())
+                                        .stopCellEditing();
+                            if (!isEqualTable(racerTable, previousRacerTable)) {
+                                result = JOptionPane.showConfirmDialog(mainRacerGUI, "Сохранить изменения?",
+                                        "Подтверждение действия",
+                                        JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE);
+                                if (result == JOptionPane.YES_OPTION) {
+                                    additionalSearchEdit();
+                                    compareEditedData();
+                                    deleteEmptyTeams();
+                                    parentWindow.getMainTeamGUI().setTeamTable();
+                                    updateComboTeam();
+                                    addRacerWindow.updateComboTeam();
+                                    parentWindow.getMainTrackGUI().updateComboRacer();
+                                    parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                                    setConfirmbarUnvisible();
+                                    changeEditingPermit();
+                                    mainRacerGUI
+                                            .setTitle(mainRacerGUI.getTitle().substring(0,
+                                                    mainRacerGUI.getTitle().length() - 23));
+                                } else if (result == JOptionPane.NO_OPTION) {
+                                    cancelBtn.doClick();
+                                }
+                            } else {
+                                mainRacerGUI
+                                        .setTitle(mainRacerGUI.getTitle().substring(0,
+                                                mainRacerGUI.getTitle().length() - 23));
+                                setConfirmbarUnvisible();
+                                changeEditingPermit();
+                            }
                         }
-                        clearInputBtn.doClick();
-                        disruptInputBtn.doClick();
-                        stopLogging(context);
-                        parentWindow.setMainMenuEnable(true);
-                        mainRacerGUI.dispose();
+                        if (result == 0 || result == 1) {
+                            clearInputBtn.doClick();
+                            disruptInputBtn.doClick();
+                            stopLogging(context);
+                            mainRacerGUI.dispose();
+                        }
 
                     } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainRacerGUI,
@@ -268,11 +298,7 @@ public class MainRacerGUI extends JFrame {
                                 "Предупреждение",
                                 JOptionPane.OK_CANCEL_OPTION);
                         if (confirm == JOptionPane.OK_OPTION) {
-                            copyTable(previousRacerTable, racerTable);
-                            changeEditingPermit();
-                            mainRacerGUI.setTitle(
-                                    mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
-                            setConfirmbarUnvisible();
+                            cancelBtn.doClick();
                             stopLogging(context);
                             parentWindow.setMainMenuEnable(true);
                             mainRacerGUI.dispose();
@@ -930,9 +956,9 @@ public class MainRacerGUI extends JFrame {
     /***
      * The function stops cell editing
      */
-    public void stopEditCell() {
-        if (racers.getSelectedRow() != -1)
-            racers.getCellEditor(racers.getSelectedRow(), racers.getSelectedColumn()).stopCellEditing();
+    public static void stopEditCell(JTable table) {
+        if (table.getSelectedRow() != -1)
+            table.getCellEditor(table.getSelectedRow(), table.getSelectedColumn()).stopCellEditing();
     }
 
     /***
@@ -1632,5 +1658,9 @@ public class MainRacerGUI extends JFrame {
             if (track.getWinner() != null && track.getWinner().getRacerID() == racer.getRacerID())
                 track.setWinner(null);
         }
+    }
+
+    public JTable getRacerTable() {
+        return racers;
     }
 }

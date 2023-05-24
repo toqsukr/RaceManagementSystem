@@ -27,6 +27,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import exception.InvalidDataException;
 import exception.InvalidTeamInputException;
 import exception.NothingDataException;
 import exception.UnselectedDeleteException;
@@ -161,8 +162,47 @@ public class MainTeamGUI extends JFrame {
             mainTeamGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    stopLogging(context);
-                    mainTeamGUI.dispose();
+                    try {
+                        MainRacerGUI.stopEditCell(teams);
+                        checkEditedData();
+                        int result = 0;
+                        if (editingPermit) {
+                            if (teams.getSelectedRow() != -1)
+                                teams.getCellEditor(teams.getSelectedRow(), teams.getSelectedColumn())
+                                        .stopCellEditing();
+                            if (!MainRacerGUI.isEqualTable(teamTable, previousTeamTable)) {
+                                result = JOptionPane.showConfirmDialog(mainTeamGUI, "Сохранить изменения?",
+                                        "Подтверждение действия",
+                                        JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE);
+                                if (result == JOptionPane.YES_OPTION) {
+                                    compareEditedData();
+                                    setEditingPermit(false);
+                                    setConfirmbarUnvisible();
+                                } else if (result == JOptionPane.NO_OPTION) {
+                                    cancelBtn.doClick();
+                                }
+                            } else {
+                                setEditingPermit(false);
+                                setConfirmbarUnvisible();
+                            }
+                        }
+                        if (result == 0 || result == 1) {
+                            stopLogging(context);
+                            mainTeamGUI.dispose();
+                        }
+
+                    } catch (InvalidDataException exception) {
+                        int confirm = JOptionPane.showConfirmDialog(mainTeamGUI,
+                                "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                                "Предупреждение",
+                                JOptionPane.OK_CANCEL_OPTION);
+                        if (confirm == JOptionPane.OK_OPTION) {
+                            cancelBtn.doClick();
+                            stopLogging(context);
+                            mainTeamGUI.dispose();
+                        }
+                    }
                 }
             });
 
