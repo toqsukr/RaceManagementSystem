@@ -34,6 +34,8 @@ public class MainMenuGUI {
 
     private MainScoreGUI mainScoreWindow;
 
+    private MainGraphicGUI mainGraphicWindow;
+
     public MainMenuGUI() {
 
         mainMenuGUI.addWindowListener((WindowListener) new WindowAdapter() {
@@ -52,6 +54,9 @@ public class MainMenuGUI {
         mainTeamWindow = new MainTeamGUI(this);
         mainTrackWindow = new MainTrackGUI(this);
         mainScoreWindow = new MainScoreGUI(this);
+
+        // skeesh did that
+        mainGraphicWindow = new MainGraphicGUI(this);
 
         URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -77,6 +82,7 @@ public class MainMenuGUI {
         URL graphicIcon = this.getClass().getClassLoader().getResource("img/graphic.png");
         graphicBtn.setIcon(new ImageIcon(new ImageIcon(graphicIcon).getImage().getScaledInstance(22, 22, 4)));
         graphicBtn.setBackground(new Color(0xDFD9D9D9, false));
+        graphicBtn.addActionListener(new GraphicEventListener());
         graphicBtn.setFocusable(false);
         graphicBtn.setMargin(new Insets(1, 4, 1, 8));
 
@@ -200,6 +206,17 @@ public class MainMenuGUI {
         }
     }
 
+    private class GraphicEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            mainGraphicWindow.setVisible(true);
+        }
+    }
+
     private class ScoreEventListener implements ActionListener {
 
         /***
@@ -236,5 +253,9 @@ public class MainMenuGUI {
 
     public MainTrackGUI getMainTrackGUI() {
         return mainTrackWindow;
+    }
+
+    public MainGraphicGUI getMainGraphicGUI() {
+        return mainGraphicWindow;
     }
 }
