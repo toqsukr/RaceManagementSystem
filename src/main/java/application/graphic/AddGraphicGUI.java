@@ -1,0 +1,238 @@
+package application.graphic;
+
+import java.net.URL;
+import java.util.List;
+import race.system.Track;
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+public class AddGraphicGUI {
+
+    public JFrame addGraphicGUI = new JFrame("Добавление соревнования");
+
+    private static final JButton addBtn = new JButton("Добавить");
+
+    private static final JButton cancelBtn = new JButton("Отмена");
+
+    private static final JLabel trackLabel = new JLabel("Название трассы:");
+
+    private static final JLabel dayLabel = new JLabel("День проведения соревнования:");
+
+    private static final JLabel monthLabel = new JLabel("Месяц проведения соревнования:");
+
+    private static final JLabel yearLabel = new JLabel("Год проведения соревнования:");
+
+    private static JComboBox<String> comboTrack = new JComboBox<>();
+
+    private static JComboBox<String> comboDay = new JComboBox<>();
+
+    private static JComboBox<String> comboMonth = new JComboBox<>();
+
+    private static JComboBox<String> comboYear = new JComboBox<>();
+
+    private MainGraphicGUI parentWindow;
+
+    /**
+     * Constructor of GUI
+     */
+    public AddGraphicGUI(MainGraphicGUI parent) {
+        parentWindow = parent;
+        addGraphicGUI.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                parentWindow.setMainGraphicEnable(true);
+                addGraphicGUI.dispose();
+            }
+        });
+        addGraphicGUI.setVisible(false);
+        addGraphicGUI.setBounds(200, 150, 410, 330);
+        addGraphicGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        addGraphicGUI.setResizable(false);
+        URL addRacerIcon = this.getClass().getClassLoader().getResource("img/score.png");
+        addGraphicGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
+
+        updateComboDay();
+        updateComboMonth();
+        updateComboYear();
+        updateComboTrack();
+
+        comboTrack.setBackground(new Color(0xFFFFFF, false));
+        comboTrack.setFocusable(false);
+
+        comboDay.setBackground(new Color(0xFFFFFF, false));
+        comboDay.setFocusable(false);
+
+        comboMonth.setBackground(new Color(0xFFFFFF, false));
+        comboMonth.setFocusable(false);
+
+        comboYear.setBackground(new Color(0xFFFFFF, false));
+        comboYear.setFocusable(false);
+
+        addBtn.setBackground(new Color(0xDFD9D9D9, false));
+        cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+
+        Box leftBox = Box.createVerticalBox();
+        Box centerBox = Box.createVerticalBox();
+        Box rightBox = Box.createVerticalBox();
+
+        Box toolBox = Box.createHorizontalBox();
+
+        Box trackBox = Box.createHorizontalBox();
+        Box dayBox = Box.createHorizontalBox();
+        Box monthBox = Box.createHorizontalBox();
+        Box yearBox = Box.createHorizontalBox();
+
+        addBtn.addActionListener(new AddEventListener());
+        addBtn.setFocusable(false);
+
+        cancelBtn.addActionListener(new CancelEventListener());
+        cancelBtn.setFocusable(false);
+
+        Container container = addGraphicGUI.getContentPane();
+        container.setLayout(new BorderLayout());
+
+        toolBox.add(Box.createRigidArea(new Dimension(40, 0)));
+        toolBox.add(addBtn);
+        toolBox.add(Box.createRigidArea(new Dimension(20, 0)));
+        toolBox.add(cancelBtn);
+
+        centerBox.add(Box.createRigidArea(new Dimension(20, 40)));
+
+        trackBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        trackBox.add(trackLabel);
+        trackBox.add(Box.createRigidArea(new Dimension(50, 0)));
+        trackBox.add(comboTrack);
+        centerBox.add(trackBox);
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        dayBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        dayBox.add(dayLabel);
+        dayBox.add(Box.createRigidArea(new Dimension(43, 0)));
+        dayBox.add(comboDay);
+
+        centerBox.add(dayBox);
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        monthBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        monthBox.add(monthLabel);
+        monthBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        monthBox.add(comboMonth);
+
+        centerBox.add(monthBox);
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        yearBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        yearBox.add(yearLabel);
+        yearBox.add(Box.createRigidArea(new Dimension(51, 0)));
+        yearBox.add(comboYear);
+
+        centerBox.add(yearBox);
+        centerBox.add(Box.createRigidArea(new Dimension(0, 35)));
+
+        centerBox.add(toolBox);
+        centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        rightBox.add(Box.createRigidArea(new Dimension(35, 0)));
+
+        container.add(leftBox, BorderLayout.WEST);
+        container.add(centerBox, BorderLayout.CENTER);
+        container.add(rightBox, BorderLayout.EAST);
+    }
+
+    private class AddEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            // try {
+            // checkEmptyInputs();
+            // checkTrackInputDate();
+            // checkDuplicatTrack(inputNameField.getText().trim());
+            // Track track = new Track(inputNameField.getText().trim(),
+            // Integer.parseInt(inputLengthField.getText()));
+            // track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
+            // if (comboRacer.getSelectedIndex() != 0) {
+            // String string = comboRacer.getSelectedItem().toString();
+            // Racer racer = MainRacerGUI.isAtRacerList(
+            // parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
+            // Integer.parseInt(
+            // string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
+            // track.setWinner(racer);
+            // }
+            // parentWindow.addToAllTracks(track);
+            // parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
+            // .updateFreeID(parentWindow.getAllTracks());
+            // clearInputs();
+            // parentWindow.setTrackTable();
+
+            // } catch (EmptyAddInputException exception) {
+            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
+            // добавления",
+            // JOptionPane.PLAIN_MESSAGE);
+            // } catch (InvalidTrackNameInputException exception) {
+            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
+            // добавления",
+            // JOptionPane.PLAIN_MESSAGE);
+            // } catch (InvalidTrackLengthInputException exception) {
+            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
+            // добавления",
+            // JOptionPane.PLAIN_MESSAGE);
+            // } catch (DuplicateException exception) {
+            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
+            // добавления",
+            // JOptionPane.PLAIN_MESSAGE);
+            // }
+        }
+    }
+
+    private class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            parentWindow.setMainGraphicEnable(true);
+            addGraphicGUI.setVisible(false);
+        }
+    }
+
+    public void updateComboTrack() {
+        comboTrack.removeAllItems();
+        comboTrack.setSelectedItem(null);
+        List<Track> allTracks = parentWindow.getParentWindow().getMainTrackGUI().getAllTracks();
+        for (Track track : allTracks) {
+            comboTrack.addItem(track.getTrackName());
+        }
+    }
+
+    public void updateComboDay() {
+        for (int i = 1; i < 32; i++) {
+            comboDay.addItem(Integer.valueOf(i).toString());
+        }
+    }
+
+    public void updateComboMonth() {
+        comboMonth.addItem("Не выбран");
+        comboMonth.setSelectedIndex(0);
+        for (int i = 1; i < 13; i++) {
+            comboMonth.addItem(Integer.valueOf(i).toString());
+        }
+    }
+
+    public void updateComboYear() {
+        comboYear.addItem("Не выбран");
+        comboYear.setSelectedIndex(0);
+        for (int i = 2023; i < 2100; i++) {
+            comboYear.addItem(Integer.valueOf(i).toString());
+        }
+    }
+
+    public void setAddGraphicVisibility(boolean value) {
+        addGraphicGUI.setVisible(value);
+    }
+
+}

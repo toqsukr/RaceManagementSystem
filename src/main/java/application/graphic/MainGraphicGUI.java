@@ -32,6 +32,7 @@ import org.apache.logging.log4j.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -41,13 +42,11 @@ import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
 import race.system.Competition;
-import race.system.MyDate;
-import race.system.Track;
 import util.CreateReport;
 
 public class MainGraphicGUI extends JFrame {
 
-    private static JFrame mainGraphicGUI = new JFrame("Расписание");
+    private static JFrame mainGraphicGUI = new JFrame("Расписание соревнований");
     private MainMenuGUI parentWindow;
 
     /**
@@ -58,12 +57,18 @@ public class MainGraphicGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "ID соревнования", "Название трассы", "Длина", "День", "Месяц", "Год" };
+    private static final String[] columns = { "Название трассы", "День", "Месяц", "Год" };
 
     /**
      * Fields of the table
      */
     private static String[][] data = {};
+
+    private JComboBox<String> comboDay = new JComboBox<>();
+
+    private JComboBox<String> comboMonth = new JComboBox<>();
+
+    private JComboBox<String> comboYear = new JComboBox<>();
 
     /**
      * The table model storing displaying data
@@ -76,14 +81,14 @@ public class MainGraphicGUI extends JFrame {
     private final JTable graphics = new JTable(graphicsTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
-            return j == 0 ? getEditingPermit() : false;
+            return getEditingPermit();
         }
     };
 
     /**
      * The table model storing the full version of the table before searching
      */
-    private static DefaultTableModel fullSearchTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel previousGraphicTable = new DefaultTableModel(data, columns);
 
     /**
      * Creation of the scroll panel
@@ -101,21 +106,45 @@ public class MainGraphicGUI extends JFrame {
     private static Logger logger;
 
     /**
+     * This button adds new field into table
+     */
+    private static final JButton addBtn = new JButton();
+
+    /**
+     * This button deletes selected field
+     */
+    private static final JButton deleteBtn = new JButton();
+
+    /**
+     * This button allows you to edit selected field
+     */
+    private static final JButton editBtn = new JButton();
+    /**
      * This button forms team data report
      */
     private static final JButton reportBtn = new JButton();
 
-    private TrackDao trackDao = new TrackDao(App.getEntityManager());
+    private static final JButton toDataBaseBtn = new JButton();
+
+    private static final JButton fromDataBaseBtn = new JButton();
+
+    /**
+     * This button confirms changes made
+     */
+    private static final JButton confirmBtn = new JButton();
+
+    /**
+     * This button cancles changes made
+     */
+    private static final JButton cancelBtn = new JButton();
 
     private CompetitionDao competitionDao = new CompetitionDao(App.getEntityManager());
 
     private MyDateDao myDateDao = new MyDateDao(App.getEntityManager());
 
-    private List<Track> allTracks;
-
     private List<Competition> allCompetitions;
 
-    private List<MyDate> allDates;
+    private AddGraphicGUI addGraphicWindow;
 
     /***
      * The function creating mainTeamGUI
@@ -156,9 +185,10 @@ public class MainGraphicGUI extends JFrame {
             toolBar.setFloatable(false);
             graphics.getTableHeader().setReorderingAllowed(false);
 
+            addGraphicWindow = new AddGraphicGUI(this);
+
             try {
-                allTracks = getTracksData();
-                allDates = getDatesData();
+                allCompetitions = getCompetitionsData();
                 setCompetitionsTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -168,6 +198,42 @@ public class MainGraphicGUI extends JFrame {
             Container container = mainGraphicGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
+            URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
+            toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
+            toDataBaseBtn.addActionListener(new ToDataBaseEventListener());
+            toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            toDataBaseBtn.setFocusable(false);
+
+            URL fromDataBaseUrl = this.getClass().getClassLoader().getResource("img/downloadfromdb.png");
+            fromDataBaseBtn
+                    .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
+            fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
+            fromDataBaseBtn.addActionListener(new FromDataBaseEventListener());
+            fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
+            fromDataBaseBtn.setFocusable(false);
+
+            URL addIcon = this.getClass().getClassLoader().getResource("img/add_competition.png");
+            addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
+            addBtn.setToolTipText("Добавить рекорд");
+            addBtn.addActionListener(new AddEventListener());
+            addBtn.setBackground(new Color(0xDFD9D9D9, false));
+            addBtn.setFocusable(false);
+
+            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_competition.png");
+            deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
+            deleteBtn.setToolTipText("Удалить рекорд");
+            // deleteBtn.addActionListener(new DeleteEventListener());
+            deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
+            deleteBtn.setFocusable(false);
+
+            URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
+            editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
+            editBtn.setToolTipText("Редактировать запись");
+            editBtn.addActionListener(new EditEventListener());
+            editBtn.setBackground(new Color(0xDFD9D9D9, false));
+            editBtn.setFocusable(false);
+
             URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
             reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
             reportBtn.setToolTipText("Сформировать отчет");
@@ -175,7 +241,30 @@ public class MainGraphicGUI extends JFrame {
             reportBtn.setBackground(new Color(0xDFD9D9D9, false));
             reportBtn.setFocusable(false);
 
+            URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
+            confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
+            confirmBtn.setVisible(false);
+            // confirmBtn.addActionListener(new ConfirmEventListener());
+            confirmBtn.setToolTipText("Ок");
+            confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
+            confirmBtn.setFocusable(false);
+
+            URL cancelIcon = this.getClass().getClassLoader().getResource("img/cancel.png");
+            cancelBtn.setIcon(new ImageIcon(new ImageIcon(cancelIcon).getImage().getScaledInstance(50, 50, 4)));
+            cancelBtn.setVisible(false);
+            cancelBtn.addActionListener(new CancelEventListener());
+            cancelBtn.setToolTipText("Отмена");
+            cancelBtn.setBackground(new Color(0xDFD9D9D9, false));
+            cancelBtn.setFocusable(false);
+
+            toolBar.add(fromDataBaseBtn);
+            toolBar.add(toDataBaseBtn);
+            toolBar.add(addBtn);
+            toolBar.add(deleteBtn);
+            toolBar.add(editBtn);
             toolBar.add(reportBtn);
+            toolBar.add(confirmBtn);
+            toolBar.add(cancelBtn);
 
             container.add(toolBar, BorderLayout.NORTH);
             container.add(scroll, BorderLayout.CENTER);
@@ -231,30 +320,40 @@ public class MainGraphicGUI extends JFrame {
         if (graphicsTable.getRowCount() != 0)
             MainRacerGUI.clearTable(graphicsTable);
 
-        for (Track track : allTracks) {
+        for (Competition competition : allCompetitions) {
             graphicsTable.addRow(
                     new String[] {
-                            String.valueOf(track.getTrackID()),
-                            track.getTrackName(),
-                            String.valueOf(track.getTrackLength()),
-                            "changeme",
-                            "pls",
-                            "DB doesn't connect:(",
+                            competition.getTrack().getTrackName(),
+                            competition.getDate().getDay().toString(),
+                            competition.getDate().getMonth().toString(),
+                            competition.getDate().getYear().toString()
                     });
         }
-        MainRacerGUI.copyTable(graphicsTable, fullSearchTable);
-    }
-
-    public List<Track> getTracksData() throws InterruptedException {
-        return trackDao.getAllTracks();
-    }
-
-    public List<MyDate> getDatesData() throws InterruptedException {
-        return myDateDao.getAllDates();
     }
 
     public List<Competition> getCompetitionsData() throws InterruptedException {
         return competitionDao.getAllCompetitions();
+    }
+
+    /**
+     * Сlass for implementing a addBtn button listener
+     */
+    private class AddEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            if (parentWindow.getMainTrackGUI().getAllTracks().size() > 0) {
+                logger.info("Opening window AddGraphicGUI");
+                setMainGraphicEnable(false);
+                addGraphicWindow.setAddGraphicVisibility(true);
+            } else
+                JOptionPane.showMessageDialog(mainGraphicGUI,
+                        "Недостаточно данных для добавления соревнования!\nПроверьте наличие информации о трассах в системе!",
+                        "Сообщение",
+                        JOptionPane.PLAIN_MESSAGE);
+        }
     }
 
     /**
@@ -279,5 +378,108 @@ public class MainGraphicGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
         }
+    }
+
+    /**
+     * Сlass for implementing a toDataBase button listener
+     */
+    private class ToDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            parentWindow.getMainRacerGUI().deployToDataBase();
+        }
+    }
+
+    /**
+     * Сlass for implementing a fromDataBase button listener
+     */
+    private class FromDataBaseEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            parentWindow.getMainRacerGUI().downloadFromDataBase();
+        }
+    }
+
+    /**
+     * Сlass for implementing a editBtn button listener
+     */
+    private class EditEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            MainRacerGUI.copyTable(graphicsTable, previousGraphicTable);
+            setEditingPermit(true);
+            setConfirmbarVisible();
+        }
+    }
+
+    /**
+     * Сlass for implementing a cancelBtn button listener
+     */
+    private class CancelEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            if (graphics.getSelectedRow() != -1)
+                graphics.getCellEditor(graphics.getSelectedRow(), graphics.getSelectedColumn()).stopCellEditing();
+            MainRacerGUI.copyTable(previousGraphicTable, graphicsTable);
+            setEditingPermit(false);
+            setConfirmbarUnvisible();
+        }
+    }
+
+    private void setEditingPermit(boolean value) {
+        editingPermit = value;
+    }
+
+    /***
+     * The function make visible confirm bar while editing
+     */
+    private static void setConfirmbarVisible() {
+        addBtn.setVisible(false);
+        toDataBaseBtn.setVisible(false);
+        fromDataBaseBtn.setVisible(false);
+        deleteBtn.setVisible(false);
+        editBtn.setVisible(false);
+        reportBtn.setVisible(false);
+        confirmBtn.setVisible(true);
+        cancelBtn.setVisible(true);
+    }
+
+    /***
+     * The function make unvisible confirm bar while editing
+     */
+    private static void setConfirmbarUnvisible() {
+        addBtn.setVisible(true);
+        toDataBaseBtn.setVisible(true);
+        fromDataBaseBtn.setVisible(true);
+        deleteBtn.setVisible(true);
+        editBtn.setVisible(true);
+        reportBtn.setVisible(true);
+        confirmBtn.setVisible(false);
+        cancelBtn.setVisible(false);
+    }
+
+    /***
+     * The function sets enability options of mainScoreGUI window
+     * 
+     * @param value the value to be setted
+     */
+    public void setMainGraphicEnable(boolean value) {
+        mainGraphicGUI.setEnabled(value);
+    }
+
+    public MainMenuGUI getParentWindow() {
+        return parentWindow;
     }
 }
