@@ -1,25 +1,27 @@
 package race.system;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "scores")
 public class Score {
-    private int scoreId;
+    private Integer ScoreID;
     private Racer racerInfo;
-    private double finishTime;
+    private Track trackInfo;
+    private Double finishTime;
 
     @Id
-    @Column(name = "scoreId")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getScoreId() {
-        return scoreId;
+    @Column(name = "ScoreID")
+    public Integer getScoreID() {
+        return ScoreID;
     }
 
-    public void setScoreId(int id) {
-        scoreId = id;
+    public void setScoreID(int id) {
+        ScoreID = id;
     }
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "racerID", referencedColumnName = "racerID")
     public Racer getRacerInfo() {
         return racerInfo;
     };
@@ -29,11 +31,21 @@ public class Score {
     };
 
     @Column(name = "finishTime")
-    public double getFinishTime() {
+    public Double getFinishTime() {
         return finishTime;
     };
 
     public void setFinishTime(double time) {
         finishTime = time;
+    };
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "trackID", referencedColumnName = "trackID")
+    public Track getTrackInfo() {
+        return trackInfo;
+    };
+
+    public void setTrackInfo(Track track) {
+        trackInfo = track;
     };
 }

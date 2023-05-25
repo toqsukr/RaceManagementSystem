@@ -38,7 +38,7 @@ public class Track {
         this.trackLength = trackLength;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
     @JoinColumn(name = "winnerRacerID", referencedColumnName = "racerID")
     public Racer getWinner() {
         return trackWinner;

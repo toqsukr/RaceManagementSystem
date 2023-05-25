@@ -32,6 +32,8 @@ public class MainMenuGUI {
 
     private MainTrackGUI mainTrackWindow;
 
+    private MainScoreGUI mainScoreWindow;
+
     public MainMenuGUI() {
 
         mainMenuGUI.addWindowListener((WindowListener) new WindowAdapter() {
@@ -49,6 +51,7 @@ public class MainMenuGUI {
         mainRacerWindow = new MainRacerGUI(this);
         mainTeamWindow = new MainTeamGUI(this);
         mainTrackWindow = new MainTrackGUI(this);
+        mainScoreWindow = new MainScoreGUI(this);
 
         URL racerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         racerBtn.setIcon(new ImageIcon(new ImageIcon(racerIcon).getImage().getScaledInstance(22, 22, 4)));
@@ -77,9 +80,10 @@ public class MainMenuGUI {
         graphicBtn.setFocusable(false);
         graphicBtn.setMargin(new Insets(1, 4, 1, 8));
 
-        URL infoIcon = this.getClass().getClassLoader().getResource("img/score.png");
-        scoreBtn.setIcon(new ImageIcon(new ImageIcon(infoIcon).getImage().getScaledInstance(21, 22, 4)));
+        URL scoreIcon = this.getClass().getClassLoader().getResource("img/score.png");
+        scoreBtn.setIcon(new ImageIcon(new ImageIcon(scoreIcon).getImage().getScaledInstance(21, 22, 4)));
         scoreBtn.setBackground(new Color(0xDFD9D9D9, false));
+        scoreBtn.addActionListener(new ScoreEventListener());
         scoreBtn.setFocusable(false);
         scoreBtn.setMargin(new Insets(1, 4, 1, 6));
 
@@ -193,6 +197,17 @@ public class MainMenuGUI {
          */
         public void actionPerformed(ActionEvent e) {
             mainTrackWindow.setVisible(true);
+        }
+    }
+
+    private class ScoreEventListener implements ActionListener {
+
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            mainScoreWindow.setVisible(true);
         }
     }
 

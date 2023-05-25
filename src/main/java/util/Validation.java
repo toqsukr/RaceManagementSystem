@@ -6,6 +6,10 @@ package util;
 
 public class Validation {
 
+    public static boolean isValidTime(String input) {
+        return input.matches("^(6[0-9]|[7-9][0-9]|[1-9][0-9]{2,4})$");
+    }
+
     public static boolean isValidID(String input) {
         return input.matches("^(?:[0-9]|[1-9][0-9]{1,2}|2000)$");
     }

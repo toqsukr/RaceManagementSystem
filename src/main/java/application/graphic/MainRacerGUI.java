@@ -1248,7 +1248,7 @@ public class MainRacerGUI extends JFrame {
      * @throws IOException checks whether there are input/output errors
      */
 
-    private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
+    private void startLogging(LoggerContext context, Configuration configuration) throws IOException {
         context.start(configuration);
         logger = context.getLogger("com");
         logger.log(Level.INFO, "Start logging MainRacerGUI");
@@ -1259,7 +1259,7 @@ public class MainRacerGUI extends JFrame {
      * 
      * @param context the logger variable
      */
-    public static void stopLogging(LoggerContext context) {
+    public void stopLogging(LoggerContext context) {
         logger.log(Level.INFO, "Stop logging MainRacerGUI");
         context.close();
     }
