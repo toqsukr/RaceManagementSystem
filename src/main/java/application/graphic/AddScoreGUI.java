@@ -3,8 +3,11 @@ package application.graphic;
 import java.net.URL;
 import java.util.List;
 import exception.EmptyAddInputException;
+import exception.InvalidTimeException;
 import race.system.Racer;
+import race.system.Score;
 import race.system.Track;
+import util.Validation;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -88,14 +91,14 @@ public class AddScoreGUI {
 
         racerBox.add(Box.createRigidArea(new Dimension(35, 0)));
         racerBox.add(racerLabel);
-        racerBox.add(Box.createRigidArea(new Dimension(16, 0)));
+        racerBox.add(Box.createRigidArea(new Dimension(32, 0)));
         racerBox.add(comboRacer);
         centerBox.add(racerBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         trackBox.add(Box.createRigidArea(new Dimension(35, 0)));
         trackBox.add(trackLabel);
-        trackBox.add(Box.createRigidArea(new Dimension(34, 0)));
+        trackBox.add(Box.createRigidArea(new Dimension(28, 0)));
         trackBox.add(comboTrack);
         centerBox.add(trackBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
@@ -118,15 +121,6 @@ public class AddScoreGUI {
         container.add(rightBox, BorderLayout.EAST);
     }
 
-    private void clearInput() {
-        inputTimeField.setText("");
-    }
-
-    private void checkEmptyInputs() throws EmptyAddInputException {
-        if (inputTimeField.getText().equals(""))
-            throw new EmptyAddInputException();
-    }
-
     private class AddEventListener implements ActionListener {
 
         /***
@@ -134,44 +128,32 @@ public class AddScoreGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // try {
-            // checkEmptyInputs();
-            // checkTrackInputDate();
-            // checkDuplicatTrack(inputNameField.getText().trim());
-            // Track track = new Track(inputNameField.getText().trim(),
-            // Integer.parseInt(inputLengthField.getText()));
-            // track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
-            // if (comboRacer.getSelectedIndex() != 0) {
-            // String string = comboRacer.getSelectedItem().toString();
-            // Racer racer = MainRacerGUI.isAtRacerList(
-            // parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
-            // Integer.parseInt(
-            // string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
-            // track.setWinner(racer);
-            // }
-            // parentWindow.addToAllTracks(track);
-            // parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
-            // .updateFreeID(parentWindow.getAllTracks());
-            // clearInputs();
-            // parentWindow.setTrackTable();
+            try {
+                checkEmptyInputs();
+                checkInputTime();
 
-            // } catch (EmptyAddInputException exception) {
-            // JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTrackNameInputException exception) {
-            // JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTrackLengthInputException exception) {
-            // JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (DuplicateException exception) {
-            // JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // }
+                String string = comboRacer.getSelectedItem().toString();
+                Racer racer = MainRacerGUI.isAtRacerList(
+                        parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
+                        Integer.parseInt(
+                                string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
+                Track track = MainTrackGUI.isAtTrackList(
+                        parentWindow.getParentWindow().getMainTrackGUI().getAllTracks(),
+                        comboTrack.getSelectedItem().toString());
+                Score score = new Score(racer, track, Double.parseDouble(inputTimeField.getText()));
+                score.setScoreID(parentWindow.getScoreDao().getFreeID());
+                parentWindow.addToAllScores(score);
+                parentWindow.getScoreDao().updateFreeID(parentWindow.getAllScores());
+                clearInput();
+                parentWindow.setScoreTable();
+
+            } catch (EmptyAddInputException exception) {
+                JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (InvalidTimeException exception) {
+                JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка добавления",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -207,6 +189,20 @@ public class AddScoreGUI {
 
     public void setAddScoreVisibility(boolean value) {
         addScoreGUI.setVisible(value);
+    }
+
+    private void checkEmptyInputs() throws EmptyAddInputException {
+        if (inputTimeField.getText().equals(""))
+            throw new EmptyAddInputException();
+    }
+
+    private void clearInput() {
+        inputTimeField.setText("");
+    }
+
+    private void checkInputTime() throws InvalidTimeException {
+        if (!Validation.isValidTime(inputTimeField.getText()))
+            throw new InvalidTimeException();
     }
 
 }

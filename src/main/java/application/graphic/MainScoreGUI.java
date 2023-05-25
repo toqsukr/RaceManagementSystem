@@ -691,4 +691,8 @@ public class MainScoreGUI extends JFrame {
         comboRacer.removeAllItems();
         comboRacer.setSelectedItem(null);
     }
+
+    public ScoreDao getScoreDao() {
+        return scoreDao;
+    }
 }

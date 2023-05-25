@@ -258,4 +258,8 @@ public class MainMenuGUI {
     public MainGraphicGUI getMainGraphicGUI() {
         return mainGraphicWindow;
     }
+
+    public MainScoreGUI getMainScoreGUI() {
+        return mainScoreWindow;
+    }
 }

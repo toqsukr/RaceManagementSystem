@@ -20,7 +20,7 @@ public class Score {
         ScoreID = id;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "racerID", referencedColumnName = "racerID")
     public Racer getRacerInfo() {
         return racerInfo;
@@ -39,7 +39,7 @@ public class Score {
         finishTime = time;
     };
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "trackID", referencedColumnName = "trackID")
     public Track getTrackInfo() {
         return trackInfo;
@@ -48,4 +48,16 @@ public class Score {
     public void setTrackInfo(Track track) {
         trackInfo = track;
     };
+
+    public Score() {
+        racerInfo = null;
+        trackInfo = null;
+        finishTime = 0.0;
+    }
+
+    public Score(Racer racer, Track track, Double time) {
+        racerInfo = racer;
+        trackInfo = track;
+        finishTime = time;
+    }
 }

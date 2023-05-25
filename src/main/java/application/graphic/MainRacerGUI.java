@@ -60,6 +60,7 @@ import exception.NothingDataException;
 import race.system.Competition;
 import race.system.MyDate;
 import race.system.Racer;
+import race.system.Score;
 import race.system.Team;
 import race.system.Track;
 import util.CreateReport;
@@ -1397,6 +1398,14 @@ public class MainRacerGUI extends JFrame {
             setIsOpenFile(false);
         }
 
+        List<Score> allScores = parentWindow.getMainScoreGUI().getAllScores();
+        for (Score score : allScores) {
+            if (parentWindow.getMainScoreGUI().getScoreDao().findScore(score.getScoreID()) == null) {
+                parentWindow.getMainScoreGUI().getScoreDao().saveScore(score);
+            } else
+                parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
+        }
+
         List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
         for (MyDate date : allDates) {
             if (parentWindow.getMainGraphicGUI().getMyDateDao().findDate(date.getDateID()) == null) {
@@ -1441,6 +1450,7 @@ public class MainRacerGUI extends JFrame {
         List<Track> dbTracks = trackDao.getAllTracks();
         List<Competition> dbCompetitions = parentWindow.getMainGraphicGUI().getCompetitionDao().getAllCompetitions();
         List<MyDate> dbDates = parentWindow.getMainGraphicGUI().getMyDateDao().getAllDates();
+        List<Score> dbScores = parentWindow.getMainScoreGUI().getScoreDao().getAllScores();
         for (Racer racer : dbRacers) {
             if (isAtRacerList(allRacers, racer.getRacerID()) == null)
                 racerDao.deleteRacer(racer);
@@ -1466,6 +1476,11 @@ public class MainRacerGUI extends JFrame {
             if (MainGraphicGUI.isAtCompetitionList(parentWindow.getMainGraphicGUI().getAllCompetitions(),
                     competition) == null)
                 parentWindow.getMainGraphicGUI().getCompetitionDao().deleteCompetition(competition);
+        }
+
+        for (Score score : dbScores) {
+            if (MainScoreGUI.isAtScoreList(parentWindow.getMainScoreGUI().getAllScores(), score) == null)
+                parentWindow.getMainScoreGUI().getScoreDao().deleteScore(score);
         }
     }
 
