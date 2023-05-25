@@ -2,6 +2,9 @@ package application.graphic;
 
 import java.net.URL;
 import java.util.List;
+
+import race.system.Competition;
+import race.system.MyDate;
 import race.system.Track;
 
 import java.awt.*;
@@ -150,44 +153,31 @@ public class AddGraphicGUI {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // try {
-            // checkEmptyInputs();
-            // checkTrackInputDate();
-            // checkDuplicatTrack(inputNameField.getText().trim());
-            // Track track = new Track(inputNameField.getText().trim(),
-            // Integer.parseInt(inputLengthField.getText()));
-            // track.setTrackID(parentWindow.getParentWindow().getMainRacerGUI().getTrackDao().getFreeID());
-            // if (comboRacer.getSelectedIndex() != 0) {
-            // String string = comboRacer.getSelectedItem().toString();
-            // Racer racer = MainRacerGUI.isAtRacerList(
-            // parentWindow.getParentWindow().getMainRacerGUI().getAllRacers(),
-            // Integer.parseInt(
-            // string.substring(string.indexOf(':', 0) + 2, (string.indexOf(')', 0)))));
-            // track.setWinner(racer);
-            // }
-            // parentWindow.addToAllTracks(track);
-            // parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
-            // .updateFreeID(parentWindow.getAllTracks());
-            // clearInputs();
-            // parentWindow.setTrackTable();
+            MyDate date = MainGraphicGUI.isAtDateList(parentWindow.getAllDates(),
+                    Integer.parseInt(comboDay.getSelectedItem().toString()),
+                    Integer.parseInt(comboMonth.getSelectedItem().toString()),
+                    Integer.parseInt(comboYear.getSelectedItem().toString()));
+            if (date == null) {
+                date = new MyDate(Integer.parseInt(comboDay.getSelectedItem().toString()),
+                        Integer.parseInt(comboMonth.getSelectedItem().toString()),
+                        Integer.parseInt(comboYear.getSelectedItem().toString()));
+                date.setDateID(parentWindow.getMyDateDao().getFreeID());
+                parentWindow.addToAllDates(date);
+                parentWindow.getMyDateDao().updateFreeID(parentWindow.getAllDates());
+                Track track = MainTrackGUI.isAtTrackList(
+                        parentWindow.getParentWindow().getMainTrackGUI().getAllTracks(),
+                        comboTrack.getSelectedItem().toString());
 
-            // } catch (EmptyAddInputException exception) {
-            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTrackNameInputException exception) {
-            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTrackLengthInputException exception) {
-            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (DuplicateException exception) {
-            // JOptionPane.showMessageDialog(addGraphicGUI, exception.getMessage(), "Ошибка
-            // добавления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // }
+                Competition competition = new Competition(date, track);
+                competition.setCompetitionID(parentWindow.getCompetitionDao().getFreeID());
+                parentWindow.addToAllCompetitions(competition);
+                parentWindow.getCompetitionDao().updateFreeID(parentWindow.getAllCompetitions());
+                parentWindow.setCompetitionsTable();
+            } else {
+                JOptionPane.showMessageDialog(addGraphicGUI, "В эту дату уже проводится соревнование!", "Сообщение",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+
         }
     }
 

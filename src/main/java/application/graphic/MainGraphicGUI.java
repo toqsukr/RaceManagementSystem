@@ -25,7 +25,6 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import application.App;
 import database.CompetitionDao;
 import database.MyDateDao;
-import database.TrackDao;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +41,7 @@ import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
 import race.system.Competition;
+import race.system.MyDate;
 import util.CreateReport;
 
 public class MainGraphicGUI extends JFrame {
@@ -146,6 +146,8 @@ public class MainGraphicGUI extends JFrame {
 
     private AddGraphicGUI addGraphicWindow;
 
+    private List<MyDate> allDates;
+
     /***
      * The function creating mainTeamGUI
      */
@@ -185,10 +187,15 @@ public class MainGraphicGUI extends JFrame {
             toolBar.setFloatable(false);
             graphics.getTableHeader().setReorderingAllowed(false);
 
+            updateComboYear();
+            updateComboMonth();
+            updateComboDay();
+
             addGraphicWindow = new AddGraphicGUI(this);
 
             try {
                 allCompetitions = getCompetitionsData();
+                allDates = getDatesData();
                 setCompetitionsTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -333,6 +340,10 @@ public class MainGraphicGUI extends JFrame {
 
     public List<Competition> getCompetitionsData() throws InterruptedException {
         return competitionDao.getAllCompetitions();
+    }
+
+    public List<MyDate> getDatesData() throws InterruptedException {
+        return myDateDao.getAllDates();
     }
 
     /**
@@ -481,5 +492,85 @@ public class MainGraphicGUI extends JFrame {
 
     public MainMenuGUI getParentWindow() {
         return parentWindow;
+    }
+
+    public void updateComboDay() {
+        int last;
+        if (comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0) {
+            if (Integer.parseInt(comboMonth.getSelectedItem().toString()) != 2) {
+                last = " 1 3 5 7 8 10 12 ".contains(comboMonth.getSelectedItem().toString()) ? 32 : 31;
+            } else
+                last = Integer.parseInt(comboYear.getSelectedItem().toString()) % 4 == 0 ? 30 : 29;
+            for (int i = 1; i < last; i++) {
+                comboDay.addItem(Integer.valueOf(i).toString());
+            }
+        }
+        comboDay.setEnabled(comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0);
+    }
+
+    public void updateComboMonth() {
+        comboMonth.addItem("Не выбран");
+        comboMonth.setSelectedIndex(0);
+        for (int i = 1; i < 13; i++) {
+            comboMonth.addItem(Integer.valueOf(i).toString());
+        }
+    }
+
+    public void updateComboYear() {
+        comboYear.addItem("Не выбран");
+        comboYear.setSelectedIndex(0);
+        for (int i = 2024; i < 2100; i++) {
+            comboYear.addItem(Integer.valueOf(i).toString());
+        }
+    }
+
+    public static MyDate isAtDateList(List<MyDate> dates, Integer day, Integer month, Integer year) {
+        MyDate answer = null;
+        for (int i = 0; i < dates.size(); i++) {
+            if (dates.get(i).getDay().equals(day) && dates.get(i).getMonth().equals(month)
+                    && dates.get(i).getYear().equals(year)) {
+                answer = dates.get(i);
+                break;
+            }
+        }
+        return answer;
+    }
+
+    public List<MyDate> getAllDates() {
+        return allDates;
+    }
+
+    public void addToAllCompetitions(Competition competition) {
+        allCompetitions.add(competition);
+    }
+
+    public void addToAllDates(MyDate date) {
+        allDates.add(date);
+    }
+
+    public CompetitionDao getCompetitionDao() {
+        return competitionDao;
+    }
+
+    public MyDateDao getMyDateDao() {
+        return myDateDao;
+    }
+
+    public List<Competition> getAllCompetitions() {
+        return allCompetitions;
+    }
+
+    public static Competition isAtCompetitionList(List<Competition> competitions, Competition competition) {
+        Competition answer = null;
+        for (int i = 0; i < competitions.size(); i++) {
+            if (competitions.get(i).getTrack().getTrackName().equals(competition.getTrack().getTrackName())
+                    && competitions.get(i).getDate().getDay().equals(competition.getDate().getDay())
+                    && competitions.get(i).getDate().getMonth().equals(competition.getDate().getMonth()) &&
+                    competitions.get(i).getDate().getYear().equals(competition.getDate().getYear())) {
+                answer = competitions.get(i);
+                break;
+            }
+        }
+        return answer;
     }
 }

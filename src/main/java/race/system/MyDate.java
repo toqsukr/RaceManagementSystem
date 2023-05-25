@@ -47,6 +47,12 @@ public class MyDate {
         year = yearNumber;
     };
 
+    public MyDate() {
+        this.day = -1;
+        this.month = -1;
+        this.year = -1;
+    }
+
     public MyDate(int day, int month, int year) {
         this.day = day;
         this.month = month;

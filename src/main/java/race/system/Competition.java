@@ -5,22 +5,21 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "competition")
 public class Competition {
-    private int competitionId;
+    private int competitionID;
     private MyDate date;
     private Track track;
 
     @Id
-    @Column(name = "competitionId")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getCompetitionId() {
-        return competitionId;
+    @Column(name = "competitionID")
+    public int getCompetitionID() {
+        return competitionID;
     }
 
-    public void setCompetitionId(int id) {
-        competitionId = id;
+    public void setCompetitionID(int id) {
+        competitionID = id;
     }
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "dateID", referencedColumnName = "dateID")
     public MyDate getDate() {
         return date;
@@ -30,7 +29,7 @@ public class Competition {
         date = otherDate;
     };
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "trackID", referencedColumnName = "trackID")
     public Track getTrack() {
         return track;
@@ -39,4 +38,14 @@ public class Competition {
     public void setTrack(Track otherTrack) {
         track = otherTrack;
     };
+
+    public Competition() {
+        this.date = null;
+        this.track = null;
+    }
+
+    public Competition(MyDate date, Track track) {
+        this.date = date;
+        this.track = track;
+    }
 }

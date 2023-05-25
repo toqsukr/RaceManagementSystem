@@ -42,9 +42,75 @@ public class CompetitionDao {
         }
     }
 
+    public Competition findCompetition(int id) {
+        em.getTransaction().begin();
+        Competition competition = em.find(Competition.class, id);
+        em.getTransaction().commit();
+        return competition;
+    }
+
+    public void saveCompetition(Competition competition) {
+        try {
+            em.getTransaction().begin();
+            em.persist(competition);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void updateCompetition(Competition competition) {
+        try {
+            em.getTransaction().begin();
+            em.merge(competition);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void deleteCompetition(Competition competition) {
+        try {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM Competition c WHERE dateID = :id", null)
+                    .setParameter("id", competition.getCompetitionID())
+                    .executeUpdate();
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void clearCompetition() {
+        try {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM Competition").executeUpdate();
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public int getFreeID() {
+        int id = 0;
+        em.getTransaction().begin();
+        for (int i = 0; i < freeIDs.length; i++) {
+            if (freeIDs[i]) {
+                id = i;
+                break;
+            }
+        }
+        em.getTransaction().commit();
+        return id;
+    }
+
+    public void addFreeID(int id) {
+        freeIDs[id] = true;
+    }
+
     public void updateFreeID(List<Competition> competitions) {
         for (Competition competition : competitions) {
-            freeIDs[competition.getCompetitionId()] = false;
+            freeIDs[competition.getCompetitionID()] = false;
         }
     }
 }

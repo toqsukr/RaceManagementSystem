@@ -57,6 +57,8 @@ import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
 import exception.UnselectedDeleteException;
 import exception.NothingDataException;
+import race.system.Competition;
+import race.system.MyDate;
 import race.system.Racer;
 import race.system.Team;
 import race.system.Track;
@@ -1390,8 +1392,28 @@ public class MainRacerGUI extends JFrame {
             racerDao.clearRacer();
             teamDao.clearTeam();
             trackDao.clearTrack();
+            parentWindow.getMainGraphicGUI().getCompetitionDao().clearCompetition();
+            parentWindow.getMainGraphicGUI().getMyDateDao().clearDate();
             setIsOpenFile(false);
         }
+
+        List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
+        for (MyDate date : allDates) {
+            if (parentWindow.getMainGraphicGUI().getMyDateDao().findDate(date.getDateID()) == null) {
+                parentWindow.getMainGraphicGUI().getMyDateDao().saveDate(date);
+            } else
+                parentWindow.getMainGraphicGUI().getMyDateDao().updateDate(date);
+        }
+
+        List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
+        for (Competition competition : allCompetitions) {
+            if (parentWindow.getMainGraphicGUI().getCompetitionDao()
+                    .findCompetition(competition.getCompetitionID()) == null) {
+                parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
+            } else
+                parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
+        }
+
         List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
         for (Track track : allTracks) {
             if (trackDao.findTrack(track.getTrackID()) == null) {
@@ -1417,6 +1439,8 @@ public class MainRacerGUI extends JFrame {
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
         List<Track> dbTracks = trackDao.getAllTracks();
+        List<Competition> dbCompetitions = parentWindow.getMainGraphicGUI().getCompetitionDao().getAllCompetitions();
+        List<MyDate> dbDates = parentWindow.getMainGraphicGUI().getMyDateDao().getAllDates();
         for (Racer racer : dbRacers) {
             if (isAtRacerList(allRacers, racer.getRacerID()) == null)
                 racerDao.deleteRacer(racer);
@@ -1430,6 +1454,18 @@ public class MainRacerGUI extends JFrame {
         for (Track track : dbTracks) {
             if (MainTrackGUI.isAtTrackList(allTracks, track.getTrackID()) == null)
                 trackDao.deleteTrack(track);
+        }
+
+        for (MyDate date : dbDates) {
+            if (MainGraphicGUI.isAtDateList(parentWindow.getMainGraphicGUI().getAllDates(), date.getDay(),
+                    date.getMonth(), date.getYear()) == null)
+                parentWindow.getMainGraphicGUI().getMyDateDao().deleteDate(date);
+        }
+
+        for (Competition competition : dbCompetitions) {
+            if (MainGraphicGUI.isAtCompetitionList(parentWindow.getMainGraphicGUI().getAllCompetitions(),
+                    competition) == null)
+                parentWindow.getMainGraphicGUI().getCompetitionDao().deleteCompetition(competition);
         }
     }
 

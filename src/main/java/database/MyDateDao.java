@@ -42,6 +42,71 @@ public class MyDateDao {
         }
     }
 
+    public MyDate findDate(int id) {
+        em.getTransaction().begin();
+        MyDate Date = em.find(MyDate.class, id);
+        em.getTransaction().commit();
+        return Date;
+    }
+
+    public void saveDate(MyDate date) {
+        try {
+            em.getTransaction().begin();
+            em.persist(date);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void updateDate(MyDate date) {
+        try {
+            em.getTransaction().begin();
+            em.merge(date);
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void deleteDate(MyDate date) {
+        try {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM MyDate d WHERE dateID = :id", null).setParameter("id", date.getDateID())
+                    .executeUpdate();
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public void clearDate() {
+        try {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM MyDate").executeUpdate();
+            em.getTransaction().commit();
+        } catch (HibernateException exception) {
+            JOptionPane.showMessageDialog(null, exception.getMessage());
+        }
+    }
+
+    public int getFreeID() {
+        int id = 0;
+        em.getTransaction().begin();
+        for (int i = 0; i < freeIDs.length; i++) {
+            if (freeIDs[i]) {
+                id = i;
+                break;
+            }
+        }
+        em.getTransaction().commit();
+        return id;
+    }
+
+    public void addFreeID(int id) {
+        freeIDs[id] = true;
+    }
+
     public void updateFreeID(List<MyDate> myDates) {
         for (MyDate myDate : myDates) {
             freeIDs[myDate.getDateID()] = false;
