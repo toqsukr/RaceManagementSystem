@@ -751,8 +751,10 @@ public class MainTrackGUI extends JFrame {
     private void updateCompetitions(Track track) {
         List<Competition> competitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
         for (int i = competitions.size() - 1; i > -1; i--) {
-            if (competitions.get(i).getTrack().getTrackID().equals(track.getTrackID()))
+            if (competitions.get(i).getTrack().getTrackID().equals(track.getTrackID())) {
+                parentWindow.getMainGraphicGUI().deleteFromAllDates(competitions.get(i).getDate().getDateID());
                 parentWindow.getMainGraphicGUI().deleteFromAllCompetitions(competitions.get(i).getCompetitionID());
+            }
         }
     }
 }

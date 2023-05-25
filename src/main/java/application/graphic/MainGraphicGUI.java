@@ -382,9 +382,9 @@ public class MainGraphicGUI extends JFrame {
             try {
                 URL boldFontPath = this.getClass().getClassLoader()
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
-                CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по списку соревнований\n\n\n\n\n",
-                        new float[] { 1f, 1f, 1f, 1f, 1f, 1f },
-                        new String[] { "\nID соревнования\n", "\nНазвание трассы\n", "\nДлина\n", "\nДень\n",
+                CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по графику соревнований\n\n\n\n\n",
+                        new float[] { 1f, 0.5f, 0.5f, 0.5f },
+                        new String[] { "\nНазвание трассы\n", "\nДень\n",
                                 "\nМесяц\n", "\nГод\n" },
                         boldFontPath);
             } catch (Exception exception) {
@@ -650,6 +650,16 @@ public class MainGraphicGUI extends JFrame {
         for (Competition competition : allCompetitions) {
             if (competition.getCompetitionID() == id) {
                 allCompetitions.remove(competition);
+                break;
+            }
+        }
+    }
+
+    public void deleteFromAllDates(int id) {
+        myDateDao.addFreeID(id);
+        for (MyDate date : allDates) {
+            if (date.getDateID() == id) {
+                allDates.remove(date);
                 break;
             }
         }

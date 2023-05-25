@@ -41,7 +41,7 @@ public class CreateReport {
             fileTitle = "teams";
         else if (parent.getTitle().contains("трасс"))
             fileTitle = "tracks";
-        else if (parent.getTitle().toLowerCase().equals("расписание"))
+        else if (parent.getTitle().toLowerCase().contains("расписание"))
             fileTitle = "graphics";
         else
             fileTitle = "achivements";
