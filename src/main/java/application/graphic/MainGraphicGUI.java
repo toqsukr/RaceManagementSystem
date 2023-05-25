@@ -3,15 +3,12 @@ package application.graphic;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -29,7 +26,6 @@ import application.App;
 import database.CompetitionDao;
 import database.MyDateDao;
 import database.TrackDao;
-import exception.NothingDataException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -38,7 +34,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -76,11 +71,6 @@ public class MainGraphicGUI extends JFrame {
     private static DefaultTableModel graphicsTable = new DefaultTableModel(data, columns);
 
     /**
-     * The table model storing the version of the table before editing
-     */
-    private static DefaultTableModel previousTracksTable = new DefaultTableModel(data, columns);
-
-    /**
      * Create the table
      */
     private final JTable graphics = new JTable(graphicsTable) {
@@ -109,32 +99,6 @@ public class MainGraphicGUI extends JFrame {
      * The logger variable
      */
     private static Logger logger;
-
-    /**
-     * This panel store 2 inputs and search button
-     */
-    private static final JPanel filterPanel = new JPanel();
-
-    /**
-     * This input is used to search for an entry in the table by the name of the
-     * racer
-     */
-    private static final JTextField searchNameField = new JTextField("Название трассы", 17);
-
-    /**
-     * This button performs a search
-     */
-    private static final JButton searchBtn = new JButton("Искать");
-
-    /**
-     * This button performs a clear search inputs
-     */
-    private static final JButton clearInputBtn = new JButton("Очистить");
-
-    /**
-     * This button performs a disrupt values of search inputs
-     */
-    private static final JButton disruptInputBtn = new JButton("Сбросить фильтр");
 
     /**
      * This button forms team data report
@@ -178,8 +142,6 @@ public class MainGraphicGUI extends JFrame {
             mainGraphicGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    clearInputBtn.doClick();
-                    disruptInputBtn.doClick();
                     stopLogging(context);
                     parent.setMainMenuEnable(true);
                     mainGraphicGUI.dispose();
@@ -213,30 +175,9 @@ public class MainGraphicGUI extends JFrame {
             reportBtn.setBackground(new Color(0xDFD9D9D9, false));
             reportBtn.setFocusable(false);
 
-            searchBtn.setBackground(new Color(0xDFD9D9D9, false));
-            searchBtn.addActionListener(new SearchEventListener());
-            searchBtn.setMargin(new Insets(1, 6, 1, 6));
-
-            clearInputBtn.addActionListener(new ClearInputEventListener());
-            clearInputBtn.setMargin(new Insets(1, 6, 1, 6));
-            clearInputBtn.setBackground(new Color(0xDFD9D9D9, false));
-
-            disruptInputBtn.setBackground(new Color(0xDFD9D9D9, false));
-            disruptInputBtn.addActionListener(new DisruptEventListener());
-            disruptInputBtn.setMargin(new Insets(1, 6, 1, 6));
-
-            searchNameField.addFocusListener(new GraphicsInputFocusListener());
-            searchNameField.setMargin(new Insets(2, 2, 3, 0));
-
-            filterPanel.add(searchNameField);
-            filterPanel.add(searchBtn);
-            filterPanel.add(clearInputBtn);
-            filterPanel.add(disruptInputBtn);
-
             toolBar.add(reportBtn);
 
             container.add(toolBar, BorderLayout.NORTH);
-            container.add(filterPanel, BorderLayout.SOUTH);
             container.add(scroll, BorderLayout.CENTER);
 
         } catch (IOException exception) {
@@ -286,21 +227,9 @@ public class MainGraphicGUI extends JFrame {
         input.setText(text);
     }
 
-    /**
-     * Сlass for implementing a clear input button listener
-     */
-    private class ClearInputEventListener implements ActionListener {
-        /***
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            setInput(searchNameField, "Название трассы");
-        }
-    }
-
     public void setCompetitionsTable() {
         if (graphicsTable.getRowCount() != 0)
-            clearTable(graphicsTable);
+            MainRacerGUI.clearTable(graphicsTable);
 
         for (Track track : allTracks) {
             graphicsTable.addRow(
@@ -313,87 +242,7 @@ public class MainGraphicGUI extends JFrame {
                             "DB doesn't connect:(",
                     });
         }
-        copyTable(graphicsTable, fullSearchTable);
-    }
-
-    /**
-     * Сlass for implementing a disrupt button listener
-     */
-    private class DisruptEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-
-        }
-    }
-
-    /**
-     * Сlass for implementing a search button listener
-     */
-    private class SearchEventListener implements ActionListener {
-
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                checkEmptyData("Данные для поиска не найдены!", fullSearchTable);
-                copyTable(fullSearchTable, graphicsTable);
-                copyTable(graphicsTable, fullSearchTable);
-                for (int i = graphicsTable.getRowCount() - 1; i > -1; i--) {
-                    if (!searchNameField.getText().equals("Название трассы")
-                            & !graphicsTable.getValueAt(i, 1).toString()
-                                    .toLowerCase().contains(searchNameField.getText().toLowerCase())) {
-                        graphicsTable.removeRow(i);
-                        continue;
-                    }
-                }
-            } catch (NothingDataException exception) {
-                logger.info("NothingDataException exception");
-                JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка поиска",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
-
-        }
-    }
-
-    public static class GraphicsInputFocusListener implements FocusListener {
-        /***
-         * @param e the event to be processed
-         */
-        public void focusGained(FocusEvent e) {
-            if (searchNameField.getText().equals("Название трассы"))
-                setInput(searchNameField, "");
-        }
-
-        /***
-         * @param e the event to be processed
-         */
-        public void focusLost(FocusEvent e) {
-            if (searchNameField.getText().equals(""))
-                setInput(searchNameField, "Название трассы");
-        }
-
-    }
-
-    /***
-     * The function copies data from one table model to another
-     * 
-     * @param table    the table containing data to be copied
-     * @param newTable the table to which data to be copied
-     */
-    public static void copyTable(DefaultTableModel table, DefaultTableModel newTable) {
-        clearTable(newTable);
-        for (int i = 0; i < table.getRowCount(); i++) {
-            String[] row = new String[table.getColumnCount()];
-            for (int j = 0; j < table.getColumnCount(); j++) {
-                row[j] = table.getValueAt(i, j).toString();
-            }
-            newTable.addRow(row); // Запись строки в таблицу
-        }
+        MainRacerGUI.copyTable(graphicsTable, fullSearchTable);
     }
 
     public List<Track> getTracksData() throws InterruptedException {
@@ -406,31 +255,6 @@ public class MainGraphicGUI extends JFrame {
 
     public List<Competition> getCompetitionsData() throws InterruptedException {
         return competitionDao.getAllCompetitions();
-    }
-
-    /***
-     * The function clears table
-     * 
-     * @param table the table to be cleared
-     */
-    public static void clearTable(DefaultTableModel table) {
-        int n = table.getRowCount();
-        for (int i = 0; i < n; i++) {
-            table.removeRow(n - i - 1);
-        }
-    }
-
-    /***
-     * The function checks whether table isn't empty
-     * 
-     * @param msg   the message to be shown if the table is empty
-     * @param table the table to be checked
-     * @throws NothingDataException the exception to be thrown if the table is empty
-     */
-    public static void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
-        if (table.getRowCount() == 0) {
-            throw new NothingDataException(msg);
-        }
     }
 
     /**
