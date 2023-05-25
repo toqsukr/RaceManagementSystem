@@ -213,7 +213,7 @@ public class AddGraphicGUI {
         }
     }
 
-    public void updateComboDay() {
+    private void updateComboDay() {
         int last;
         if (comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0) {
             if (Integer.parseInt(comboMonth.getSelectedItem().toString()) != 2) {
@@ -227,7 +227,7 @@ public class AddGraphicGUI {
         comboDay.setEnabled(comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0);
     }
 
-    public void updateComboMonth() {
+    private void updateComboMonth() {
         comboMonth.addItem("Не выбран");
         comboMonth.setSelectedIndex(0);
         for (int i = 1; i < 13; i++) {
@@ -235,7 +235,7 @@ public class AddGraphicGUI {
         }
     }
 
-    public void updateComboYear() {
+    private void updateComboYear() {
         comboYear.addItem("Не выбран");
         comboYear.setSelectedIndex(0);
         for (int i = 2024; i < 2100; i++) {

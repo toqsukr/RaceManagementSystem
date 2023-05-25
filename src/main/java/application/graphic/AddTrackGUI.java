@@ -170,6 +170,8 @@ public class AddTrackGUI {
                 parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
                         .updateFreeID(parentWindow.getAllTracks());
                 clearInputs();
+                parentWindow.getParentWindow().getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
+                parentWindow.getParentWindow().getMainScoreGUI().getAddScoreWindow().updateComboTrack();
                 parentWindow.setTrackTable();
 
             } catch (EmptyAddInputException exception) {

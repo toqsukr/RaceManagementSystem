@@ -2,7 +2,9 @@ package application.graphic;
 
 import util.CreateReport;
 import util.Validation;
+import race.system.Competition;
 import race.system.Racer;
+import race.system.Score;
 import race.system.Track;
 
 import java.awt.BorderLayout;
@@ -483,6 +485,8 @@ public class MainTrackGUI extends JFrame {
                                 Track removingTrack = isAtTrackList(allTracks,
                                         new Track(removingTrackName, Integer.parseInt(removingLength)));
                                 parentWindow.getMainRacerGUI().getTrackDao().addFreeID(removingTrack.getTrackID());
+                                updateScores(removingTrack);
+                                updateCompetitions(removingTrack);
                                 allTracks.remove(allTracks.indexOf(removingTrack));
                                 break;
                             }
@@ -490,6 +494,11 @@ public class MainTrackGUI extends JFrame {
                         }
                         i--;
                     }
+                    parentWindow.getMainScoreGUI().updateComboTrack();
+                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                    parentWindow.getMainGraphicGUI().setCompetitionsTable();
+                    parentWindow.getMainScoreGUI().setScoreTable();
+                    parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
                     parentWindow.getMainTrackGUI().setTrackTable();
                 }
             } catch (UnselectedDeleteException exception) {
@@ -728,6 +737,22 @@ public class MainTrackGUI extends JFrame {
                 allTracks.remove(track);
                 break;
             }
+        }
+    }
+
+    private void updateScores(Track track) {
+        List<Score> scores = parentWindow.getMainScoreGUI().getAllScores();
+        for (int i = scores.size() - 1; i > -1; i--) {
+            if (scores.get(i).getTrackInfo().getTrackID().equals(track.getTrackID()))
+                parentWindow.getMainScoreGUI().deleteFromAllScores(scores.get(i).getScoreID());
+        }
+    }
+
+    private void updateCompetitions(Track track) {
+        List<Competition> competitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
+        for (int i = competitions.size() - 1; i > -1; i--) {
+            if (competitions.get(i).getTrack().getTrackID().equals(track.getTrackID()))
+                parentWindow.getMainGraphicGUI().deleteFromAllCompetitions(competitions.get(i).getCompetitionID());
         }
     }
 }

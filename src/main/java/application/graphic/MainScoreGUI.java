@@ -705,4 +705,14 @@ public class MainScoreGUI extends JFrame {
     public ScoreDao getScoreDao() {
         return scoreDao;
     }
+
+    public void deleteFromAllScores(int id) {
+        scoreDao.addFreeID(id);
+        for (Score score : allScores) {
+            if (score.getScoreID() == id) {
+                allScores.remove(score);
+                break;
+            }
+        }
+    }
 }

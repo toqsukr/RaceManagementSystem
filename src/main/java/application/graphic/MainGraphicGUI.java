@@ -640,4 +640,19 @@ public class MainGraphicGUI extends JFrame {
         }
         return answer;
     }
+
+    public AddGraphicGUI getAddGraphicGUI() {
+        return addGraphicWindow;
+    }
+
+    public void deleteFromAllCompetitions(int id) {
+        competitionDao.addFreeID(id);
+        for (Competition competition : allCompetitions) {
+            if (competition.getCompetitionID() == id) {
+                allCompetitions.remove(competition);
+                break;
+            }
+        }
+    }
+
 }
