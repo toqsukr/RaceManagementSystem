@@ -721,4 +721,13 @@ public class MainTrackGUI extends JFrame {
         comboRacer.removeAllItems();
         comboRacer.setSelectedItem(null);
     }
+
+    public void deleteFromAllTracks(int id) {
+        for (Track track : allTracks) {
+            if (track.getTrackID() == id) {
+                allTracks.remove(track);
+                break;
+            }
+        }
+    }
 }

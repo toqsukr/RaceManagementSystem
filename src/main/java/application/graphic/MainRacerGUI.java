@@ -1406,14 +1406,6 @@ public class MainRacerGUI extends JFrame {
                 parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
         }
 
-        List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
-        for (MyDate date : allDates) {
-            if (parentWindow.getMainGraphicGUI().getMyDateDao().findDate(date.getDateID()) == null) {
-                parentWindow.getMainGraphicGUI().getMyDateDao().saveDate(date);
-            } else
-                parentWindow.getMainGraphicGUI().getMyDateDao().updateDate(date);
-        }
-
         List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
         for (Competition competition : allCompetitions) {
             if (parentWindow.getMainGraphicGUI().getCompetitionDao()
@@ -1421,6 +1413,14 @@ public class MainRacerGUI extends JFrame {
                 parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
             } else
                 parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
+        }
+
+        List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
+        for (MyDate date : allDates) {
+            if (parentWindow.getMainGraphicGUI().getMyDateDao().findDate(date.getDateID()) == null) {
+                parentWindow.getMainGraphicGUI().getMyDateDao().saveDate(date);
+            } else
+                parentWindow.getMainGraphicGUI().getMyDateDao().updateDate(date);
         }
 
         List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
@@ -1466,16 +1466,16 @@ public class MainRacerGUI extends JFrame {
                 trackDao.deleteTrack(track);
         }
 
-        for (MyDate date : dbDates) {
-            if (MainGraphicGUI.isAtDateList(parentWindow.getMainGraphicGUI().getAllDates(), date.getDay(),
-                    date.getMonth(), date.getYear()) == null)
-                parentWindow.getMainGraphicGUI().getMyDateDao().deleteDate(date);
-        }
-
         for (Competition competition : dbCompetitions) {
             if (MainGraphicGUI.isAtCompetitionList(parentWindow.getMainGraphicGUI().getAllCompetitions(),
                     competition) == null)
                 parentWindow.getMainGraphicGUI().getCompetitionDao().deleteCompetition(competition);
+        }
+
+        for (MyDate date : dbDates) {
+            if (MainGraphicGUI.isAtDateList(parentWindow.getMainGraphicGUI().getAllDates(), date.getDay(),
+                    date.getMonth(), date.getYear()) == null)
+                parentWindow.getMainGraphicGUI().getMyDateDao().deleteDate(date);
         }
 
         for (Score score : dbScores) {
@@ -1735,4 +1735,5 @@ public class MainRacerGUI extends JFrame {
     public JTable getRacerTable() {
         return racers;
     }
+
 }

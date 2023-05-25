@@ -31,6 +31,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import application.App;
 import database.ScoreDao;
 import exception.InvalidTimeException;
+import exception.NothingDataException;
+import exception.UnselectedDeleteException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -435,53 +437,61 @@ public class MainScoreGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // try {
-            // MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", trackTable);
-            // MainRacerGUI.checkDeleteSelect(tracks);
+            try {
+                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", scoreTable);
+                MainRacerGUI.checkDeleteSelect(scores);
 
-            // String message = tracks.getSelectedRows().length == 1
-            // ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет
-            // невозможно!"
-            // : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет
-            // невозможно!";
-            // int result = JOptionPane.showConfirmDialog(mainScoreGUI,
-            // message,
-            // "Подтверждение действия",
-            // JOptionPane.YES_NO_OPTION,
-            // JOptionPane.QUESTION_MESSAGE);
-            // if (result == JOptionPane.YES_OPTION) {
+                String message = scores.getSelectedRows().length == 1
+                        ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет невозможно!";
+                int result = JOptionPane.showConfirmDialog(mainScoreGUI,
+                        message,
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
 
-            // int i = tracks.getSelectedRows().length - 1;
-            // while (tracks.getSelectedRows().length > 0) {
-            // int j = tracks.getRowCount() - 1;
-            // while (j > -1) {
-            // if (j == tracks.getSelectedRows()[i]) {
-            // String removingTrackName = tracks.getValueAt(tracks.getSelectedRows()[i],
-            // 0).toString();
-            // String removingLength = tracks.getValueAt(tracks.getSelectedRows()[i],
-            // 1).toString();
-            // trackTable.removeRow(tracks.getSelectedRows()[i]);
-            // Track removingTrack = isAtTrackList(allTracks,
-            // new Track(removingTrackName, Integer.parseInt(removingLength)));
-            // parentWindow.getMainRacerGUI().getTrackDao().addFreeID(removingTrack.getTrackID());
-            // allTracks.remove(allTracks.indexOf(removingTrack));
-            // break;
-            // }
-            // j--;
-            // }
-            // i--;
-            // }
-            // parentWindow.getMainTrackGUI().setTrackTable();
-            // }
-            // } catch (UnselectedDeleteException exception) {
-            // JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка
-            // удаления",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (NothingDataException exception) {
-            // JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка
-            // редактирования",
-            // JOptionPane.PLAIN_MESSAGE);
-            // }
+                    int i = scores.getSelectedRows().length - 1;
+                    while (scores.getSelectedRows().length > 0) {
+                        int j = scores.getRowCount() - 1;
+                        while (j > -1) {
+                            if (j == scores.getSelectedRows()[i]) {
+                                String removingRacerName = scores.getValueAt(scores.getSelectedRows()[i],
+                                        0).toString();
+                                String removingTrackName = scores.getValueAt(scores.getSelectedRows()[i],
+                                        1).toString();
+                                String removingTime = scores.getValueAt(scores.getSelectedRows()[i], 2).toString();
+                                scoreTable.removeRow(scores.getSelectedRows()[i]);
+                                Track removingTrack = MainTrackGUI.isAtTrackList(
+                                        parentWindow.getMainTrackGUI().getAllTracks(),
+                                        removingTrackName);
+                                Racer removingRacer = MainRacerGUI.isAtRacerList(
+                                        parentWindow.getMainRacerGUI().getAllRacers(),
+                                        Integer.parseInt(
+                                                removingRacerName.substring(removingRacerName.indexOf(':', 0) + 2,
+                                                        (removingRacerName.indexOf(')', 0)))));
+
+                                Double time = Double
+                                        .parseDouble(removingTime);
+                                Score score = isAtScoreList(allScores,
+                                        new Score(removingRacer, removingTrack, time));
+                                scoreDao.addFreeID(score.getScoreID());
+                                allScores.remove(score);
+                                break;
+                            }
+                            j--;
+                        }
+                        i--;
+                    }
+                    setScoreTable();
+                }
+            } catch (UnselectedDeleteException exception) {
+                JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

@@ -25,6 +25,8 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 import application.App;
 import database.CompetitionDao;
 import database.MyDateDao;
+import exception.NothingDataException;
+import exception.UnselectedDeleteException;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +44,7 @@ import javax.swing.table.DefaultTableModel;
 
 import race.system.Competition;
 import race.system.MyDate;
+import race.system.Track;
 import util.CreateReport;
 
 public class MainGraphicGUI extends JFrame {
@@ -230,7 +233,7 @@ public class MainGraphicGUI extends JFrame {
             URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_competition.png");
             deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
             deleteBtn.setToolTipText("Удалить рекорд");
-            // deleteBtn.addActionListener(new DeleteEventListener());
+            deleteBtn.addActionListener(new DeleteEventListener());
             deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
             deleteBtn.setFocusable(false);
 
@@ -429,6 +432,70 @@ public class MainGraphicGUI extends JFrame {
             MainRacerGUI.copyTable(graphicsTable, previousGraphicTable);
             setEditingPermit(true);
             setConfirmbarVisible();
+        }
+    }
+
+    private class DeleteEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", graphicsTable);
+                MainRacerGUI.checkDeleteSelect(graphics);
+
+                String message = graphics.getSelectedRows().length == 1
+                        ? "Вы действительно хотите удалить выбранную запись?\nОтменить действие будет невозможно!"
+                        : "Вы действительно хотите удалить выбранные записи?\nОтменить действие будет невозможно!";
+                int result = JOptionPane.showConfirmDialog(mainGraphicGUI,
+                        message,
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+
+                    int i = graphics.getSelectedRows().length - 1;
+                    while (graphics.getSelectedRows().length > 0) {
+                        int j = graphics.getRowCount() - 1;
+                        while (j > -1) {
+                            if (j == graphics.getSelectedRows()[i]) {
+                                String removingTrackName = graphics.getValueAt(graphics.getSelectedRows()[i],
+                                        0).toString();
+                                String removingDay = graphics.getValueAt(graphics.getSelectedRows()[i],
+                                        1).toString();
+                                String removingMonth = graphics.getValueAt(graphics.getSelectedRows()[i], 2).toString();
+                                String removingYear = graphics.getValueAt(graphics.getSelectedRows()[i], 3).toString();
+
+                                graphicsTable.removeRow(graphics.getSelectedRows()[i]);
+                                Track removingTrack = MainTrackGUI.isAtTrackList(
+                                        parentWindow.getMainTrackGUI().getAllTracks(),
+                                        removingTrackName);
+
+                                MyDate removingDate = isAtDateList(allDates, Integer.parseInt(removingDay),
+                                        Integer.parseInt(removingMonth), Integer.parseInt(removingYear));
+                                myDateDao.addFreeID(removingDate.getDateID());
+                                myDateDao.addFreeID(removingDate.getDateID());
+                                allDates.remove(removingDate);
+                                Competition removingCompetition = isAtCompetitionList(allCompetitions,
+                                        new Competition(removingDate, removingTrack));
+                                competitionDao.addFreeID(removingCompetition.getCompetitionID());
+                                allCompetitions.remove(removingCompetition);
+
+                                break;
+                            }
+                            j--;
+                        }
+                        i--;
+                    }
+                }
+            } catch (UnselectedDeleteException exception) {
+                JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка удаления",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

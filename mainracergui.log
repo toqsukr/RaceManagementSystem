@@ -989,3 +989,148 @@
 2023-05-25 19:30:09.581 [AWT-EventQueue-0] INFO  com - Stop logging MainTeamGUI
 2023-05-25 19:30:11.890 [AWT-EventQueue-0] INFO  com - Stop logging mainTrackGUI
 2023-05-25 19:30:14.689 [AWT-EventQueue-0] INFO  com - Stop logging MainRacerGUI
+2023-05-25 19:33:22.379 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:33:22.860 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:33:22.884 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:33:23.026 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:33:23.195 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:33:23.374 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:33:40.642 [AWT-EventQueue-0] INFO  com - Stop logging mainScoreGUI
+2023-05-25 19:33:50.349 [AWT-EventQueue-0] INFO  com - Stop logging MainGraphicsGUI
+2023-05-25 19:46:10.899 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:46:11.434 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:46:11.466 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:46:11.680 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:46:11.950 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:46:12.143 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:47:06.058 [AWT-EventQueue-0] INFO  com - Stop logging mainScoreGUI
+2023-05-25 19:47:46.635 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:47:47.065 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:47:47.097 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:47:47.235 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:47:47.475 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:47:47.664 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:48:37.958 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:48:38.695 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:48:38.719 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:48:38.929 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:48:39.192 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:48:39.545 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:48:58.911 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:48:59.744 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:48:59.808 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:49:00.119 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:49:00.450 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:49:00.690 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:49:31.178 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:49:31.664 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:49:31.696 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:49:31.874 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:49:32.144 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:49:32.338 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:50:08.272 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:50:08.754 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:50:08.784 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:50:08.970 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:50:09.203 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:50:09.421 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:51:24.436 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:51:24.988 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:51:25.020 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:51:25.190 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:51:25.388 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:51:25.577 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:53:09.837 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:53:10.447 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:53:10.479 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:53:10.684 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:53:10.951 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:53:11.181 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:54:15.563 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:54:16.143 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:54:16.192 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:54:16.431 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:54:16.667 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:54:16.885 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 19:58:59.324 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 19:58:59.939 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 19:58:59.980 [main] INFO  com - Data were downloaded successful!
+2023-05-25 19:59:00.346 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 19:59:00.594 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 19:59:00.792 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:00:16.728 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:13:52.065 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:13:52.592 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:13:52.648 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:13:52.811 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:13:53.014 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:13:53.176 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:14:01.753 [AWT-EventQueue-0] INFO  com - Opening window AddRacerGUI
+2023-05-25 20:14:13.507 [AWT-EventQueue-0] INFO  com - Stop logging mainScoreGUI
+2023-05-25 20:14:18.921 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:15:02.523 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:15:03.116 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:15:03.140 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:15:03.266 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:15:03.484 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:15:03.651 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:15:12.926 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:16:02.696 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:16:03.249 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:16:03.281 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:16:03.416 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:16:03.612 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:16:03.793 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:16:12.866 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:18:04.715 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:18:05.305 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:18:05.345 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:18:05.498 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:18:05.677 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:18:05.859 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:18:11.534 [AWT-EventQueue-0] INFO  com - Stop logging mainScoreGUI
+2023-05-25 20:18:17.229 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:19:20.687 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:19:21.179 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:19:21.220 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:19:21.388 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:19:21.582 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:19:21.756 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:19:31.613 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:20:57.902 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:20:58.465 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:20:58.489 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:20:58.643 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:20:58.836 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:20:58.994 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:21:09.133 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:23:38.033 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:23:38.722 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:23:38.754 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:23:38.913 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:23:39.129 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:23:39.389 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:27:05.796 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:27:06.360 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:27:06.408 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:27:06.601 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:27:06.847 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:27:07.074 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:27:17.979 [AWT-EventQueue-0] INFO  com - Stop logging mainScoreGUI
+2023-05-25 20:27:25.551 [AWT-EventQueue-0] INFO  com - Downloading data from database
+2023-05-25 20:27:27.584 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:30:30.048 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:30:30.622 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:30:30.654 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:30:30.810 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:30:31.024 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:30:31.179 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:30:38.336 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:31:10.453 [main] INFO  com - Start logging MainRacerGUI
+2023-05-25 20:31:10.904 [main] INFO  com - Start logging MainTeamGUI
+2023-05-25 20:31:10.950 [main] INFO  com - Data were downloaded successful!
+2023-05-25 20:31:11.174 [main] INFO  com - Start logging mainTrackGUI
+2023-05-25 20:31:11.377 [main] INFO  com - Start logging mainScoreGUI
+2023-05-25 20:31:11.531 [main] INFO  com - Start logging MainGraphicsGUI
+2023-05-25 20:31:17.343 [AWT-EventQueue-0] INFO  com - Deploy data to database
+2023-05-25 20:31:24.778 [AWT-EventQueue-0] INFO  com - Stop logging MainGraphicsGUI

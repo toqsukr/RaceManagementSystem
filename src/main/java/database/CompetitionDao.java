@@ -72,7 +72,7 @@ public class CompetitionDao {
     public void deleteCompetition(Competition competition) {
         try {
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Competition c WHERE dateID = :id", null)
+            em.createQuery("DELETE FROM Competition c WHERE competitionID = :id", null)
                     .setParameter("id", competition.getCompetitionID())
                     .executeUpdate();
             em.getTransaction().commit();
