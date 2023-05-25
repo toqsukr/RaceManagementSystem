@@ -37,8 +37,15 @@ public class CreateReport {
         String fileTitle;
         if (parent.getTitle().contains("гонщиков"))
             fileTitle = "racers";
-        else
+        else if (parent.getTitle().contains("команд"))
             fileTitle = "teams";
+        else if (parent.getTitle().contains("трасс"))
+            fileTitle = "tracks";
+        else if (parent.getTitle().toLowerCase().equals("расписание"))
+            fileTitle = "graphics";
+        else
+            fileTitle = "achivements";
+
         save.setFile(fileTitle + "_report.pdf");
         save.setVisible(true);
         if (save.getFile() != null) {

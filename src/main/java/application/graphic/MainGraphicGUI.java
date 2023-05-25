@@ -308,9 +308,9 @@ public class MainGraphicGUI extends JFrame {
                             String.valueOf(track.getTrackID()),
                             track.getTrackName(),
                             String.valueOf(track.getTrackLength()),
-                            "Sun",
-                            "July",
-                            "1999",
+                            "changeme",
+                            "pls",
+                            "DB doesn't connect:(",
                     });
         }
         copyTable(graphicsTable, fullSearchTable);
@@ -445,9 +445,10 @@ public class MainGraphicGUI extends JFrame {
             try {
                 URL boldFontPath = this.getClass().getClassLoader()
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
-                CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по списку трасс\n\n\n\n\n",
-                        new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nЛучший результат\n" },
+                CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по списку соревнований\n\n\n\n\n",
+                        new float[] { 1f, 1f, 1f, 1f, 1f, 1f },
+                        new String[] { "\nID соревнования\n", "\nНазвание трассы\n", "\nДлина\n", "\nДень\n",
+                                "\nМесяц\n", "\nГод\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка формирования отчета",
