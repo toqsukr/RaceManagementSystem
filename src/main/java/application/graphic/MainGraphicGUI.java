@@ -34,6 +34,7 @@ import exception.NothingDataException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -47,6 +48,7 @@ import javax.swing.table.DefaultTableModel;
 import race.system.Competition;
 import race.system.MyDate;
 import race.system.Track;
+import util.CreateReport;
 
 public class MainGraphicGUI extends JFrame {
 
@@ -71,7 +73,7 @@ public class MainGraphicGUI extends JFrame {
     /**
      * The table model storing displaying data
      */
-    private static DefaultTableModel tracksTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel graphicsTable = new DefaultTableModel(data, columns);
 
     /**
      * The table model storing the version of the table before editing
@@ -81,7 +83,7 @@ public class MainGraphicGUI extends JFrame {
     /**
      * Create the table
      */
-    private final JTable graphics = new JTable(tracksTable) {
+    private final JTable graphics = new JTable(graphicsTable) {
         @Override
         public boolean isCellEditable(int i, int j) {
             return j == 0 ? getEditingPermit() : false;
@@ -133,6 +135,11 @@ public class MainGraphicGUI extends JFrame {
      * This button performs a disrupt values of search inputs
      */
     private static final JButton disruptInputBtn = new JButton("Сбросить фильтр");
+
+    /**
+     * This button forms team data report
+     */
+    private static final JButton reportBtn = new JButton();
 
     private TrackDao trackDao = new TrackDao(App.getEntityManager());
 
@@ -199,6 +206,13 @@ public class MainGraphicGUI extends JFrame {
             Container container = mainGraphicGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
+            URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
+            reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
+            reportBtn.setToolTipText("Сформировать отчет");
+            reportBtn.addActionListener(new ReportEventListener());
+            reportBtn.setBackground(new Color(0xDFD9D9D9, false));
+            reportBtn.setFocusable(false);
+
             searchBtn.setBackground(new Color(0xDFD9D9D9, false));
             searchBtn.addActionListener(new SearchEventListener());
             searchBtn.setMargin(new Insets(1, 6, 1, 6));
@@ -219,8 +233,12 @@ public class MainGraphicGUI extends JFrame {
             filterPanel.add(clearInputBtn);
             filterPanel.add(disruptInputBtn);
 
+            toolBar.add(reportBtn);
+
+            container.add(toolBar, BorderLayout.NORTH);
             container.add(filterPanel, BorderLayout.SOUTH);
             container.add(scroll, BorderLayout.CENTER);
+
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
         }
@@ -281,11 +299,11 @@ public class MainGraphicGUI extends JFrame {
     }
 
     public void setCompetitionsTable() {
-        if (tracksTable.getRowCount() != 0)
-            clearTable(tracksTable);
+        if (graphicsTable.getRowCount() != 0)
+            clearTable(graphicsTable);
 
         for (Track track : allTracks) {
-            tracksTable.addRow(
+            graphicsTable.addRow(
                     new String[] {
                             String.valueOf(track.getTrackID()),
                             track.getTrackName(),
@@ -295,7 +313,7 @@ public class MainGraphicGUI extends JFrame {
                             "1999",
                     });
         }
-        copyTable(tracksTable, fullSearchTable);
+        copyTable(graphicsTable, fullSearchTable);
     }
 
     /**
@@ -323,13 +341,13 @@ public class MainGraphicGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 checkEmptyData("Данные для поиска не найдены!", fullSearchTable);
-                copyTable(fullSearchTable, tracksTable);
-                copyTable(tracksTable, fullSearchTable);
-                for (int i = tracksTable.getRowCount() - 1; i > -1; i--) {
+                copyTable(fullSearchTable, graphicsTable);
+                copyTable(graphicsTable, fullSearchTable);
+                for (int i = graphicsTable.getRowCount() - 1; i > -1; i--) {
                     if (!searchNameField.getText().equals("Название трассы")
-                            & !tracksTable.getValueAt(i, 1).toString()
+                            & !graphicsTable.getValueAt(i, 1).toString()
                                     .toLowerCase().contains(searchNameField.getText().toLowerCase())) {
-                        tracksTable.removeRow(i);
+                        graphicsTable.removeRow(i);
                         continue;
                     }
                 }
@@ -412,6 +430,29 @@ public class MainGraphicGUI extends JFrame {
     public static void checkEmptyData(String msg, DefaultTableModel table) throws NothingDataException {
         if (table.getRowCount() == 0) {
             throw new NothingDataException(msg);
+        }
+    }
+
+    /**
+     * Сlass for implementing a report button listener
+     */
+    private static class ReportEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            try {
+                URL boldFontPath = this.getClass().getClassLoader()
+                        .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
+                CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по списку трасс\n\n\n\n\n",
+                        new float[] { 1f, 1f, 1f },
+                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nЛучший результат\n" },
+                        boldFontPath);
+            } catch (Exception exception) {
+                JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка формирования отчета",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 }
