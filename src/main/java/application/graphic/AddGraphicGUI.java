@@ -53,9 +53,9 @@ public class AddGraphicGUI {
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/score.png");
         addGraphicGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
-        updateComboDay();
-        updateComboMonth();
         updateComboYear();
+        updateComboMonth();
+        updateComboDay();
         updateComboTrack();
 
         comboTrack.setBackground(new Color(0xFFFFFF, false));
@@ -65,9 +65,11 @@ public class AddGraphicGUI {
         comboDay.setFocusable(false);
 
         comboMonth.setBackground(new Color(0xFFFFFF, false));
+        comboMonth.addActionListener(new SelectEventListener());
         comboMonth.setFocusable(false);
 
         comboYear.setBackground(new Color(0xFFFFFF, false));
+        comboYear.addActionListener(new SelectEventListener());
         comboYear.setFocusable(false);
 
         addBtn.setBackground(new Color(0xDFD9D9D9, false));
@@ -107,28 +109,28 @@ public class AddGraphicGUI {
         centerBox.add(trackBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        dayBox.add(Box.createRigidArea(new Dimension(35, 0)));
-        dayBox.add(dayLabel);
-        dayBox.add(Box.createRigidArea(new Dimension(43, 0)));
-        dayBox.add(comboDay);
+        yearBox.add(Box.createRigidArea(new Dimension(34, 0)));
+        yearBox.add(yearLabel);
+        yearBox.add(Box.createRigidArea(new Dimension(42, 0)));
+        yearBox.add(comboYear);
 
-        centerBox.add(dayBox);
+        centerBox.add(yearBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         monthBox.add(Box.createRigidArea(new Dimension(35, 0)));
         monthBox.add(monthLabel);
-        monthBox.add(Box.createRigidArea(new Dimension(35, 0)));
+        monthBox.add(Box.createRigidArea(new Dimension(26, 0)));
         monthBox.add(comboMonth);
 
         centerBox.add(monthBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
-        yearBox.add(Box.createRigidArea(new Dimension(35, 0)));
-        yearBox.add(yearLabel);
-        yearBox.add(Box.createRigidArea(new Dimension(51, 0)));
-        yearBox.add(comboYear);
+        dayBox.add(Box.createRigidArea(new Dimension(30, 0)));
+        dayBox.add(dayLabel);
+        dayBox.add(Box.createRigidArea(new Dimension(38, 0)));
+        dayBox.add(comboDay);
 
-        centerBox.add(yearBox);
+        centerBox.add(dayBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 35)));
 
         centerBox.add(toolBox);
@@ -189,6 +191,18 @@ public class AddGraphicGUI {
         }
     }
 
+    private class SelectEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            comboDay.removeAllItems();
+            comboDay.setSelectedItem(null);
+            updateComboDay();
+        }
+    }
+
     private class CancelEventListener implements ActionListener {
         /***
          *
@@ -210,9 +224,17 @@ public class AddGraphicGUI {
     }
 
     public void updateComboDay() {
-        for (int i = 1; i < 32; i++) {
-            comboDay.addItem(Integer.valueOf(i).toString());
+        int last;
+        if (comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0) {
+            if (Integer.parseInt(comboMonth.getSelectedItem().toString()) != 2) {
+                last = " 1 3 5 7 8 10 12 ".contains(comboMonth.getSelectedItem().toString()) ? 32 : 31;
+            } else
+                last = Integer.parseInt(comboYear.getSelectedItem().toString()) % 4 == 0 ? 30 : 29;
+            for (int i = 1; i < last; i++) {
+                comboDay.addItem(Integer.valueOf(i).toString());
+            }
         }
+        comboDay.setEnabled(comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0);
     }
 
     public void updateComboMonth() {
@@ -226,7 +248,7 @@ public class AddGraphicGUI {
     public void updateComboYear() {
         comboYear.addItem("Не выбран");
         comboYear.setSelectedIndex(0);
-        for (int i = 2023; i < 2100; i++) {
+        for (int i = 2024; i < 2100; i++) {
             comboYear.addItem(Integer.valueOf(i).toString());
         }
     }
