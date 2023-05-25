@@ -31,6 +31,7 @@ import exception.UnselectedDeleteException;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -73,6 +74,8 @@ public class MainGraphicGUI extends JFrame {
 
     private JComboBox<String> comboYear = new JComboBox<>();
 
+    private JComboBox<String> comboTrack = new JComboBox<>();
+
     /**
      * The table model storing displaying data
      */
@@ -91,7 +94,7 @@ public class MainGraphicGUI extends JFrame {
     /**
      * The table model storing the full version of the table before searching
      */
-    private static DefaultTableModel previousGraphicTable = new DefaultTableModel(data, columns);
+    private static DefaultTableModel previousGraphicsTable = new DefaultTableModel(data, columns);
 
     /**
      * Creation of the scroll panel
@@ -193,6 +196,21 @@ public class MainGraphicGUI extends JFrame {
             updateComboYear();
             updateComboMonth();
             updateComboDay();
+            updateComboTrack();
+
+            DefaultCellEditor editorTrack = new DefaultCellEditor(comboTrack);
+            graphics.getColumnModel().getColumn(0).setCellEditor(editorTrack);
+
+            DefaultCellEditor editorDay = new DefaultCellEditor(comboDay);
+            graphics.getColumnModel().getColumn(1).setCellEditor(editorDay);
+
+            comboMonth.addActionListener(new SelectEventListener());
+            DefaultCellEditor editorMonth = new DefaultCellEditor(comboMonth);
+            graphics.getColumnModel().getColumn(2).setCellEditor(editorMonth);
+
+            comboYear.addActionListener(new SelectEventListener());
+            DefaultCellEditor editorYear = new DefaultCellEditor(comboYear);
+            graphics.getColumnModel().getColumn(3).setCellEditor(editorYear);
 
             addGraphicWindow = new AddGraphicGUI(this);
 
@@ -254,7 +272,7 @@ public class MainGraphicGUI extends JFrame {
             URL confirmIcon = this.getClass().getClassLoader().getResource("img/confirm.png");
             confirmBtn.setIcon(new ImageIcon(new ImageIcon(confirmIcon).getImage().getScaledInstance(50, 50, 4)));
             confirmBtn.setVisible(false);
-            // confirmBtn.addActionListener(new ConfirmEventListener());
+            confirmBtn.addActionListener(new ConfirmEventListener());
             confirmBtn.setToolTipText("Ок");
             confirmBtn.setBackground(new Color(0xDFD9D9D9, false));
             confirmBtn.setFocusable(false);
@@ -429,9 +447,15 @@ public class MainGraphicGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(graphicsTable, previousGraphicTable);
-            setEditingPermit(true);
-            setConfirmbarVisible();
+            try {
+                MainRacerGUI.checkEmptyData("Данные для редактирования не найдены!", graphicsTable);
+                MainRacerGUI.copyTable(graphicsTable, previousGraphicsTable);
+                setEditingPermit(true);
+                setConfirmbarVisible();
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -500,6 +524,35 @@ public class MainGraphicGUI extends JFrame {
     }
 
     /**
+     * Сlass for implementing a confirmBtn button listener
+     */
+    private class ConfirmEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            if (graphics.getSelectedRow() != -1)
+                graphics.getCellEditor(graphics.getSelectedRow(),
+                        graphics.getSelectedColumn()).stopCellEditing();
+            if (!MainRacerGUI.isEqualTable(graphicsTable, previousGraphicsTable)) {
+                int result = JOptionPane.showConfirmDialog(mainGraphicGUI, "Сохранить изменения?",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    compareEditedData();
+                    setEditingPermit(false);
+                    setConfirmbarUnvisible();
+                }
+            } else {
+                setEditingPermit(false);
+                setConfirmbarUnvisible();
+            }
+        }
+    }
+
+    /**
      * Сlass for implementing a cancelBtn button listener
      */
     private class CancelEventListener implements ActionListener {
@@ -510,9 +563,23 @@ public class MainGraphicGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             if (graphics.getSelectedRow() != -1)
                 graphics.getCellEditor(graphics.getSelectedRow(), graphics.getSelectedColumn()).stopCellEditing();
-            MainRacerGUI.copyTable(previousGraphicTable, graphicsTable);
+            MainRacerGUI.copyTable(previousGraphicsTable, graphicsTable);
             setEditingPermit(false);
             setConfirmbarUnvisible();
+        }
+    }
+
+    private class SelectEventListener implements ActionListener {
+        /***
+         *
+         * @param e the event to be processed
+         */
+        public void actionPerformed(ActionEvent e) {
+            comboDay.removeAllItems();
+            updateComboDay();
+            comboDay.setSelectedIndex(0);
+            if (graphics.getSelectedRow() != -1)
+                graphicsTable.setValueAt('1', graphics.getSelectedRow(), 1);
         }
     }
 
@@ -563,29 +630,23 @@ public class MainGraphicGUI extends JFrame {
 
     public void updateComboDay() {
         int last;
-        if (comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0) {
-            if (Integer.parseInt(comboMonth.getSelectedItem().toString()) != 2) {
-                last = " 1 3 5 7 8 10 12 ".contains(comboMonth.getSelectedItem().toString()) ? 32 : 31;
-            } else
-                last = Integer.parseInt(comboYear.getSelectedItem().toString()) % 4 == 0 ? 30 : 29;
-            for (int i = 1; i < last; i++) {
-                comboDay.addItem(Integer.valueOf(i).toString());
-            }
+        if (Integer.parseInt(comboMonth.getSelectedItem().toString()) != 2) {
+            last = " 1 3 5 7 8 10 12 ".contains(comboMonth.getSelectedItem().toString()) ? 32 : 31;
+        } else
+            last = Integer.parseInt(comboYear.getSelectedItem().toString()) % 4 == 0 ? 30 : 29;
+        for (int i = 1; i < last; i++) {
+            comboDay.addItem(Integer.valueOf(i).toString());
         }
-        comboDay.setEnabled(comboMonth.getSelectedIndex() != 0 && comboYear.getSelectedIndex() != 0);
+
     }
 
     public void updateComboMonth() {
-        comboMonth.addItem("Не выбран");
-        comboMonth.setSelectedIndex(0);
         for (int i = 1; i < 13; i++) {
             comboMonth.addItem(Integer.valueOf(i).toString());
         }
     }
 
     public void updateComboYear() {
-        comboYear.addItem("Не выбран");
-        comboYear.setSelectedIndex(0);
         for (int i = 2024; i < 2100; i++) {
             comboYear.addItem(Integer.valueOf(i).toString());
         }
@@ -665,4 +726,55 @@ public class MainGraphicGUI extends JFrame {
         }
     }
 
+    private void compareEditedData() {
+        for (int i = 0; i < graphicsTable.getRowCount(); i++) {
+            String track = graphicsTable.getValueAt(i, 0).toString();
+            String day = graphicsTable.getValueAt(i, 1).toString();
+            String month = graphicsTable.getValueAt(i, 2).toString();
+            String year = graphicsTable.getValueAt(i, 3).toString();
+
+            if (!track.equals(allCompetitions.get(i).getTrack().getTrackName()))
+                allCompetitions.get(i)
+                        .setTrack(MainTrackGUI.isAtTrackList(parentWindow.getMainTrackGUI().getAllTracks(), track));
+            if (!day.equals(allCompetitions.get(i).getDate().getDay().toString())
+                    && !month.equals(allCompetitions.get(i).getDate().getMonth().toString())
+                    && !year.equals(allCompetitions.get(i).getDate().getYear().toString())) {
+                allCompetitions.get(i).setDate(
+                        isAtDateList(allDates, Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)));
+            }
+        }
+    }
+
+    public void setAllCompetitions(List<Competition> list) {
+        allCompetitions = list;
+    }
+
+    public void setAllDates(List<MyDate> list) {
+        allDates = list;
+    }
+
+    public void clearAllCompetitions() {
+        allCompetitions.clear();
+    }
+
+    public void clearAllDates() {
+        allDates.clear();
+    }
+
+    public void updateComboTrack() {
+        comboTrack.removeAllItems();
+        comboTrack.setSelectedItem(null);
+        List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
+        for (Track track : allTracks) {
+            comboTrack.addItem(track.getTrackName());
+        }
+    }
+
+    public List<MyDate> getDateData() throws InterruptedException {
+        return myDateDao.getAllDates();
+    }
+
+    public List<Competition> getCompetitionData() throws InterruptedException {
+        return competitionDao.getAllCompetitions();
+    }
 }

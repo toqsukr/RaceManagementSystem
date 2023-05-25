@@ -360,9 +360,16 @@ public class MainTeamGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(teamTable, previousTeamTable);
-            setEditingPermit(true);
-            setConfirmbarVisible();
+            try {
+                MainRacerGUI.checkEmptyData("Данные для редактирования не найдены!", teamTable);
+                MainRacerGUI.copyTable(teamTable, previousTeamTable);
+                setEditingPermit(true);
+                setConfirmbarVisible();
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
+
         }
     }
 
@@ -448,6 +455,7 @@ public class MainTeamGUI extends JFrame {
                                 Team removingTeam = MainRacerGUI.isAtTeamList(
                                         parentWindow.getMainRacerGUI().getAllTeams(), new Team(removingName));
                                 updateTeamTrackWinners(removingTeam);
+                                updateTeamScoreRacer(removingTeam);
                                 teamTable.removeRow(deleteIndexes[i]);
                                 MainRacerGUI.deleteItemComboBox(parentWindow.getMainRacerGUI().getComboTeam(),
                                         parentWindow.getMainRacerGUI().getAllTeams().indexOf(removingTeam));
@@ -472,6 +480,12 @@ public class MainTeamGUI extends JFrame {
                     parentWindow.getMainTrackGUI().updateComboRacer();
                     parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                     parentWindow.getMainTrackGUI().setTrackTable();
+                    parentWindow.getMainScoreGUI().setScoreTable();
+                    parentWindow.getMainScoreGUI().updateComboRacer();
+                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                    parentWindow.getMainTrackGUI().setTrackTable();
+                    parentWindow.getMainTrackGUI().updateComboRacer();
+                    parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                 }
             } catch (UnselectedDeleteException exception) {
                 JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка удаления",
@@ -589,6 +603,14 @@ public class MainTeamGUI extends JFrame {
         for (int i = racers.size() - 1; i > -1; i--) {
             if (racers.get(i).getTeam().getTeamName().equals(teamName))
                 parentWindow.getMainRacerGUI().deleteFromAllRacers(racers.get(i).getRacerID());
+        }
+    }
+
+    public void updateTeamScoreRacer(Team team) {
+        for (Racer racer : parentWindow.getMainRacerGUI().getAllRacers()) {
+            if (racer.getTeam().getTeamID().equals(team.getTeamID())) {
+                parentWindow.getMainRacerGUI().updateScores(racer);
+            }
         }
     }
 

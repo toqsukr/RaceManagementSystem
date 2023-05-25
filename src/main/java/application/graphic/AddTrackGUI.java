@@ -41,7 +41,7 @@ public class AddTrackGUI {
 
     private static final JLabel nameLabel = new JLabel("Название трассы:");
     private static final JLabel lengthLabel = new JLabel("Длина трассы:");
-    private static final JLabel winnerLabel = new JLabel("Лучший гонщик:");
+    private static final JLabel winnerLabel = new JLabel("Призер:");
     private MainTrackGUI parentWindow;
 
     /**
@@ -98,14 +98,14 @@ public class AddTrackGUI {
 
         nameBox.add(Box.createRigidArea(new Dimension(35, 0)));
         nameBox.add(nameLabel);
-        nameBox.add(Box.createRigidArea(new Dimension(16, 0)));
+        nameBox.add(Box.createRigidArea(new Dimension(14, 0)));
         nameBox.add(inputNameField);
         centerBox.add(nameBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
 
         lengthBox.add(Box.createRigidArea(new Dimension(35, 0)));
         lengthBox.add(lengthLabel);
-        lengthBox.add(Box.createRigidArea(new Dimension(34, 0)));
+        lengthBox.add(Box.createRigidArea(new Dimension(32, 0)));
         lengthBox.add(inputLengthField);
         centerBox.add(lengthBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 25)));
@@ -118,9 +118,8 @@ public class AddTrackGUI {
         Box teamInnerBox = Box.createVerticalBox();
         teamInnerBox.add(winnerLabelBox);
         winnerBox.add(teamInnerBox);
-        winnerBox.add(Box.createRigidArea(new Dimension(16, 0)));
+        winnerBox.add(Box.createRigidArea(new Dimension(70, 0)));
 
-        winnerBox.add(Box.createRigidArea(new Dimension(10, 0)));
         winnerBox.add(comboRacer);
         centerBox.add(winnerBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 60)));
@@ -170,7 +169,9 @@ public class AddTrackGUI {
                 parentWindow.getParentWindow().getMainRacerGUI().getTrackDao()
                         .updateFreeID(parentWindow.getAllTracks());
                 clearInputs();
+                parentWindow.getParentWindow().getMainGraphicGUI().updateComboTrack();
                 parentWindow.getParentWindow().getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
+                parentWindow.getParentWindow().getMainScoreGUI().updateComboTrack();
                 parentWindow.getParentWindow().getMainScoreGUI().getAddScoreWindow().updateComboTrack();
                 parentWindow.setTrackTable();
 

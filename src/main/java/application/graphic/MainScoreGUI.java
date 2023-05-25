@@ -369,9 +369,15 @@ public class MainScoreGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(scoreTable, previousScoreTable);
-            setEditingPermit(true);
-            setConfirmbarVisible();
+            try {
+                MainRacerGUI.checkEmptyData("Данные для редактирования не найдены!", scoreTable);
+                MainRacerGUI.copyTable(scoreTable, previousScoreTable);
+                setEditingPermit(true);
+                setConfirmbarVisible();
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 

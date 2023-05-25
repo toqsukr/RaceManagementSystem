@@ -100,7 +100,7 @@ public class MainTrackGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "Название трассы", "Длина трассы", "Лучший гонщик" };
+    private static final String[] columns = { "Название трассы", "Длина трассы", "Призер" };
 
     /**
      * Fields of the table
@@ -333,7 +333,7 @@ public class MainTrackGUI extends JFrame {
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
                         new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nЛучший результат\n" },
+                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка формирования отчета",
@@ -392,9 +392,15 @@ public class MainTrackGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            MainRacerGUI.copyTable(trackTable, previousTrackTable);
-            setEditingPermit(true);
-            setConfirmbarVisible();
+            try {
+                MainRacerGUI.checkEmptyData("Данные для редактирования не найдены!", trackTable);
+                MainRacerGUI.copyTable(trackTable, previousTrackTable);
+                setEditingPermit(true);
+                setConfirmbarVisible();
+            } catch (NothingDataException exception) {
+                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -418,6 +424,14 @@ public class MainTrackGUI extends JFrame {
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
                         compareEditedData();
+                        updateAllScores();
+                        updateAllCompetitions();
+                        parentWindow.getMainScoreGUI().updateComboTrack();
+                        parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboTrack();
+                        parentWindow.getMainScoreGUI().setScoreTable();
+                        parentWindow.getMainGraphicGUI().setCompetitionsTable();
+                        parentWindow.getMainGraphicGUI().updateComboTrack();
+                        parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
                         setEditingPermit(false);
                         setConfirmbarUnvisible();
                     }
@@ -494,9 +508,10 @@ public class MainTrackGUI extends JFrame {
                         }
                         i--;
                     }
-                    parentWindow.getMainScoreGUI().updateComboTrack();
-                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                    parentWindow.getMainGraphicGUI().updateComboTrack();
                     parentWindow.getMainGraphicGUI().setCompetitionsTable();
+                    parentWindow.getMainScoreGUI().updateComboTrack();
+                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboTrack();
                     parentWindow.getMainScoreGUI().setScoreTable();
                     parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
                     parentWindow.getMainTrackGUI().setTrackTable();
@@ -757,4 +772,23 @@ public class MainTrackGUI extends JFrame {
             }
         }
     }
+
+    private void updateAllScores() {
+        for (Track track : allTracks) {
+            for (Score score : parentWindow.getMainScoreGUI().getAllScores()) {
+                if (score.getTrackInfo().getTrackID().equals(track.getTrackID()))
+                    score.setTrackInfo(track);
+            }
+        }
+    }
+
+    private void updateAllCompetitions() {
+        for (Track track : allTracks) {
+            for (Competition competition : parentWindow.getMainGraphicGUI().getAllCompetitions()) {
+                if (competition.getTrack().getTrackID().equals(track.getTrackID()))
+                    competition.setTrack(track);
+            }
+        }
+    }
+
 }

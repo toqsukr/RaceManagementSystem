@@ -252,6 +252,9 @@ public class AddRacerGUI {
                     parentWindow.addToAllRacer(racer);
                     team.addPoints(Integer.parseInt(inputPointField.getText()));
                     parentWindow.getParentWindow().getMainTeamGUI().setTeamTable();
+                    parentWindow.getParentWindow().getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                    parentWindow.getParentWindow().getMainTrackGUI().updateComboRacer();
+                    parentWindow.getParentWindow().getMainScoreGUI().updateComboRacer();
                     parentWindow.getParentWindow().getMainScoreGUI().getAddScoreWindow().updateComboRacer();
                     clearInputs();
                     parentWindow.addRacer(racer);

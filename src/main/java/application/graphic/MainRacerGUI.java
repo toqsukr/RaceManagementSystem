@@ -274,16 +274,10 @@ public class MainRacerGUI extends JFrame {
                                     parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                                     setConfirmbarUnvisible();
                                     changeEditingPermit();
-                                    mainRacerGUI
-                                            .setTitle(mainRacerGUI.getTitle().substring(0,
-                                                    mainRacerGUI.getTitle().length() - 23));
                                 } else if (result == JOptionPane.NO_OPTION) {
                                     cancelBtn.doClick();
                                 }
                             } else {
-                                mainRacerGUI
-                                        .setTitle(mainRacerGUI.getTitle().substring(0,
-                                                mainRacerGUI.getTitle().length() - 23));
                                 setConfirmbarUnvisible();
                                 changeEditingPermit();
                             }
@@ -435,9 +429,9 @@ public class MainRacerGUI extends JFrame {
             cancelBtn.addActionListener(new CancelEventListener());
             cancelBtn.setFocusable(false);
 
-            toolBar.add(fileBtn);
+            // toolBar.add(fileBtn);
             toolBar.add(fromDataBaseBtn);
-            toolBar.add(saveBtn);
+            // toolBar.add(saveBtn);
             toolBar.add(toDataBaseBtn);
             toolBar.add(addBtn);
             toolBar.add(deleteBtn);
@@ -466,11 +460,13 @@ public class MainRacerGUI extends JFrame {
             try {
                 logger.info("Downloading data from database");
                 checkIdenticalData();
-                int result = saveBeforeClose(
-                        "Сохранить изменения в списке гонщиков?\nПосле загрузки данных из базы несохраненные данные будут утеряны!");
-                if (result != -1) {
+                int result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                        "Загрузить данные из базы данных?\nНесохраненные изменения будут утеряны!",
+                        "Подтверждение действия",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
                     setIsOpenFile(false);
-                    mainRacerGUI.setTitle("Список гонщиков (База данных)");
                     comboTeam.removeAllItems();
                     comboTeam.setSelectedItem(null);
                     searchTeam.removeAllItems();
@@ -481,20 +477,46 @@ public class MainRacerGUI extends JFrame {
                     allTeams.clear();
                     allRacers.clear();
                     parentWindow.getMainTrackGUI().clearAllTracks();
+                    parentWindow.getMainScoreGUI().clearAllScores();
+                    parentWindow.getMainGraphicGUI().clearAllCompetitions();
+                    parentWindow.getMainGraphicGUI().clearAllDates();
 
                     allTeams = getTeamData();
                     allRacers = getRacerData();
+                    parentWindow.getMainScoreGUI().setAllScores(parentWindow.getMainScoreGUI().getScoreData());
+                    parentWindow.getMainGraphicGUI()
+                            .setAllCompetitions(parentWindow.getMainGraphicGUI().getCompetitionData());
+                    parentWindow.getMainGraphicGUI().setAllDates(parentWindow.getMainGraphicGUI().getDateData());
                     parentWindow.getMainTrackGUI().setAllTracks(parentWindow.getMainTrackGUI().getTrackData());
 
                     racerDao.updateFreeID(allRacers);
                     teamDao.updateFreeID(allTeams);
                     trackDao.updateFreeID(parentWindow.getMainTrackGUI().getAllTracks());
+                    parentWindow.getMainScoreGUI().getScoreDao()
+                            .updateFreeID(parentWindow.getMainScoreGUI().getAllScores());
+                    parentWindow.getMainGraphicGUI().getCompetitionDao()
+                            .updateFreeID(parentWindow.getMainGraphicGUI().getAllCompetitions());
+                    parentWindow.getMainGraphicGUI().getMyDateDao()
+                            .updateFreeID(parentWindow.getMainGraphicGUI().getAllDates());
 
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
-
-                    parentWindow.getMainTrackGUI().setTrackTable();
                     setRacerTable();
+
+                    parentWindow.getMainScoreGUI().updateComboTrack();
+                    parentWindow.getMainScoreGUI().updateComboRacer();
+                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboTrack();
+                    parentWindow.getMainScoreGUI().setScoreTable();
+
+                    parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
+                    parentWindow.getMainGraphicGUI().updateComboTrack();
+                    parentWindow.getMainGraphicGUI().setCompetitionsTable();
+
+                    parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                    parentWindow.getMainTrackGUI().updateComboRacer();
+                    parentWindow.getMainTrackGUI().setTrackTable();
+
                     parentWindow.getMainTeamGUI().setTeamTable();
                 }
             } catch (IdenticalDataException exception) {
@@ -676,9 +698,9 @@ public class MainRacerGUI extends JFrame {
                         }
                         i--;
                     }
-                    parentWindow.getMainScoreGUI().setScoreTable();
                     parentWindow.getMainScoreGUI().updateComboRacer();
                     parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                    parentWindow.getMainScoreGUI().setScoreTable();
                     parentWindow.getMainTrackGUI().setTrackTable();
                     parentWindow.getMainTrackGUI().updateComboRacer();
                     parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
@@ -716,7 +738,6 @@ public class MainRacerGUI extends JFrame {
                         checkFileFormat(load);
                         setIsOpenFile(true);
                         String filename = load.getDirectory() + load.getFile();
-                        mainRacerGUI.setTitle("Список гонщиков");
                         if (load.getFile().endsWith("txt"))
                             FileManage.readRacerFromTextFile(racerTable, filename);
                         else
@@ -741,7 +762,6 @@ public class MainRacerGUI extends JFrame {
                         parentWindow.getMainTeamGUI().setTeamTable();
                         copyTable(racerTable, fullSearchTable);
                         logger.debug("Data is opened successful");
-                        mainRacerGUI.setTitle("Список гонщиков (файл " + load.getFile() + ")");
                     }
                 }
 
@@ -784,17 +804,20 @@ public class MainRacerGUI extends JFrame {
                         deleteEmptyTeams();
                         parentWindow.getMainTeamGUI().setTeamTable();
                         updateComboTeam();
+                        updateAllScores();
+                        parentWindow.getMainScoreGUI().updateComboRacer();
+                        parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboRacer();
+                        parentWindow.getMainScoreGUI().setScoreTable();
+                        parentWindow.getMainTrackGUI().setTrackTable();
+                        parentWindow.getMainTrackGUI().updateComboRacer();
+                        parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                         addRacerWindow.updateComboTeam();
                         parentWindow.getMainTrackGUI().updateComboRacer();
                         parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
-                        mainRacerGUI
-                                .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                     }
                 } else {
-                    mainRacerGUI
-                            .setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
                     setConfirmbarUnvisible();
                     changeEditingPermit();
                 }
@@ -833,7 +856,6 @@ public class MainRacerGUI extends JFrame {
             copyTable(previousRacerTable, racerTable);
             changeEditingPermit();
             setConfirmbarUnvisible();
-            mainRacerGUI.setTitle(mainRacerGUI.getTitle().substring(0, mainRacerGUI.getTitle().length() - 23));
         }
     }
 
@@ -848,7 +870,6 @@ public class MainRacerGUI extends JFrame {
         public void actionPerformed(ActionEvent e) {
             try {
                 checkEmptyData("Данные для редактирования не найдены!", fullSearchTable);
-                mainRacerGUI.setTitle(mainRacerGUI.getTitle() + " - Режим редактирования");
                 copyTable(racerTable, previousRacerTable);
                 changeEditingPermit();
                 setConfirmbarVisible();
@@ -993,7 +1014,7 @@ public class MainRacerGUI extends JFrame {
                     JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE);
             if (result == JOptionPane.YES_OPTION) {
-                saveBtn.doClick();
+                // saveBtn.doClick();
                 toDataBaseBtn.doClick();
             }
         }
@@ -1744,11 +1765,20 @@ public class MainRacerGUI extends JFrame {
         return racers;
     }
 
-    private void updateScores(Racer racer) {
+    public void updateScores(Racer racer) {
         List<Score> scores = parentWindow.getMainScoreGUI().getAllScores();
         for (int i = scores.size() - 1; i > -1; i--) {
             if (scores.get(i).getRacerInfo().getRacerID().equals(racer.getRacerID()))
                 parentWindow.getMainScoreGUI().deleteFromAllScores(scores.get(i).getScoreID());
+        }
+    }
+
+    private void updateAllScores() {
+        for (Racer racer : allRacers) {
+            for (Score score : parentWindow.getMainScoreGUI().getAllScores()) {
+                if (score.getRacerInfo().getRacerID().equals(racer.getRacerID()))
+                    score.setRacerInfo(racer);
+            }
         }
     }
 
