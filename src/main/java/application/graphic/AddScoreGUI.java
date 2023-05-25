@@ -140,7 +140,7 @@ public class AddScoreGUI {
                 Track track = MainTrackGUI.isAtTrackList(
                         parentWindow.getParentWindow().getMainTrackGUI().getAllTracks(),
                         comboTrack.getSelectedItem().toString());
-                Score score = new Score(racer, track, Double.parseDouble(inputTimeField.getText()));
+                Score score = new Score(racer, track, Integer.parseInt(inputTimeField.getText()));
                 score.setScoreID(parentWindow.getScoreDao().getFreeID());
                 parentWindow.addToAllScores(score);
                 parentWindow.getScoreDao().updateFreeID(parentWindow.getAllScores());

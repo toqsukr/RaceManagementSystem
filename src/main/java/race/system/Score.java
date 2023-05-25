@@ -8,7 +8,7 @@ public class Score {
     private Integer ScoreID;
     private Racer racerInfo;
     private Track trackInfo;
-    private Double finishTime;
+    private Integer finishTime;
 
     @Id
     @Column(name = "ScoreID")
@@ -31,11 +31,11 @@ public class Score {
     };
 
     @Column(name = "finishTime")
-    public Double getFinishTime() {
+    public Integer getFinishTime() {
         return finishTime;
     };
 
-    public void setFinishTime(double time) {
+    public void setFinishTime(Integer time) {
         finishTime = time;
     };
 
@@ -52,10 +52,10 @@ public class Score {
     public Score() {
         racerInfo = null;
         trackInfo = null;
-        finishTime = 0.0;
+        finishTime = 0;
     }
 
-    public Score(Racer racer, Track track, Double time) {
+    public Score(Racer racer, Track track, Integer time) {
         racerInfo = racer;
         trackInfo = track;
         finishTime = time;

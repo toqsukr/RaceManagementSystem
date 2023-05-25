@@ -89,6 +89,7 @@ public class MainScoreGUI extends JFrame {
     private static final JButton fromDataBaseBtn = new JButton();
 
     private JComboBox<String> comboTrack = new JComboBox<>();
+
     private JComboBox<String> comboRacer = new JComboBox<>();
 
     /**
@@ -99,7 +100,8 @@ public class MainScoreGUI extends JFrame {
     /**
      * Table column names
      */
-    private static final String[] columns = { "Имя гонщика", "Название трассы", "Личный результат" };
+    private static final String[] columns = { "Имя гонщика", "Название трассы",
+            "Личный результат (время финиша в минутах)" };
 
     /**
      * Fields of the table
@@ -200,6 +202,8 @@ public class MainScoreGUI extends JFrame {
             addScoreWindow = new AddScoreGUI(this);
 
             updateComboRacer();
+            updateComboTrack();
+
             Container container = mainScoreGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
@@ -380,37 +384,30 @@ public class MainScoreGUI extends JFrame {
          * @param e the event to be processed
          */
         public void actionPerformed(ActionEvent e) {
-            // try {
-            // if (tracks.getSelectedRow() != -1)
-            // tracks.getCellEditor(tracks.getSelectedRow(),
-            // tracks.getSelectedColumn()).stopCellEditing();
-            // if (!MainRacerGUI.isEqualTable(trackTable, previousTrackTable)) {
-            // checkEditedData();
-            // int result = JOptionPane.showConfirmDialog(mainScoreGUI, "Сохранить
-            // изменения?",
-            // "Подтверждение действия",
-            // JOptionPane.YES_NO_OPTION,
-            // JOptionPane.QUESTION_MESSAGE);
-            // if (result == JOptionPane.YES_OPTION) {
-            // compareEditedData();
-            // setEditingPermit(false);
-            // setConfirmbarUnvisible();
-            // }
-            // } else {
-            // setEditingPermit(false);
-            // setConfirmbarUnvisible();
-            // }
-            // } catch (InvalidTrackNameInputException exception) {
-            // logger.warn("Entered invalid track name while editing");
-            // JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка
-            // редактирования",
-            // JOptionPane.PLAIN_MESSAGE);
-            // } catch (InvalidTrackLengthInputException exception) {
-            // logger.warn("Entered invalid track length while editing");
-            // JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка
-            // редактирования",
-            // JOptionPane.PLAIN_MESSAGE);
-            // }
+            try {
+                if (scores.getSelectedRow() != -1)
+                    scores.getCellEditor(scores.getSelectedRow(),
+                            scores.getSelectedColumn()).stopCellEditing();
+                if (!MainRacerGUI.isEqualTable(scoreTable, previousScoreTable)) {
+                    checkEditedData();
+                    int result = JOptionPane.showConfirmDialog(mainScoreGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        compareEditedData();
+                        setEditingPermit(false);
+                        setConfirmbarUnvisible();
+                    }
+                } else {
+                    setEditingPermit(false);
+                    setConfirmbarUnvisible();
+                }
+            } catch (InvalidTimeException exception) {
+                logger.warn("Entered invalid finish time while editing");
+                JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка редактирования",
+                        JOptionPane.PLAIN_MESSAGE);
+            }
         }
     }
 
@@ -471,8 +468,8 @@ public class MainScoreGUI extends JFrame {
                                                 removingRacerName.substring(removingRacerName.indexOf(':', 0) + 2,
                                                         (removingRacerName.indexOf(')', 0)))));
 
-                                Double time = Double
-                                        .parseDouble(removingTime);
+                                Integer time = Integer
+                                        .parseInt(removingTime);
                                 Score score = isAtScoreList(allScores,
                                         new Score(removingRacer, removingTrack, time));
                                 scoreDao.addFreeID(score.getScoreID());
@@ -627,8 +624,6 @@ public class MainScoreGUI extends JFrame {
     public void updateComboRacer() {
         comboRacer.removeAllItems();
         comboRacer.setSelectedItem(null);
-        comboRacer.addItem("Нет");
-        comboRacer.setSelectedIndex(0);
         List<Racer> allRacers = parentWindow.getMainRacerGUI().getAllRacers();
         for (Racer racer : allRacers) {
             comboRacer.addItem(racer.getRacerName() + " (ID: " + racer.getRacerID() + ")");
@@ -648,30 +643,21 @@ public class MainScoreGUI extends JFrame {
         return addScoreWindow;
     }
 
-    // private void compareEditedData() {
-    // for (int i = 0; i < trackTable.getRowCount(); i++) {
-    // String name = trackTable.getValueAt(i, 0).toString();
-    // String length = trackTable.getValueAt(i, 1).toString();
-    // String winner = trackTable.getValueAt(i, 2).toString();
-    // if (!name.equals(allTracks.get(i).getTrackName()))
-    // allTracks.get(i).setTrackName(name);
-    // if (!length.equals(allTracks.get(i).getTrackLength().toString()))
-    // allTracks.get(i).setTrackLength(Integer.parseInt(length));
-    // if (!winner.equals("Нет")) {
-    // int id = Integer.parseInt(winner.substring(winner.indexOf(':', 0) + 2,
-    // (winner.indexOf(')', 0))));
-    // if (allTracks.get(i).getWinner() == null || id !=
-    // allTracks.get(i).getWinner().getRacerID()) {
-    // Racer racer =
-    // MainRacerGUI.isAtRacerList(parentWindow.getMainRacerGUI().getAllRacers(),
-    // id);
-    // allTracks.get(i).setWinner(racer);
-    // }
-    // } else {
-    // allTracks.get(i).setWinner(null);
-    // }
-    // }
-    // }
+    private void compareEditedData() {
+        for (int i = 0; i < scoreTable.getRowCount(); i++) {
+            String name = scoreTable.getValueAt(i, 0).toString();
+            String track = scoreTable.getValueAt(i, 1).toString();
+            String time = scoreTable.getValueAt(i, 2).toString();
+            allScores.get(i).setRacerInfo(MainRacerGUI.isAtRacerList(parentWindow.getMainRacerGUI().getAllRacers(),
+                    Integer.parseInt(name.substring(name.indexOf(':', 0) + 2, (name.indexOf(')', 0))))));
+            if (!track.equals(allScores.get(i).getTrackInfo().getTrackName()))
+                allScores.get(i)
+                        .setTrackInfo(MainTrackGUI.isAtTrackList(parentWindow.getMainTrackGUI().getAllTracks(), track));
+            if (!time.equals(allScores.get(i).getFinishTime().toString())) {
+                allScores.get(i).setFinishTime(Integer.parseInt(time));
+            }
+        }
+    }
 
     /***
      * The function checks whether table data is valid
@@ -679,7 +665,7 @@ public class MainScoreGUI extends JFrame {
 
     private void checkEditedData() throws InvalidTimeException {
         for (int i = 0; i < scoreTable.getRowCount(); i++) {
-            if (!Validation.isValidTime(scoreTable.getValueAt(i, 0).toString()))
+            if (!Validation.isValidTime(scoreTable.getValueAt(i, 2).toString()))
                 throw new InvalidTimeException(i + 1);
         }
     }
