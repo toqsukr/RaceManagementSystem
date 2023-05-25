@@ -48,7 +48,7 @@ import util.CreateReport;
 public class MainGraphicGUI extends JFrame {
 
     private static JFrame mainGraphicGUI = new JFrame("Расписание");
-    private MainMenuGUI parent;
+    private MainMenuGUI parentWindow;
 
     /**
      * This bar is used to store buttons
@@ -121,7 +121,7 @@ public class MainGraphicGUI extends JFrame {
      * The function creating mainTeamGUI
      */
     public MainGraphicGUI(MainMenuGUI parent) {
-        this.parent = parent;
+        parentWindow = parent;
 
         try {
             ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
@@ -143,7 +143,7 @@ public class MainGraphicGUI extends JFrame {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     stopLogging(context);
-                    parent.setMainMenuEnable(true);
+                    parentWindow.setMainMenuEnable(true);
                     mainGraphicGUI.dispose();
                 }
             });
@@ -158,7 +158,7 @@ public class MainGraphicGUI extends JFrame {
 
             try {
                 allTracks = getTracksData();
-                // allDates = getDatesData();
+                allDates = getDatesData();
                 setCompetitionsTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка чтения данных из базы!",

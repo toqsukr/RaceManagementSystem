@@ -1,6 +1,6 @@
 package race.system;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "competition")
@@ -20,7 +20,8 @@ public class Competition {
         competitionId = id;
     }
 
-    @Column(name = "dateId")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "dateID", referencedColumnName = "dateID")
     public MyDate getDate() {
         return date;
     };
@@ -29,7 +30,8 @@ public class Competition {
         date = otherDate;
     };
 
-    @Column(name = "trackId")
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+    @JoinColumn(name = "trackID", referencedColumnName = "trackID")
     public Track getTrack() {
         return track;
     };

@@ -30,7 +30,7 @@ public class MyDateDao {
     public List<MyDate> getAllDates() throws HibernateException {
         try {
             em.getTransaction().begin();
-            List<MyDate> myDates = em.createQuery("FROM Dates", MyDate.class)
+            List<MyDate> myDates = em.createQuery("FROM MyDate", MyDate.class)
                     .setHint("jakarta.persistence.cache.storeMode", "REFRESH").getResultList();
             em.clear();
             em.getTransaction().commit();
@@ -44,7 +44,7 @@ public class MyDateDao {
 
     public void updateFreeID(List<MyDate> myDates) {
         for (MyDate myDate : myDates) {
-            freeIDs[myDate.getDateId()] = false;
+            freeIDs[myDate.getDateID()] = false;
         }
     }
 }

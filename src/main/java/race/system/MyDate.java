@@ -1,28 +1,27 @@
 package race.system;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "dates")
 public class MyDate {
-    private int dateId;
-    private int day;
-    private int month;
-    private int year;
+    private Integer dateID;
+    private Integer day;
+    private Integer month;
+    private Integer year;
 
     @Id
-    @Column(name = "dateId")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public int getDateId() {
-        return dateId;
+    @Column(name = "dateID")
+    public Integer getDateID() {
+        return dateID;
     }
 
-    public void setDateId(int id) {
-        dateId = id;
+    public void setDateID(int id) {
+        dateID = id;
     }
 
     @Column(name = "day")
-    public int getDay() {
+    public Integer getDay() {
         return day;
     };
 
@@ -31,7 +30,7 @@ public class MyDate {
     };
 
     @Column(name = "month")
-    public int getMonth() {
+    public Integer getMonth() {
         return month;
     };
 
@@ -40,11 +39,17 @@ public class MyDate {
     };
 
     @Column(name = "year")
-    public int getYear() {
+    public Integer getYear() {
         return year;
     };
 
     public void setYear(int yearNumber) {
         year = yearNumber;
     };
+
+    public MyDate(int day, int month, int year) {
+        this.day = day;
+        this.month = month;
+        this.year = year;
+    }
 }
