@@ -141,11 +141,21 @@ public class AddScoreGUI {
                         parentWindow.getParentWindow().getMainTrackGUI().getAllTracks(),
                         comboTrack.getSelectedItem().toString());
                 Score score = new Score(racer, track, Integer.parseInt(inputTimeField.getText()));
-                score.setScoreID(parentWindow.getScoreDao().getFreeID());
-                parentWindow.addToAllScores(score);
-                parentWindow.getScoreDao().updateFreeID(parentWindow.getAllScores());
-                clearInput();
-                parentWindow.setScoreTable();
+                Score prevScore = checkPreviousScore(racer, track);
+                if (prevScore == null || score.getFinishTime() < prevScore.getFinishTime()) {
+                    if (prevScore != null)
+                        parentWindow.deleteFromAllScores(prevScore.getScoreID());
+                    score.setScoreID(parentWindow.getScoreDao().getFreeID());
+                    parentWindow.addToAllScores(score);
+                    parentWindow.getScoreDao().updateFreeID(parentWindow.getAllScores());
+                    clearInput();
+                    parentWindow.setScoreTable();
+                } else {
+                    JOptionPane.showMessageDialog(addScoreGUI,
+                            "Введенный результат хуже того, что уже был поставлен этим гонщиком на данной трассе!",
+                            "Ошибка добавления",
+                            JOptionPane.PLAIN_MESSAGE);
+                }
 
             } catch (EmptyAddInputException exception) {
                 JOptionPane.showMessageDialog(addScoreGUI, exception.getMessage(), "Ошибка добавления",
@@ -205,4 +215,15 @@ public class AddScoreGUI {
             throw new InvalidTimeException();
     }
 
+    private Score checkPreviousScore(Racer racer, Track track) {
+        Score answer = null;
+        for (Score score : parentWindow.getAllScores()) {
+            if (score.getRacerInfo().getRacerID().equals(racer.getRacerID())
+                    && score.getTrackInfo().getTrackID().equals(track.getTrackID())) {
+                answer = score;
+                break;
+            }
+        }
+        return answer;
+    }
 }

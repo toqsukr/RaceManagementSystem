@@ -4,7 +4,6 @@ import java.util.List;
 
 import exception.DuplicateException;
 import exception.EmptyAddInputException;
-import exception.InvalidAgeInputException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
 import exception.InvalidTeamInputException;
@@ -30,7 +29,6 @@ public class AddRacerGUI {
      * racer
      */
     private static final JTextField inputNameField = new JTextField("", 10);
-    private static final JTextField inputAgeField = new JTextField("", 5);
     private static final JTextField inputTeamField = new JTextField("", 10);
 
     /**
@@ -38,7 +36,9 @@ public class AddRacerGUI {
      * racer
      */
 
-    private static JComboBox<String> comboTeam;
+    private static JComboBox<String> comboTeam = new JComboBox<>();
+    private static JComboBox<String> comboAge = new JComboBox<>();
+
     private static final JTextField inputPointField = new JTextField("", 5);
 
     private static final JButton addBtn = new JButton("Добавить");
@@ -72,7 +72,9 @@ public class AddRacerGUI {
         URL addRacerIcon = this.getClass().getClassLoader().getResource("img/racer.png");
         addRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
-        setComboBox();
+        setComboTeam();
+        setComboAge();
+
         comboTeam.setBackground(new Color(0xFFFFFF, false));
         comboTeam.setFocusable(false);
         teamCheckBox.setBackground(addRacerGUI.getBackground());
@@ -120,7 +122,7 @@ public class AddRacerGUI {
         ageBox.add(Box.createRigidArea(new Dimension(45, 0)));
         ageBox.add(ageLabel);
         ageBox.add(Box.createRigidArea(new Dimension(51, 0)));
-        ageBox.add(inputAgeField);
+        ageBox.add(comboAge);
         centerBox.add(ageBox);
         centerBox.add(Box.createRigidArea(new Dimension(0, 15)));
 
@@ -167,24 +169,20 @@ public class AddRacerGUI {
 
     private void clearInputs() {
         inputNameField.setText("");
-        inputAgeField.setText("");
         inputTeamField.setText("");
         inputPointField.setText("");
     }
 
     private void checkEmptyInputs() throws EmptyAddInputException {
-        if (inputNameField.getText().equals("") | inputAgeField.getText().equals("")
-                | inputPointField.getText().equals("")
+        if (inputNameField.getText().equals("") | inputPointField.getText().equals("")
                 | (teamCheckBox.isSelected() && inputTeamField.getText().equals("")))
             throw new EmptyAddInputException();
     }
 
-    private void checkRacerInputDate() throws InvalidNameInputException, InvalidAgeInputException,
+    private void checkRacerInputDate() throws InvalidNameInputException,
             InvalidTeamInputException, InvalidPointInputException {
         if (!Validation.isValidName(inputNameField.getText()))
             throw new InvalidNameInputException();
-        if (!Validation.isValidAge(inputAgeField.getText()))
-            throw new InvalidAgeInputException();
         if (!Validation.isValidPoint(inputPointField.getText()))
             throw new InvalidPointInputException();
         if (teamCheckBox.isSelected() && !Validation.isValidTeam(inputTeamField.getText()))
@@ -245,7 +243,8 @@ public class AddRacerGUI {
                 }
 
                 if (result == JOptionPane.YES_OPTION) {
-                    racer = new Racer(inputNameField.getText().trim(), Integer.parseInt(inputAgeField.getText()),
+                    racer = new Racer(inputNameField.getText().trim(),
+                            Integer.parseInt(comboAge.getSelectedItem().toString()),
                             team,
                             Integer.parseInt(inputPointField.getText()));
                     racer.setRacerID(parentWindow.getRacerDao().getFreeID());
@@ -263,9 +262,6 @@ public class AddRacerGUI {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidNameInputException exception) {
-                JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
-                        JOptionPane.PLAIN_MESSAGE);
-            } catch (InvalidAgeInputException exception) {
                 JOptionPane.showMessageDialog(null, exception.getMessage(), "Ошибка добавления",
                         JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTeamInputException exception) {
@@ -293,7 +289,7 @@ public class AddRacerGUI {
         }
     }
 
-    private void setComboBox() {
+    private void setComboTeam() {
         TeamDao teamDao = new TeamDao(App.getEntityManager());
         List<Team> allTeams = teamDao.getAllTeams();
         String[] arr = new String[allTeams.size()];
@@ -355,5 +351,11 @@ public class AddRacerGUI {
         Team team = MainRacerGUI.isAtTeamList(parentWindow.getAllTeams(), teamName);
         if (team != null)
             throw new DuplicateException("Команда с таким названием уже существует!");
+    }
+
+    private void setComboAge() {
+        for (int i = 18; i < 100; i++) {
+            comboAge.addItem(Integer.valueOf(i).toString());
+        }
     }
 }

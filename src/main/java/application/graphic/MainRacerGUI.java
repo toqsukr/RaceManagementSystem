@@ -50,7 +50,6 @@ import javax.swing.table.DefaultTableModel;
 
 import exception.FileFormatException;
 import exception.IdenticalDataException;
-import exception.InvalidAgeInputException;
 import exception.InvalidDataException;
 import exception.InvalidNameInputException;
 import exception.InvalidPointInputException;
@@ -145,6 +144,8 @@ public class MainRacerGUI extends JFrame {
      * racer
      */
     private JComboBox<String> searchTeam = new JComboBox<>();
+
+    private JComboBox<String> comboAge = new JComboBox<>();
 
     /**
      * This bar is used to store buttons
@@ -323,9 +324,13 @@ public class MainRacerGUI extends JFrame {
                         JOptionPane.PLAIN_MESSAGE);
             }
 
+            setComboAge();
             updateComboTeam();
-            DefaultCellEditor editor = new DefaultCellEditor(comboTeam);
-            racers.getColumnModel().getColumn(3).setCellEditor(editor);
+            DefaultCellEditor editorTeam = new DefaultCellEditor(comboTeam);
+            racers.getColumnModel().getColumn(3).setCellEditor(editorTeam);
+
+            DefaultCellEditor editorAge = new DefaultCellEditor(comboAge);
+            racers.getColumnModel().getColumn(2).setCellEditor(editorAge);
 
             Container container = mainRacerGUI.getContentPane();
             container.setLayout(new BorderLayout());
@@ -825,10 +830,6 @@ public class MainRacerGUI extends JFrame {
                 logger.warn("Entered invalid name while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
-            } catch (InvalidAgeInputException exception) {
-                logger.warn("Entered invalid age while editing");
-                JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
-                        JOptionPane.PLAIN_MESSAGE);
             } catch (InvalidTeamInputException exception) {
                 logger.warn("Entered invalid team while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
@@ -1098,20 +1099,16 @@ public class MainRacerGUI extends JFrame {
      * 
      * @throws InvalidNameInputException  the exception throws if any edited name
      *                                    isn't valid
-     * @throws InvalidAgeInputException   the exception throws if any edited age
-     *                                    isn't valid
      * @throws InvalidTeamInputException  the exception throws if any edited team
      *                                    isn't valid
      * @throws InvalidPointInputException the exception throws if any edited point
      *                                    isn't valid
      */
-    public void checkEditedData() throws InvalidNameInputException, InvalidAgeInputException,
+    public void checkEditedData() throws InvalidNameInputException,
             InvalidTeamInputException, InvalidPointInputException {
         for (int i = 0; i < racerTable.getRowCount(); i++) {
             if (!Validation.isValidName(racerTable.getValueAt(i, 1).toString()))
                 throw new InvalidNameInputException(i + 1);
-            if (!Validation.isValidAge(racerTable.getValueAt(i, 2).toString()))
-                throw new InvalidAgeInputException(i + 1);
             if (!Validation.isValidTeam(racerTable.getValueAt(i, 3).toString()))
                 throw new InvalidTeamInputException(i + 1);
             if (!Validation.isValidPoint(racerTable.getValueAt(i, 4).toString()))
@@ -1779,6 +1776,12 @@ public class MainRacerGUI extends JFrame {
                 if (score.getRacerInfo().getRacerID().equals(racer.getRacerID()))
                     score.setRacerInfo(racer);
             }
+        }
+    }
+
+    private void setComboAge() {
+        for (int i = 18; i < 100; i++) {
+            comboAge.addItem(Integer.valueOf(i).toString());
         }
     }
 
