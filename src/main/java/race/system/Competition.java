@@ -19,7 +19,7 @@ public class Competition {
         competitionID = id;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "dateID", referencedColumnName = "dateID")
     public MyDate getDate() {
         return date;
