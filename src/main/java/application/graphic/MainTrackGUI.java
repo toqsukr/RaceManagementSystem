@@ -159,7 +159,7 @@ public class MainTrackGUI extends JFrame {
         try {
             LoggerContext context = Logging.getContext();
 
-            startLogging(context, Logging.getConfiguration(this.getClass()));
+            logger = createLoggerAndStart(context, Logging.getConfiguration(this.getClass()));
 
             logger.log(Level.INFO, "Start logging mainTrackGUI");
 
@@ -193,8 +193,7 @@ public class MainTrackGUI extends JFrame {
                             }
                         }
                         if (result == 0 || result == 1) {
-                            stopLogging(context);
-                            mainTrackGUI.dispose();
+                            closeWindow(context);
                         }
                     } catch (InvalidDataException exception) {
                         int confirm = JOptionPane.showConfirmDialog(mainTrackGUI,
@@ -203,10 +202,14 @@ public class MainTrackGUI extends JFrame {
                                 JOptionPane.OK_CANCEL_OPTION);
                         if (confirm == JOptionPane.OK_OPTION) {
                             cancelBtn.doClick();
-                            stopLogging(context);
-                            mainTrackGUI.dispose();
+                            closeWindow(context);
                         }
                     }
+                }
+
+                private void closeWindow(LoggerContext context) {
+                    stopLogging(context);
+                    mainTrackGUI.dispose();
                 }
             });
 
@@ -570,9 +573,9 @@ public class MainTrackGUI extends JFrame {
      * @throws IOException checks whether there are input/output errors
      */
 
-    private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
+    private static Logger createLoggerAndStart(LoggerContext context, Configuration configuration) throws IOException {
         context.start(configuration);
-        logger = context.getLogger("com");
+        return context.getLogger("com");
     }
 
     /***
