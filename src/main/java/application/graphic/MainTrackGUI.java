@@ -29,6 +29,7 @@ import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.graphic.eventListeners.ReportEventListener;
 import database.TrackDao;
 import exception.InvalidDataException;
 import exception.InvalidTrackLengthInputException;
@@ -263,7 +264,14 @@ public class MainTrackGUI extends JFrame {
             URL reportIcon = this.getClass().getClassLoader().getResource("img/report.png");
             reportBtn.setIcon(new ImageIcon(new ImageIcon(reportIcon).getImage().getScaledInstance(50, 50, 4)));
             reportBtn.setToolTipText("Сформировать отчет");
-            reportBtn.addActionListener(new ReportEventListener());
+            reportBtn.addActionListener(new ReportEventListener(
+                    trackTable,
+                    mainTrackGUI,
+                    "Отчет по списку трасс\n\n\n\n\n",
+                    new float[] { 1f, 1f, 1f },
+                    new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
+                    "fonts/DejaVuSans/DejaVuSans.ttf"));
+
             reportBtn.setBackground(new Color(0xDFD9D9D9, false));
             reportBtn.setFocusable(false);
 
@@ -311,29 +319,6 @@ public class MainTrackGUI extends JFrame {
             container.add(scroll, BorderLayout.CENTER);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
-        }
-    }
-
-    /**
-     * Сlass for implementing a report button listener
-     */
-    private static class ReportEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            try {
-                URL boldFontPath = this.getClass().getClassLoader()
-                        .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
-                CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
-                        new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
-                        boldFontPath);
-            } catch (Exception exception) {
-                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка формирования отчета",
-                        JOptionPane.PLAIN_MESSAGE);
-            }
         }
     }
 
