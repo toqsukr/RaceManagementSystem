@@ -50,6 +50,8 @@ import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
 
+import util.Logging;
+
 /**
  * GUI of Race Management System
  */
@@ -155,21 +157,11 @@ public class MainTrackGUI extends JFrame {
         parentWindow = parent;
 
         try {
+            LoggerContext context = Logging.getContext();
 
-            ConfigurationFactory factory = XmlConfigurationFactory.getInstance();
-            URL configUrl = this.getClass().getClassLoader().getResource("configuration.xml");
-            InputStream inputStream = configUrl.openStream();
-            ConfigurationSource configurationSource = new ConfigurationSource(inputStream);
+            startLogging(context, Logging.getConfiguration(this.getClass()));
 
-            Configuration configuration = factory.getConfiguration(null, configurationSource);
-
-            ConsoleAppender appender = ConsoleAppender
-                    .createDefaultAppenderForLayout(PatternLayout.createDefaultLayout());
-
-            configuration.addAppender(appender);
-
-            LoggerContext context = new LoggerContext("JournalDevLoggerContext");
-            startLogging(context, configuration);
+            logger.log(Level.INFO, "Start logging mainTrackGUI");
 
             mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
                 @Override
@@ -581,7 +573,6 @@ public class MainTrackGUI extends JFrame {
     private static void startLogging(LoggerContext context, Configuration configuration) throws IOException {
         context.start(configuration);
         logger = context.getLogger("com");
-        logger.log(Level.INFO, "Start logging mainTrackGUI");
     }
 
     /***
