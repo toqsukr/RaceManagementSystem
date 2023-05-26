@@ -243,14 +243,14 @@ public class MainGraphicGUI extends JFrame {
 
             URL addIcon = this.getClass().getClassLoader().getResource("img/add_competition.png");
             addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
-            addBtn.setToolTipText("Добавить рекорд");
+            addBtn.setToolTipText("Добавить соревнование");
             addBtn.addActionListener(new AddEventListener());
             addBtn.setBackground(new Color(0xDFD9D9D9, false));
             addBtn.setFocusable(false);
 
             URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_competition.png");
             deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
-            deleteBtn.setToolTipText("Удалить рекорд");
+            deleteBtn.setToolTipText("Удалить соревнование");
             deleteBtn.addActionListener(new DeleteEventListener());
             deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
             deleteBtn.setFocusable(false);

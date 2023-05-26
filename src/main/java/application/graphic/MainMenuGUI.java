@@ -1,6 +1,9 @@
 package application.graphic;
 
 import javax.swing.*;
+
+import exception.InvalidDataException;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -158,7 +161,7 @@ public class MainMenuGUI {
             if (result != -1) {
                 System.exit(1);
             }
-        } catch (Exception exception) {
+        } catch (InvalidDataException exception) {
             int confirm = JOptionPane.showConfirmDialog(mainMenuGUI,
                     "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
                     "Предупреждение",

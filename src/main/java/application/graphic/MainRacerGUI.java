@@ -695,8 +695,10 @@ public class MainRacerGUI extends JFrame {
                                         teamDao.addFreeID(removingTeam.getTeamID());
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     } else {
-                                        removingTeam.deductPoints(Integer.parseInt(removingPoints));
-                                        removingTeam.reduceRacerNumber();
+                                        if (removingTeam.getRacerNumber() > 1) {
+                                            removingTeam.reduceRacerNumber();
+                                            removingTeam.deductPoints(Integer.parseInt(removingPoints));
+                                        }
                                     }
 
                                     parentWindow.getMainTeamGUI().setTeamTable();
@@ -824,6 +826,7 @@ public class MainRacerGUI extends JFrame {
                         addRacerWindow.updateComboTeam();
                         parentWindow.getMainTrackGUI().updateComboRacer();
                         parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
+                        disruptInputBtn.doClick();
                         setConfirmbarUnvisible();
                         changeEditingPermit();
                     }
@@ -1570,8 +1573,10 @@ public class MainRacerGUI extends JFrame {
                 allRacers.get(i).setRacerAge(Integer.parseInt(age));
             if (!team.equals(allRacers.get(i).getTeam().getTeamName())) {
                 Team newTeam = isAtTeamList(allTeams, team);
-                allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
-                allRacers.get(i).getTeam().reduceRacerNumber();
+                if (allRacers.get(i).getTeam().getRacerNumber() > 1) {
+                    allRacers.get(i).getTeam().reduceRacerNumber();
+                    allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
+                }
                 newTeam.expandRacerNumber();
                 if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
                     allRacers.get(i).setRacerPoints(Integer.parseInt(point));
