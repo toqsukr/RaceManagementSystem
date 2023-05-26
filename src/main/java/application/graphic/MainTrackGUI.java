@@ -1,6 +1,6 @@
 package application.graphic;
 
-import util.CreateReport;
+import util.Logging;
 import util.Validation;
 import race.system.Competition;
 import race.system.Racer;
@@ -17,19 +17,15 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
 import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.appender.ConsoleAppender;
 import org.apache.logging.log4j.core.config.Configuration;
-import org.apache.logging.log4j.core.config.ConfigurationFactory;
-import org.apache.logging.log4j.core.config.ConfigurationSource;
-import org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory;
-import org.apache.logging.log4j.core.layout.PatternLayout;
 
+import application.graphic.eventListeners.FromDatabaseEventListener;
 import application.graphic.eventListeners.ReportEventListener;
+import application.graphic.eventListeners.ToDatabaseEventListener;
 import database.TrackDao;
 import exception.InvalidDataException;
 import exception.InvalidTrackLengthInputException;
@@ -50,8 +46,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.table.DefaultTableModel;
-
-import util.Logging;
 
 /**
  * GUI of Race Management System
@@ -234,6 +228,7 @@ public class MainTrackGUI extends JFrame {
             addTrackWindow = new AddTrackGUI(this);
 
             updateComboRacer();
+
             Container container = mainTrackGUI.getContentPane();
             container.setLayout(new BorderLayout());
 
@@ -269,16 +264,15 @@ public class MainTrackGUI extends JFrame {
                     mainTrackGUI,
                     "Отчет по списку трасс\n\n\n\n\n",
                     new float[] { 1f, 1f, 1f },
-                    new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
+                    columns,
                     "fonts/DejaVuSans/DejaVuSans.ttf"));
-
             reportBtn.setBackground(new Color(0xDFD9D9D9, false));
             reportBtn.setFocusable(false);
 
             URL toDataBaseUrl = this.getClass().getClassLoader().getResource("img/deploytodb.png");
             toDataBaseBtn.setIcon(new ImageIcon(new ImageIcon(toDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             toDataBaseBtn.setToolTipText("Выгрузить в базу данных");
-            toDataBaseBtn.addActionListener(new ToDataBaseEventListener());
+            toDataBaseBtn.addActionListener(new ToDatabaseEventListener(parentWindow));
             toDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
             toDataBaseBtn.setFocusable(false);
 
@@ -286,7 +280,7 @@ public class MainTrackGUI extends JFrame {
             fromDataBaseBtn
                     .setIcon(new ImageIcon(new ImageIcon(fromDataBaseUrl).getImage().getScaledInstance(50, 50, 4)));
             fromDataBaseBtn.setToolTipText("Загрузить данные из базы данных");
-            fromDataBaseBtn.addActionListener(new FromDataBaseEventListener());
+            fromDataBaseBtn.addActionListener(new FromDatabaseEventListener(parentWindow));
             fromDataBaseBtn.setBackground(new Color(0xDFD9D9D9, false));
             fromDataBaseBtn.setFocusable(false);
 
@@ -319,32 +313,6 @@ public class MainTrackGUI extends JFrame {
             container.add(scroll, BorderLayout.CENTER);
         } catch (IOException exception) {
             JOptionPane.showMessageDialog(null, exception.getMessage());
-        }
-    }
-
-    /**
-     * Сlass for implementing a toDataBase button listener
-     */
-    private class ToDataBaseEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            parentWindow.getMainRacerGUI().deployToDataBase();
-        }
-    }
-
-    /**
-     * Сlass for implementing a fromDataBase button listener
-     */
-    private class FromDataBaseEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            parentWindow.getMainRacerGUI().downloadFromDataBase();
         }
     }
 
