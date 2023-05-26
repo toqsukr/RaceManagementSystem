@@ -507,6 +507,11 @@ public class MainRacerGUI extends JFrame {
                     addRacerWindow.updateComboTeam();
                     updateComboTeam();
                     setRacerTable();
+                    if (addRacerWindow.getComboTeam().getItemAt(0) == null) {
+                        addRacerWindow.setComboTeamVisibility(false);
+                        addRacerWindow.setTeamCheckBoxVisibility(false);
+                        addRacerWindow.setInputTeamVisibility(true);
+                    }
 
                     parentWindow.getMainScoreGUI().updateComboTrack();
                     parentWindow.getMainScoreGUI().updateComboRacer();
@@ -830,6 +835,7 @@ public class MainRacerGUI extends JFrame {
                 logger.warn("Entered invalid name while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",
                         JOptionPane.PLAIN_MESSAGE);
+
             } catch (InvalidTeamInputException exception) {
                 logger.warn("Entered invalid team while editing");
                 JOptionPane.showMessageDialog(mainRacerGUI, exception.getMessage(), "Ошибка редактирования",

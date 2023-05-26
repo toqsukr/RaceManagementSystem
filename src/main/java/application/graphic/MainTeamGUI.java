@@ -477,6 +477,11 @@ public class MainTeamGUI extends JFrame {
                         }
                         i--;
                     }
+                    if (parentWindow.getMainRacerGUI().getAddRacerWindow().getComboTeam().getItemAt(0) == null) {
+                        parentWindow.getMainRacerGUI().getAddRacerWindow().setComboTeamVisibility(false);
+                        parentWindow.getMainRacerGUI().getAddRacerWindow().setTeamCheckBoxVisibility(false);
+                        parentWindow.getMainRacerGUI().getAddRacerWindow().setInputTeamVisibility(true);
+                    }
                     parentWindow.getMainTrackGUI().updateComboRacer();
                     parentWindow.getMainTrackGUI().getAddTrackWindow().updateComboRacer();
                     parentWindow.getMainTrackGUI().setTrackTable();
