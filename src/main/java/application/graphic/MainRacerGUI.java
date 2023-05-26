@@ -70,7 +70,7 @@ import util.Validation;
  * GUI of Race Management System
  */
 public class MainRacerGUI extends JFrame {
-    private static JFrame mainRacerGUI = new JFrame("Список гонщиков (База данных)");
+    private static JFrame mainRacerGUI = new JFrame("Список гонщиков");
 
     /**
      * This button performs a search
