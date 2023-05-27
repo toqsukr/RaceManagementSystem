@@ -1,7 +1,5 @@
 package application.graphic.buttons;
 
-import javax.swing.JFrame;
-
 import application.graphic.eventListeners.EventListener;
 import application.graphic.interfaces.CallbackInterface;
 
