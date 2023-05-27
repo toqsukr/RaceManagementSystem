@@ -217,6 +217,8 @@ public class MainGraphicGUI extends JFrame {
             try {
                 allCompetitions = getCompetitionsData();
                 allDates = getDatesData();
+                myDateDao.updateFreeID(allDates);
+                competitionDao.updateFreeID(allCompetitions);
                 setCompetitionsTable();
             } catch (InterruptedException exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
@@ -499,13 +501,11 @@ public class MainGraphicGUI extends JFrame {
                                 MyDate removingDate = isAtDateList(allDates, Integer.parseInt(removingDay),
                                         Integer.parseInt(removingMonth), Integer.parseInt(removingYear));
                                 myDateDao.addFreeID(removingDate.getDateID());
-                                myDateDao.addFreeID(removingDate.getDateID());
                                 allDates.remove(removingDate);
                                 Competition removingCompetition = isAtCompetitionList(allCompetitions,
                                         new Competition(removingDate, removingTrack));
                                 competitionDao.addFreeID(removingCompetition.getCompetitionID());
                                 allCompetitions.remove(removingCompetition);
-
                                 break;
                             }
                             j--;
