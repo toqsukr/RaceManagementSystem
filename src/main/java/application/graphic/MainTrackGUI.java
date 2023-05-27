@@ -26,6 +26,9 @@ import org.apache.logging.log4j.core.config.Configuration;
 import application.graphic.eventListeners.FromDatabaseEventListener;
 import application.graphic.eventListeners.ReportEventListener;
 import application.graphic.eventListeners.ToDatabaseEventListener;
+import application.graphic.interfaces.CallbackInterface;
+import application.graphic.eventListeners.AddEventListener;
+
 import database.TrackDao;
 import exception.InvalidDataException;
 import exception.InvalidTrackLengthInputException;
@@ -235,10 +238,20 @@ public class MainTrackGUI extends JFrame {
             DefaultCellEditor editor = new DefaultCellEditor(comboRacer);
             tracks.getColumnModel().getColumn(2).setCellEditor(editor);
 
+            // TODO
+
             URL addIcon = this.getClass().getClassLoader().getResource("img/add_track.png");
             addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
             addBtn.setToolTipText("Добавить трассу");
-            addBtn.addActionListener(new AddEventListener());
+            addBtn.addActionListener(new AddEventListener(new CallbackInterface() {
+                @Override
+                public void onEvent() {
+                    logger.info("Opening window AddRacerGUI");
+                    setMainTrackEnable(false);
+                    addTrackWindow.setAddTrackVisibility(true);
+                }
+            }));
+
             addBtn.setBackground(new Color(0xDFD9D9D9, false));
             addBtn.setFocusable(false);
 
@@ -319,17 +332,17 @@ public class MainTrackGUI extends JFrame {
     /**
      * Сlass for implementing a addBtn button listener
      */
-    private class AddEventListener implements ActionListener {
-        /***
-         *
-         * @param e the event to be processed
-         */
-        public void actionPerformed(ActionEvent e) {
-            logger.info("Opening window AddRacerGUI");
-            setMainTrackEnable(false);
-            addTrackWindow.setAddTrackVisibility(true);
-        }
-    }
+    // private class AddEventListener implements ActionListener {
+    // /***
+    // * TODO
+    // * @param e the event to be processed
+    // */
+    // public void actionPerformed(ActionEvent e) {
+    // logger.info("Opening window AddRacerGUI");
+    // setMainTrackEnable(false);
+    // addTrackWindow.setAddTrackVisibility(true);
+    // }
+    // }
 
     /**
      * Сlass for implementing a editBtn button listener
