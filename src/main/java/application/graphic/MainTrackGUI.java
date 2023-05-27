@@ -23,6 +23,7 @@ import org.apache.logging.log4j.core.LoggerContext;
 import org.apache.logging.log4j.core.config.Configuration;
 
 import application.graphic.interfaces.CallbackInterface;
+import application.graphic.buttons.ToolbarButton;
 import application.graphic.eventListeners.EventListener;
 import database.TrackDao;
 import exception.InvalidDataException;
@@ -235,82 +236,77 @@ public class MainTrackGUI extends JFrame {
             DefaultCellEditor editor = new DefaultCellEditor(comboRacer);
             tracks.getColumnModel().getColumn(2).setCellEditor(editor);
 
-            URL addIcon = this.getClass().getClassLoader().getResource("img/add_track.png");
-            addBtn.setIcon(new ImageIcon(new ImageIcon(addIcon).getImage().getScaledInstance(50, 50, 4)));
-            addBtn.setToolTipText("Добавить трассу");
-            addBtn.addActionListener(new EventListener(new CallbackInterface() {
-                @Override
-                public void onEvent() {
-                    logger.info("Opening window AddTrackGUI");
-                    setMainTrackEnable(false);
-                    addTrackWindow.setAddTrackVisibility(true);
-                }
-            }));
-            addBtn.setBackground(new Color(0xDFD9D9D9, false));
-            addBtn.setFocusable(false);
-
-            URL deleteIcon = this.getClass().getClassLoader().getResource("img/delete_track.png");
-            deleteBtn.setIcon(new ImageIcon(new ImageIcon(deleteIcon).getImage().getScaledInstance(50, 50, 4)));
-            deleteBtn.setToolTipText("Удалить трассу");
-            deleteBtn.addActionListener(new EventListener(new CallbackInterface() {
-                @Override
-                public void onEvent() {
-                    try {
-                        MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", trackTable);
-                        MainRacerGUI.checkDeleteSelect(tracks);
-
-                        String message = tracks.getSelectedRows().length == 1
-                                ? "Вы действительно хотите удалить выбранную запись?\nВсе рекорды, поставленные на этой трассе,\nа также будущие соревнования, которые будут проходить на ней будут удалены!\nОтменить действие будет невозможно!"
-                                : "Вы действительно хотите удалить выбранные записи?\nВсе рекорды, поставленные на этих трассах,\nа также будущие соревнования, которые будут проходить на них будут удалены!\nОтменить действие будет невозможно!";
-                        int result = JOptionPane.showConfirmDialog(mainTrackGUI,
-                                message,
-                                "Подтверждение действия",
-                                JOptionPane.YES_NO_OPTION,
-                                JOptionPane.QUESTION_MESSAGE);
-                        if (result == JOptionPane.YES_OPTION) {
-
-                            int i = tracks.getSelectedRows().length - 1;
-                            while (tracks.getSelectedRows().length > 0) {
-                                int j = tracks.getRowCount() - 1;
-                                while (j > -1) {
-                                    if (j == tracks.getSelectedRows()[i]) {
-                                        String removingTrackName = tracks.getValueAt(tracks.getSelectedRows()[i], 0)
-                                                .toString();
-                                        String removingLength = tracks.getValueAt(tracks.getSelectedRows()[i], 1)
-                                                .toString();
-                                        trackTable.removeRow(tracks.getSelectedRows()[i]);
-                                        Track removingTrack = isAtTrackList(allTracks,
-                                                new Track(removingTrackName, Integer.parseInt(removingLength)));
-                                        parentWindow.getMainRacerGUI().getTrackDao()
-                                                .addFreeID(removingTrack.getTrackID());
-                                        updateScores(removingTrack);
-                                        updateCompetitions(removingTrack);
-                                        allTracks.remove(allTracks.indexOf(removingTrack));
-                                        break;
-                                    }
-                                    j--;
-                                }
-                                i--;
-                            }
-                            parentWindow.getMainGraphicGUI().updateComboTrack();
-                            parentWindow.getMainGraphicGUI().setCompetitionsTable();
-                            parentWindow.getMainScoreGUI().updateComboTrack();
-                            parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboTrack();
-                            parentWindow.getMainScoreGUI().setScoreTable();
-                            parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
-                            parentWindow.getMainTrackGUI().setTrackTable();
+            ToolbarButton addBtn = new ToolbarButton("Добавить трассу", "img/add_track.png",
+                    new CallbackInterface() {
+                        @Override
+                        public void onEvent() {
+                            logger.info("Opening window AddTrackGUI");
+                            setMainTrackEnable(false);
+                            addTrackWindow.setAddTrackVisibility(true);
                         }
-                    } catch (UnselectedDeleteException exception) {
-                        JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка удаления",
-                                JOptionPane.PLAIN_MESSAGE);
-                    } catch (NothingDataException exception) {
-                        JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка редактирования",
-                                JOptionPane.PLAIN_MESSAGE);
-                    }
-                }
-            }));
-            deleteBtn.setBackground(new Color(0xDFD9D9D9, false));
-            deleteBtn.setFocusable(false);
+                    });
+
+            ToolbarButton deleteBtn = new ToolbarButton("Удалить трассу", "img/delete_track.png",
+                    new CallbackInterface() {
+                        @Override
+                        public void onEvent() {
+                            try {
+                                MainRacerGUI.checkEmptyData("Данные для удаления не найдены!", trackTable);
+                                MainRacerGUI.checkDeleteSelect(tracks);
+
+                                String message = tracks.getSelectedRows().length == 1
+                                        ? "Вы действительно хотите удалить выбранную запись?\nВсе рекорды, поставленные на этой трассе,\nа также будущие соревнования, которые будут проходить на ней будут удалены!\nОтменить действие будет невозможно!"
+                                        : "Вы действительно хотите удалить выбранные записи?\nВсе рекорды, поставленные на этих трассах,\nа также будущие соревнования, которые будут проходить на них будут удалены!\nОтменить действие будет невозможно!";
+                                int result = JOptionPane.showConfirmDialog(mainTrackGUI,
+                                        message,
+                                        "Подтверждение действия",
+                                        JOptionPane.YES_NO_OPTION,
+                                        JOptionPane.QUESTION_MESSAGE);
+                                if (result == JOptionPane.YES_OPTION) {
+
+                                    int i = tracks.getSelectedRows().length - 1;
+                                    while (tracks.getSelectedRows().length > 0) {
+                                        int j = tracks.getRowCount() - 1;
+                                        while (j > -1) {
+                                            if (j == tracks.getSelectedRows()[i]) {
+                                                String removingTrackName = tracks
+                                                        .getValueAt(tracks.getSelectedRows()[i], 0)
+                                                        .toString();
+                                                String removingLength = tracks
+                                                        .getValueAt(tracks.getSelectedRows()[i], 1)
+                                                        .toString();
+                                                trackTable.removeRow(tracks.getSelectedRows()[i]);
+                                                Track removingTrack = isAtTrackList(allTracks,
+                                                        new Track(removingTrackName, Integer.parseInt(removingLength)));
+                                                parentWindow.getMainRacerGUI().getTrackDao()
+                                                        .addFreeID(removingTrack.getTrackID());
+                                                updateScores(removingTrack);
+                                                updateCompetitions(removingTrack);
+                                                allTracks.remove(allTracks.indexOf(removingTrack));
+                                                break;
+                                            }
+                                            j--;
+                                        }
+                                        i--;
+                                    }
+                                    parentWindow.getMainGraphicGUI().updateComboTrack();
+                                    parentWindow.getMainGraphicGUI().setCompetitionsTable();
+                                    parentWindow.getMainScoreGUI().updateComboTrack();
+                                    parentWindow.getMainScoreGUI().getAddScoreWindow().updateComboTrack();
+                                    parentWindow.getMainScoreGUI().setScoreTable();
+                                    parentWindow.getMainGraphicGUI().getAddGraphicGUI().updateComboTrack();
+                                    parentWindow.getMainTrackGUI().setTrackTable();
+                                }
+                            } catch (UnselectedDeleteException exception) {
+                                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка удаления",
+                                        JOptionPane.PLAIN_MESSAGE);
+                            } catch (NothingDataException exception) {
+                                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(),
+                                        "Ошибка редактирования",
+                                        JOptionPane.PLAIN_MESSAGE);
+                            }
+                        }
+                    });
 
             URL editIcon = this.getClass().getClassLoader().getResource("img/edit.png");
             editBtn.setIcon(new ImageIcon(new ImageIcon(editIcon).getImage().getScaledInstance(50, 50, 4)));
@@ -343,7 +339,7 @@ public class MainTrackGUI extends JFrame {
                                 .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                         CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
                                 new float[] { 1f, 1f, 1f },
-                                new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
+                                columns,
                                 boldFontPath);
                     } catch (Exception exception) {
                         JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(),
