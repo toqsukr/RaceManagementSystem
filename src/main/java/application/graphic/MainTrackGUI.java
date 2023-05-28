@@ -1,7 +1,5 @@
 package application.graphic;
 
-import util.CreateReport;
-import util.Logging;
 import util.Validation;
 import race.system.Competition;
 import race.system.Racer;
@@ -10,16 +8,10 @@ import race.system.Track;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-
-import org.apache.logging.log4j.core.LoggerContext;
-import org.apache.logging.log4j.core.config.Configuration;
 
 import application.graphic.interfaces.CallbackInterface;
 import application.graphic.buttons.ToolbarButton;
@@ -29,9 +21,6 @@ import exception.InvalidTrackLengthInputException;
 import exception.InvalidTrackNameInputException;
 import exception.NothingDataException;
 import exception.UnselectedDeleteException;
-
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.Logger;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
@@ -45,13 +34,15 @@ import javax.swing.table.DefaultTableModel;
 /**
  * GUI of Race Management System
  */
-public class MainTrackGUI extends JFrame {
+public class MainTrackGUI extends BaseGUI {
     private static JFrame mainTrackGUI = new JFrame("Список трасс");
 
     /**
      * This button adds new field into table
      */
-    private final ToolbarButton addBtn = new ToolbarButton("Добавить трассу", "img/add_track.png",
+    private final ToolbarButton addBtn = new ToolbarButton(
+            "Добавить трассу",
+            "img/add_track.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -64,8 +55,9 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button deletes selected field
      */
-
-    private final ToolbarButton deleteBtn = new ToolbarButton("Удалить трассу", "img/delete_track.png",
+    private final ToolbarButton deleteBtn = new ToolbarButton(
+            "Удалить трассу",
+            "img/delete_track.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -130,7 +122,9 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button allows you to edit selected field
      */
-    private final ToolbarButton editBtn = new ToolbarButton("Редактировать запись", "img/edit.png",
+    private final ToolbarButton editBtn = new ToolbarButton(
+            "Редактировать запись",
+            "img/edit.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -150,29 +144,18 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button forms team data report
      */
-    private final ToolbarButton reportBtn = new ToolbarButton("Сформировать отчет", "img/report.png",
-            new CallbackInterface() {
-                @Override
-                public void onEvent() {
-                    try {
-                        URL boldFontPath = this.getClass().getClassLoader()
-                                .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
-                        CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
-                                new float[] { 1f, 1f, 1f },
-                                columns,
-                                boldFontPath);
-                    } catch (Exception exception) {
-                        JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(),
-                                "Ошибка формирования отчета",
-                                JOptionPane.PLAIN_MESSAGE);
-                    }
-                }
-            });
+    private final ToolbarButton reportBtn = this.getReportBtn(
+            trackTable,
+            mainTrackGUI,
+            "Список трасс\n\n\n\n\n",
+            widths, columns);
 
     /**
      * This button exports data to the database
      */
-    private final ToolbarButton toDataBaseBtn = new ToolbarButton("Выгрузить в базу данных", "img/deploytodb.png",
+    private final ToolbarButton toDataBaseBtn = new ToolbarButton(
+            "Выгрузить в базу данных",
+            "img/deploytodb.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -183,8 +166,10 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button imports data into table from database
      */
-    private final ToolbarButton fromDataBaseBtn = new ToolbarButton("Загрузить данные из базы данных",
-            "img/downloadfromdb.png", new CallbackInterface() {
+    private final ToolbarButton fromDataBaseBtn = new ToolbarButton(
+            "Загрузить данные из базы данных",
+            "img/downloadfromdb.png",
+            new CallbackInterface() {
                 @Override
                 public void onEvent() {
                     parentWindow.getMainRacerGUI().downloadFromDataBase();
@@ -194,7 +179,9 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button confirms changes made
      */
-    private final ToolbarButton confirmBtn = new ToolbarButton("Ок", "img/confirm.png",
+    private final ToolbarButton confirmBtn = new ToolbarButton(
+            "Ок",
+            "img/confirm.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -242,7 +229,9 @@ public class MainTrackGUI extends JFrame {
     /**
      * This button cancles changes made
      */
-    private final ToolbarButton cancelBtn = new ToolbarButton("Отмена", "img/cancel.png",
+    private final ToolbarButton cancelBtn = new ToolbarButton(
+            "Отмена",
+            "img/cancel.png",
             new CallbackInterface() {
                 @Override
                 public void onEvent() {
@@ -266,6 +255,8 @@ public class MainTrackGUI extends JFrame {
      * Table column names
      */
     private static final String[] columns = { "Название трассы", "Длина трассы", "Призер" };
+
+    private static final float[] widths = BaseGUI.getWidths(columns);
 
     /**
      * Fields of the table
@@ -302,11 +293,6 @@ public class MainTrackGUI extends JFrame {
      */
     private boolean editingPermit = false;
 
-    /***
-     * The logger variable
-     */
-    private static Logger logger;
-
     private MainMenuGUI parentWindow;
 
     private AddTrackGUI addTrackWindow;
@@ -317,111 +303,97 @@ public class MainTrackGUI extends JFrame {
      * The function creating mainTrackGUI
      */
     public MainTrackGUI(MainMenuGUI parent) {
+        this.sizeInit(mainTrackGUI);
+
         parentWindow = parent;
-
-        try {
-            LoggerContext context = Logging.getContext();
-
-            logger = createLoggerAndStart(context, Logging.getConfiguration(this.getClass()));
-
-            logger.log(Level.INFO, "Start logging mainTrackGUI");
-
-            mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
-                @Override
-                public void windowClosing(WindowEvent e) {
-                    try {
-                        MainRacerGUI.stopEditCell(tracks);
-                        int result = 0;
-                        checkEditedData();
-                        if (editingPermit) {
-                            if (tracks.getSelectedRow() != -1)
-                                tracks.getCellEditor(tracks.getSelectedRow(), tracks.getSelectedColumn())
-                                        .stopCellEditing();
-                            if (!MainRacerGUI.isEqualTable(trackTable, previousTrackTable)) {
-                                checkEditedData();
-                                result = JOptionPane.showConfirmDialog(mainTrackGUI, "Сохранить изменения?",
-                                        "Подтверждение действия",
-                                        JOptionPane.YES_NO_OPTION,
-                                        JOptionPane.QUESTION_MESSAGE);
-                                if (result == JOptionPane.YES_OPTION) {
-                                    compareEditedData();
-                                    setEditingPermit(false);
-                                    setConfirmbarUnvisible();
-                                } else if (result == JOptionPane.NO_OPTION) {
-                                    cancelBtn.doClick();
-                                }
-                            } else {
+        mainTrackGUI.addWindowListener((WindowListener) new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    MainRacerGUI.stopEditCell(tracks);
+                    int result = 0;
+                    checkEditedData();
+                    if (editingPermit) {
+                        if (tracks.getSelectedRow() != -1)
+                            tracks.getCellEditor(tracks.getSelectedRow(), tracks.getSelectedColumn())
+                                    .stopCellEditing();
+                        if (!MainRacerGUI.isEqualTable(trackTable, previousTrackTable)) {
+                            checkEditedData();
+                            result = JOptionPane.showConfirmDialog(mainTrackGUI, "Сохранить изменения?",
+                                    "Подтверждение действия",
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE);
+                            if (result == JOptionPane.YES_OPTION) {
+                                compareEditedData();
                                 setEditingPermit(false);
                                 setConfirmbarUnvisible();
+                            } else if (result == JOptionPane.NO_OPTION) {
+                                cancelBtn.doClick();
                             }
-                        }
-                        if (result == 0 || result == 1) {
-                            closeWindow(context);
-                        }
-                    } catch (InvalidDataException exception) {
-                        int confirm = JOptionPane.showConfirmDialog(mainTrackGUI,
-                                "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
-                                "Предупреждение",
-                                JOptionPane.OK_CANCEL_OPTION);
-                        if (confirm == JOptionPane.OK_OPTION) {
-                            cancelBtn.doClick();
-                            closeWindow(context);
+                        } else {
+                            setEditingPermit(false);
+                            setConfirmbarUnvisible();
                         }
                     }
+                    if (result == 0 || result == 1) {
+                        closeWindow();
+                    }
+                } catch (InvalidDataException exception) {
+                    int confirm = JOptionPane.showConfirmDialog(mainTrackGUI,
+                            "Данные содержат ошибку и не могут быть сохранены!\nЗакрыть окно?",
+                            "Предупреждение",
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (confirm == JOptionPane.OK_OPTION) {
+                        cancelBtn.doClick();
+                        closeWindow();
+                    }
                 }
-
-                private void closeWindow(LoggerContext context) {
-                    stopLogging(context);
-                    mainTrackGUI.dispose();
-                }
-            });
-
-            // ==
-            mainTrackGUI.setBounds(200, 150, 800, 600);
-            mainTrackGUI.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            mainTrackGUI.setResizable(false);
-            URL mainTeamIcon = this.getClass().getClassLoader().getResource("img/track.png");
-            mainTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
-            // ==
-            toolBar.setFloatable(false);
-            tracks.getTableHeader().setReorderingAllowed(false);
-
-            try {
-                allTracks = getTrackData();
-                parentWindow.getMainRacerGUI().getTrackDao().updateFreeID(allTracks);
-                setTrackTable();
-            } catch (InterruptedException exception) {
-                JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
-                        JOptionPane.PLAIN_MESSAGE);
             }
 
-            addTrackWindow = new AddTrackGUI(this);
+            private void closeWindow() {
+                stopLogging();
+                mainTrackGUI.dispose();
+            }
+        });
 
-            updateComboRacer();
+        this.setGUIIcon("img/track.png");
 
-            Container container = mainTrackGUI.getContentPane();
-            container.setLayout(new BorderLayout());
+        toolBar.setFloatable(false);
+        tracks.getTableHeader().setReorderingAllowed(false);
 
-            DefaultCellEditor editor = new DefaultCellEditor(comboRacer);
-            tracks.getColumnModel().getColumn(2).setCellEditor(editor);
-
-            confirmBtn.setVisible(false);
-            cancelBtn.setVisible(false);
-
-            toolBar.add(fromDataBaseBtn);
-            toolBar.add(toDataBaseBtn);
-            toolBar.add(addBtn);
-            toolBar.add(deleteBtn);
-            toolBar.add(editBtn);
-            toolBar.add(reportBtn);
-            toolBar.add(confirmBtn);
-            toolBar.add(cancelBtn);
-
-            container.add(toolBar, BorderLayout.NORTH);
-            container.add(scroll, BorderLayout.CENTER);
-        } catch (IOException exception) {
-            JOptionPane.showMessageDialog(null, exception.getMessage());
+        try {
+            allTracks = getTrackData();
+            parentWindow.getMainRacerGUI().getTrackDao().updateFreeID(allTracks);
+            setTrackTable();
+        } catch (InterruptedException exception) {
+            JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка чтения данных из базы!",
+                    JOptionPane.PLAIN_MESSAGE);
         }
+
+        addTrackWindow = new AddTrackGUI(this);
+
+        updateComboRacer();
+
+        Container container = mainTrackGUI.getContentPane();
+        container.setLayout(new BorderLayout());
+
+        DefaultCellEditor editor = new DefaultCellEditor(comboRacer);
+        tracks.getColumnModel().getColumn(2).setCellEditor(editor);
+
+        confirmBtn.setVisible(false);
+        cancelBtn.setVisible(false);
+
+        toolBar.add(fromDataBaseBtn);
+        toolBar.add(toDataBaseBtn);
+        toolBar.add(addBtn);
+        toolBar.add(deleteBtn);
+        toolBar.add(editBtn);
+        toolBar.add(reportBtn);
+        toolBar.add(confirmBtn);
+        toolBar.add(cancelBtn);
+
+        container.add(toolBar, BorderLayout.NORTH);
+        container.add(scroll, BorderLayout.CENTER);
     }
 
     public void setEditingPermit(boolean value) {
@@ -475,21 +447,6 @@ public class MainTrackGUI extends JFrame {
      * @param configuration params of logging
      * @throws IOException checks whether there are input/output errors
      */
-
-    private static Logger createLoggerAndStart(LoggerContext context, Configuration configuration) throws IOException {
-        context.start(configuration);
-        return context.getLogger("com");
-    }
-
-    /***
-     * The function stops logging
-     * 
-     * @param context the logger variable
-     */
-    public static void stopLogging(LoggerContext context) {
-        logger.log(Level.INFO, "Stop logging mainTrackGUI");
-        context.close();
-    }
 
     /***
      * The function sets enability options of MainTrackGUI window
