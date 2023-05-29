@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "scores")
 public class Score {
-    private Integer ScoreID;
+    private Integer scoreID;
     private Racer racerInfo;
     private Track trackInfo;
     private Integer finishTime;
@@ -13,11 +13,11 @@ public class Score {
     @Id
     @Column(name = "ScoreID")
     public Integer getScoreID() {
-        return ScoreID;
+        return scoreID;
     }
 
-    public void setScoreID(int id) {
-        ScoreID = id;
+    public void setScoreID(Integer id) {
+        scoreID = id;
     }
 
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)

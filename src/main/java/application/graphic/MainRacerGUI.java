@@ -312,7 +312,7 @@ public class MainRacerGUI extends JFrame {
             mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
             toolBar.setFloatable(false);
             racers.getTableHeader().setReorderingAllowed(false);
-
+            racers.setRowHeight(racers.getRowHeight() + 4);
             try {
                 allTeams = getTeamData();
                 allRacers = getRacerData();

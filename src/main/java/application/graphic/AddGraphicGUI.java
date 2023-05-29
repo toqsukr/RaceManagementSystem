@@ -53,7 +53,7 @@ public class AddGraphicGUI {
         addGraphicGUI.setBounds(200, 150, 410, 330);
         addGraphicGUI.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         addGraphicGUI.setResizable(false);
-        URL addRacerIcon = this.getClass().getClassLoader().getResource("img/score.png");
+        URL addRacerIcon = this.getClass().getClassLoader().getResource("img/graphic.png");
         addGraphicGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(addRacerIcon));
 
         updateComboYear();

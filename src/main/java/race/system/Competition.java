@@ -5,17 +5,17 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "competition")
 public class Competition {
-    private int competitionID;
+    private Integer competitionID;
     private MyDate date;
     private Track track;
 
     @Id
     @Column(name = "competitionID")
-    public int getCompetitionID() {
+    public Integer getCompetitionID() {
         return competitionID;
     }
 
-    public void setCompetitionID(int id) {
+    public void setCompetitionID(Integer id) {
         competitionID = id;
     }
 
@@ -44,8 +44,8 @@ public class Competition {
         this.track = null;
     }
 
-    public Competition(MyDate date, Track track) {
-        this.date = date;
-        this.track = track;
+    public Competition(MyDate _date, Track _track) {
+        date = _date;
+        track = _track;
     }
 }

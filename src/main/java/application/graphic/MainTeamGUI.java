@@ -213,6 +213,7 @@ public class MainTeamGUI extends JFrame {
             mainTeamGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
             toolBar.setFloatable(false);
             teams.getTableHeader().setReorderingAllowed(false);
+            teams.setRowHeight(teams.getRowHeight() + 4);
 
             try {
                 parentWindow.getMainRacerGUI().setAllTeams(parentWindow.getMainRacerGUI().getTeamData());
@@ -316,7 +317,7 @@ public class MainTeamGUI extends JFrame {
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(teamTable, mainTeamGUI, "Отчет по списку команд\n\n\n\n\n",
                         new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание команды\n", "\nКоличество участников\n", "\nВсего очков\n" },
+                        new String[] { "\nНазвание команды\n", "\nКоличество участников\n\n", "\nВсего очков\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainTeamGUI, exception.getMessage(), "Ошибка формирования отчета",

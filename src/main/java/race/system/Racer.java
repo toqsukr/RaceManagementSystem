@@ -60,6 +60,10 @@ public class Racer {
 
     public Racer() {
         racerID = 0;
+        racerName = null;
+        racerAge = null;
+        racerTeam = null;
+        racerPoints = null;
     };
 
     public Racer(String name, Integer age, Team team, Integer points) {
@@ -69,9 +73,4 @@ public class Racer {
         racerTeam = team;
         racerPoints = points;
     };
-
-    public void showRacerInfo() {
-        System.out.println(racerName + ", " + racerAge + " y.o from team " + racerTeam.getTeamName() + " have "
-                + racerPoints + " points");
-    }
 }

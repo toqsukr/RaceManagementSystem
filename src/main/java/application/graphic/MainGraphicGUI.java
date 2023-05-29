@@ -192,6 +192,7 @@ public class MainGraphicGUI extends JFrame {
             mainGraphicGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainGraphicsIcon));
             toolBar.setFloatable(false);
             graphics.getTableHeader().setReorderingAllowed(false);
+            graphics.setRowHeight(graphics.getRowHeight() + 4);
 
             updateComboYear();
             updateComboMonth();
@@ -404,8 +405,8 @@ public class MainGraphicGUI extends JFrame {
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(graphicsTable, mainGraphicGUI, "Отчет по графику соревнований\n\n\n\n\n",
                         new float[] { 1f, 0.5f, 0.5f, 0.5f },
-                        new String[] { "\nНазвание трассы\n", "\nДень\n",
-                                "\nМесяц\n", "\nГод\n" },
+                        new String[] { "\nНазвание трассы\n\n", "\nДень\n\n",
+                                "\nМесяц\n\n", "\nГод\n\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainGraphicGUI, exception.getMessage(), "Ошибка формирования отчета",

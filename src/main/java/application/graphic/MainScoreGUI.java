@@ -189,6 +189,7 @@ public class MainScoreGUI extends JFrame {
             mainScoreGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
             toolBar.setFloatable(false);
             scores.getTableHeader().setReorderingAllowed(false);
+            scores.setRowHeight(scores.getRowHeight() + 4);
 
             try {
                 allScores = getScoreData();
@@ -302,7 +303,7 @@ public class MainScoreGUI extends JFrame {
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(scoreTable, mainScoreGUI, "Отчет по списку трасс\n\n\n\n\n",
                         new float[] { 1f, 1f, 0.6f },
-                        new String[] { "\nИмя гонщика\n", "\nНазвание трассы\n", "\nЛичный результат\n" },
+                        new String[] { "\nИмя гонщика\n", "\nНазвание трассы\n", "\nЛичный результат\n\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainScoreGUI, exception.getMessage(), "Ошибка формирования отчета",

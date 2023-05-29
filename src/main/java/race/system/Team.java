@@ -34,7 +34,7 @@ public class Team {
         return racerNumber;
     }
 
-    public void setRacerNumber(int value) {
+    public void setRacerNumber(Integer value) {
         racerNumber = value;
     }
 
@@ -66,7 +66,7 @@ public class Team {
     public Team() {
         teamID = 0;
         teamName = null;
-        racerNumber = 0;
+        racerNumber = 1;
         totalPoints = 0;
     };
 

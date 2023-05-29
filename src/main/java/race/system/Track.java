@@ -16,8 +16,8 @@ public class Track {
         return trackID;
     }
 
-    public void setTrackID(Integer trackID) {
-        this.trackID = trackID;
+    public void setTrackID(Integer id) {
+        trackID = id;
     }
 
     @Column(name = "trackName")
@@ -25,8 +25,8 @@ public class Track {
         return trackName;
     }
 
-    public void setTrackName(String trackName) {
-        this.trackName = trackName;
+    public void setTrackName(String name) {
+        trackName = name;
     }
 
     @Column(name = "trackLength")
@@ -34,8 +34,8 @@ public class Track {
         return trackLength;
     }
 
-    public void setTrackLength(Integer trackLength) {
-        this.trackLength = trackLength;
+    public void setTrackLength(Integer length) {
+        trackLength = length;
     }
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)

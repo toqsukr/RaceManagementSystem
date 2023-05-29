@@ -225,6 +225,7 @@ public class MainTrackGUI extends JFrame {
             mainTrackGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainTeamIcon));
             toolBar.setFloatable(false);
             tracks.getTableHeader().setReorderingAllowed(false);
+            tracks.setRowHeight(tracks.getRowHeight() + 4);
 
             try {
                 allTracks = getTrackData();
@@ -333,7 +334,7 @@ public class MainTrackGUI extends JFrame {
                         .getResource("fonts/DejaVuSans/DejaVuSans.ttf");
                 CreateReport.printReport(trackTable, mainTrackGUI, "Отчет по списку трасс\n\n\n\n\n",
                         new float[] { 1f, 1f, 1f },
-                        new String[] { "\nНазвание трассы\n", "\nДлина трассы\n", "\nПризер\n" },
+                        new String[] { "\nНазвание трассы\n\n", "\nДлина трассы\n\n", "\nПризер\n\n" },
                         boldFontPath);
             } catch (Exception exception) {
                 JOptionPane.showMessageDialog(mainTrackGUI, exception.getMessage(), "Ошибка формирования отчета",

@@ -230,7 +230,7 @@ public class AddRacerGUI {
                     parentWindow.updateComboTeam();
                     comboTeam.addItem(teamName);
                 } else
-                    team.expandRacerNumber();
+                    team.setRacerNumber(team.getRacerNumber() + 1);
                 Racer racer = MainRacerGUI.isAtRacerList(parentWindow.getAllRacers(), inputNameField.getText().trim(),
                         teamName);
                 int result = 0;

@@ -16,7 +16,7 @@ public class MyDate {
         return dateID;
     }
 
-    public void setDateID(int id) {
+    public void setDateID(Integer id) {
         dateID = id;
     }
 
@@ -25,7 +25,7 @@ public class MyDate {
         return day;
     };
 
-    public void setDay(int dayNumber) {
+    public void setDay(Integer dayNumber) {
         day = dayNumber;
     };
 
@@ -34,7 +34,7 @@ public class MyDate {
         return month;
     };
 
-    public void setMonth(int monthNumber) {
+    public void setMonth(Integer monthNumber) {
         month = monthNumber;
     };
 
@@ -43,7 +43,7 @@ public class MyDate {
         return year;
     };
 
-    public void setYear(int yearNumber) {
+    public void setYear(Integer yearNumber) {
         year = yearNumber;
     };
 
