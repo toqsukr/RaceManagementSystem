@@ -537,14 +537,24 @@ public class MainGraphicGUI extends JFrame {
                 graphics.getCellEditor(graphics.getSelectedRow(),
                         graphics.getSelectedColumn()).stopCellEditing();
             if (!MainRacerGUI.isEqualTable(graphicsTable, previousGraphicsTable)) {
-                int result = JOptionPane.showConfirmDialog(mainGraphicGUI, "Сохранить изменения?",
-                        "Подтверждение действия",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    compareEditedData();
-                    setEditingPermit(false);
-                    setConfirmbarUnvisible();
+                MyDate date = isAtDateList(allDates,
+                        Integer.parseInt(comboDay.getSelectedItem().toString()),
+                        Integer.parseInt(comboMonth.getSelectedItem().toString()),
+                        Integer.parseInt(comboYear.getSelectedItem().toString()));
+                if (date == null) {
+                    int result = JOptionPane.showConfirmDialog(mainGraphicGUI, "Сохранить изменения?",
+                            "Подтверждение действия",
+                            JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        compareEditedData();
+                        setEditingPermit(false);
+                        setConfirmbarUnvisible();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(mainGraphicGUI, "В эту дату уже проводится соревнование!",
+                            "Сообщение",
+                            JOptionPane.PLAIN_MESSAGE);
                 }
             } else {
                 setEditingPermit(false);
@@ -741,7 +751,8 @@ public class MainGraphicGUI extends JFrame {
                     && !month.equals(allCompetitions.get(i).getDate().getMonth().toString())
                     && !year.equals(allCompetitions.get(i).getDate().getYear().toString())) {
                 allCompetitions.get(i).setDate(
-                        isAtDateList(allDates, Integer.parseInt(day), Integer.parseInt(month), Integer.parseInt(year)));
+                        isAtDateList(allDates, Integer.parseInt(day), Integer.parseInt(month),
+                                Integer.parseInt(year)));
             }
         }
     }

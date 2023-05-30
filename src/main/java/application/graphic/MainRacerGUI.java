@@ -695,10 +695,9 @@ public class MainRacerGUI extends JFrame {
                                         teamDao.addFreeID(removingTeam.getTeamID());
                                         allTeams.remove(allTeams.indexOf(removingTeam));
                                     } else {
-                                        if (removingTeam.getRacerNumber() > 1) {
-                                            removingTeam.reduceRacerNumber();
-                                            removingTeam.deductPoints(Integer.parseInt(removingPoints));
-                                        }
+                                        removingTeam.reduceRacerNumber();
+                                        removingTeam.deductPoints(Integer.parseInt(removingPoints));
+
                                     }
 
                                     parentWindow.getMainTeamGUI().setTeamTable();
