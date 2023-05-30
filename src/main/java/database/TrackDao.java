@@ -31,7 +31,9 @@ public class TrackDao {
     public List<Track> getAllTracks() throws HibernateException {
         try {
             em.getTransaction().begin();
-            List<Track> tracks = em.createQuery("FROM Track", Track.class).getResultList();
+            List<Track> tracks = em.createQuery("FROM Track", Track.class)
+                    .setHint("jakarta.persistence.cache.storeMode", "REFRESH").getResultList();
+            em.clear();
             em.getTransaction().commit();
             return tracks;
 
@@ -44,6 +46,7 @@ public class TrackDao {
     public Track findTrack(int id) {
         em.getTransaction().begin();
         Track track = em.find(Track.class, id);
+        em.clear();
         em.getTransaction().commit();
         return track;
     }

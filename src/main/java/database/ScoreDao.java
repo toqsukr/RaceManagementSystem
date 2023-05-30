@@ -46,6 +46,7 @@ public class ScoreDao {
     public Score findScore(int id) {
         em.getTransaction().begin();
         Score score = em.find(Score.class, id);
+        em.clear();
         em.getTransaction().commit();
         return score;
     }

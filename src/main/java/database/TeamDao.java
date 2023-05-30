@@ -31,7 +31,9 @@ public class TeamDao {
     public List<Team> getAllTeams() throws HibernateException {
         try {
             em.getTransaction().begin();
-            List<Team> teams = em.createQuery("FROM Team", Team.class).getResultList();
+            List<Team> teams = em.createQuery("FROM Team", Team.class)
+                    .setHint("jakarta.persistence.cache.storeMode", "REFRESH").getResultList();
+            em.clear();
             em.getTransaction().commit();
             return teams;
 
@@ -44,6 +46,7 @@ public class TeamDao {
     public Team findTeam(int id) {
         em.getTransaction().begin();
         Team team = em.find(Team.class, id);
+        em.clear();
         em.getTransaction().commit();
         return team;
     }

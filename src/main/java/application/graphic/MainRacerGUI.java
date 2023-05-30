@@ -312,7 +312,7 @@ public class MainRacerGUI extends JFrame {
             mainRacerGUI.setIconImage(Toolkit.getDefaultToolkit().getImage(mainRacerIcon));
             toolBar.setFloatable(false);
             racers.getTableHeader().setReorderingAllowed(false);
-            racers.setRowHeight(racers.getRowHeight() + 4);
+
             try {
                 allTeams = getTeamData();
                 allRacers = getRacerData();
@@ -434,7 +434,7 @@ public class MainRacerGUI extends JFrame {
             cancelBtn.addActionListener(new CancelEventListener());
             cancelBtn.setFocusable(false);
 
-            // toolBar.add(fileBtn);
+            toolBar.add(fileBtn);
             toolBar.add(fromDataBaseBtn);
             // toolBar.add(saveBtn);
             toolBar.add(toDataBaseBtn);
@@ -1423,12 +1423,22 @@ public class MainRacerGUI extends JFrame {
 
     public void syncronizeData() {
         if (isOpenFile) {
-            racerDao.clearRacer();
-            teamDao.clearTeam();
-            trackDao.clearTrack();
-            parentWindow.getMainGraphicGUI().getCompetitionDao().clearCompetition();
             parentWindow.getMainGraphicGUI().getMyDateDao().clearDate();
+            teamDao.clearTeam();
+            racerDao.clearRacer();
+            trackDao.clearTrack();
+            parentWindow.getMainScoreGUI().getScoreDao().clearScore();
+            parentWindow.getMainGraphicGUI().getCompetitionDao().clearCompetition();
             setIsOpenFile(false);
+        }
+
+        List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
+        for (Competition competition : allCompetitions) {
+            if (parentWindow.getMainGraphicGUI().getCompetitionDao()
+                    .findCompetition(competition.getCompetitionID()) == null) {
+                parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
+            } else
+                parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
         }
 
         List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
@@ -1439,18 +1449,12 @@ public class MainRacerGUI extends JFrame {
                 parentWindow.getMainGraphicGUI().getMyDateDao().updateDate(date);
         }
 
-        for (Team team : allTeams) {
-            if (teamDao.findTeam(team.getTeamID()) == null) {
-                teamDao.saveTeam(team);
+        List<Score> allScores = parentWindow.getMainScoreGUI().getAllScores();
+        for (Score score : allScores) {
+            if (parentWindow.getMainScoreGUI().getScoreDao().findScore(score.getScoreID()) == null) {
+                parentWindow.getMainScoreGUI().getScoreDao().saveScore(score);
             } else
-                teamDao.updateTeam(team);
-        }
-
-        for (Racer racer : allRacers) {
-            if (racerDao.findRacer(racer.getRacerID()) == null) {
-                racerDao.saveRacer(racer);
-            } else
-                racerDao.updateRacer(racer);
+                parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
         }
 
         List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
@@ -1461,21 +1465,18 @@ public class MainRacerGUI extends JFrame {
                 trackDao.updateTrack(track);
         }
 
-        List<Score> allScores = parentWindow.getMainScoreGUI().getAllScores();
-        for (Score score : allScores) {
-            if (parentWindow.getMainScoreGUI().getScoreDao().findScore(score.getScoreID()) == null) {
-                parentWindow.getMainScoreGUI().getScoreDao().saveScore(score);
+        for (Racer racer : allRacers) {
+            if (racerDao.findRacer(racer.getRacerID()) == null) {
+                racerDao.saveRacer(racer);
             } else
-                parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
+                racerDao.updateRacer(racer);
         }
 
-        List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
-        for (Competition competition : allCompetitions) {
-            if (parentWindow.getMainGraphicGUI().getCompetitionDao()
-                    .findCompetition(competition.getCompetitionID()) == null) {
-                parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
+        for (Team team : allTeams) {
+            if (teamDao.findTeam(team.getTeamID()) == null) {
+                teamDao.saveTeam(team);
             } else
-                parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
+                teamDao.updateTeam(team);
         }
 
         List<Racer> dbRacers = racerDao.getAllRacers();

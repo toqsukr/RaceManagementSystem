@@ -45,6 +45,7 @@ public class CompetitionDao {
     public Competition findCompetition(int id) {
         em.getTransaction().begin();
         Competition competition = em.find(Competition.class, id);
+        em.clear();
         em.getTransaction().commit();
         return competition;
     }
