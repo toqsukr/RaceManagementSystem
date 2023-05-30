@@ -20,7 +20,7 @@ public class Score {
         scoreID = id;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "racerID", referencedColumnName = "racerID")
     public Racer getRacerInfo() {
         return racerInfo;
@@ -39,7 +39,7 @@ public class Score {
         finishTime = time;
     };
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "trackID", referencedColumnName = "trackID")
     public Track getTrackInfo() {
         return trackInfo;

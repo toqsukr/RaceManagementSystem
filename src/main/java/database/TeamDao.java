@@ -46,7 +46,6 @@ public class TeamDao {
     public Team findTeam(int id) {
         em.getTransaction().begin();
         Team team = em.find(Team.class, id);
-        em.clear();
         em.getTransaction().commit();
         return team;
     }

@@ -45,7 +45,6 @@ public class MyDateDao {
     public MyDate findDate(int id) {
         em.getTransaction().begin();
         MyDate Date = em.find(MyDate.class, id);
-        em.clear();
         em.getTransaction().commit();
         return Date;
     }

@@ -46,7 +46,6 @@ public class TrackDao {
     public Track findTrack(int id) {
         em.getTransaction().begin();
         Track track = em.find(Track.class, id);
-        em.clear();
         em.getTransaction().commit();
         return track;
     }

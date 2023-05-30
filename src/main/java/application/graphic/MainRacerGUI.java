@@ -1423,22 +1423,13 @@ public class MainRacerGUI extends JFrame {
 
     public void syncronizeData() {
         if (isOpenFile) {
-            parentWindow.getMainGraphicGUI().getMyDateDao().clearDate();
-            teamDao.clearTeam();
-            racerDao.clearRacer();
-            trackDao.clearTrack();
             parentWindow.getMainScoreGUI().getScoreDao().clearScore();
             parentWindow.getMainGraphicGUI().getCompetitionDao().clearCompetition();
+            trackDao.clearTrack();
+            racerDao.clearRacer();
+            teamDao.clearTeam();
+            parentWindow.getMainGraphicGUI().getMyDateDao().clearDate();
             setIsOpenFile(false);
-        }
-
-        List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
-        for (Competition competition : allCompetitions) {
-            if (parentWindow.getMainGraphicGUI().getCompetitionDao()
-                    .findCompetition(competition.getCompetitionID()) == null) {
-                parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
-            } else
-                parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
         }
 
         List<MyDate> allDates = parentWindow.getMainGraphicGUI().getAllDates();
@@ -1449,12 +1440,20 @@ public class MainRacerGUI extends JFrame {
                 parentWindow.getMainGraphicGUI().getMyDateDao().updateDate(date);
         }
 
-        List<Score> allScores = parentWindow.getMainScoreGUI().getAllScores();
-        for (Score score : allScores) {
-            if (parentWindow.getMainScoreGUI().getScoreDao().findScore(score.getScoreID()) == null) {
-                parentWindow.getMainScoreGUI().getScoreDao().saveScore(score);
+        List<Competition> allCompetitions = parentWindow.getMainGraphicGUI().getAllCompetitions();
+
+        for (Team team : allTeams) {
+            if (teamDao.findTeam(team.getTeamID()) == null) {
+                teamDao.saveTeam(team);
             } else
-                parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
+                teamDao.updateTeam(team);
+        }
+
+        for (Racer racer : allRacers) {
+            if (racerDao.findRacer(racer.getRacerID()) == null) {
+                racerDao.saveRacer(racer);
+            } else
+                racerDao.updateRacer(racer);
         }
 
         List<Track> allTracks = parentWindow.getMainTrackGUI().getAllTracks();
@@ -1465,18 +1464,20 @@ public class MainRacerGUI extends JFrame {
                 trackDao.updateTrack(track);
         }
 
-        for (Racer racer : allRacers) {
-            if (racerDao.findRacer(racer.getRacerID()) == null) {
-                racerDao.saveRacer(racer);
+        List<Score> allScores = parentWindow.getMainScoreGUI().getAllScores();
+        for (Score score : allScores) {
+            if (parentWindow.getMainScoreGUI().getScoreDao().findScore(score.getScoreID()) == null) {
+                parentWindow.getMainScoreGUI().getScoreDao().saveScore(score);
             } else
-                racerDao.updateRacer(racer);
+                parentWindow.getMainScoreGUI().getScoreDao().updateScore(score);
         }
 
-        for (Team team : allTeams) {
-            if (teamDao.findTeam(team.getTeamID()) == null) {
-                teamDao.saveTeam(team);
+        for (Competition competition : allCompetitions) {
+            if (parentWindow.getMainGraphicGUI().getCompetitionDao()
+                    .findCompetition(competition.getCompetitionID()) == null) {
+                parentWindow.getMainGraphicGUI().getCompetitionDao().saveCompetition(competition);
             } else
-                teamDao.updateTeam(team);
+                parentWindow.getMainGraphicGUI().getCompetitionDao().updateCompetition(competition);
         }
 
         List<Racer> dbRacers = racerDao.getAllRacers();
@@ -1594,6 +1595,60 @@ public class MainRacerGUI extends JFrame {
         }
     }
 
+    private boolean areEqualCompetitionLists(List<Competition> competitions1, List<Competition> competitions2) {
+        boolean answer = false;
+        if (competitions1.size() == competitions2.size() && competitions1.size() != 0) {
+            for (int i = 0; i < competitions1.size(); i++) {
+                answer = false;
+                for (int j = 0; j < competitions2.size(); j++) {
+                    if (competitions1.get(i).getCompetitionID().equals(competitions2.get(j).getCompetitionID())) {
+                        answer = true;
+                    }
+                }
+                if (!answer)
+                    break;
+            }
+        } else if (competitions1.size() == competitions2.size() && competitions1.size() == 0)
+            answer = true;
+        return answer;
+    }
+
+    private boolean areEqualScoreLists(List<Score> scores1, List<Score> scores2) {
+        boolean answer = false;
+        if (scores1.size() == scores2.size() && scores1.size() != 0) {
+            for (int i = 0; i < scores1.size(); i++) {
+                answer = false;
+                for (int j = 0; j < scores2.size(); j++) {
+                    if (scores1.get(i).getScoreID().equals(scores2.get(j).getScoreID())) {
+                        answer = true;
+                    }
+                }
+                if (!answer)
+                    break;
+            }
+        } else if (scores1.size() == scores2.size() && scores1.size() == 0)
+            answer = true;
+        return answer;
+    }
+
+    private boolean areEqualTrackLists(List<Track> tracks1, List<Track> tracks2) {
+        boolean answer = false;
+        if (tracks1.size() == tracks2.size() && tracks1.size() != 0) {
+            for (int i = 0; i < tracks1.size(); i++) {
+                answer = false;
+                for (int j = 0; j < tracks2.size(); j++) {
+                    if (tracks1.get(i).getTrackName().equals(tracks2.get(j).getTrackName())) {
+                        answer = true;
+                    }
+                }
+                if (!answer)
+                    break;
+            }
+        } else if (tracks1.size() == tracks2.size() && tracks1.size() == 0)
+            answer = true;
+        return answer;
+    }
+
     private boolean areEqualTeamLists(List<Team> teams1, List<Team> teams2) {
         boolean answer = false;
         if (teams1.size() == teams2.size() && teams1.size() != 0) {
@@ -1636,7 +1691,10 @@ public class MainRacerGUI extends JFrame {
     public void checkIdenticalData() throws IdenticalDataException {
         List<Racer> dbRacers = racerDao.getAllRacers();
         List<Team> dbTeams = teamDao.getAllTeams();
-        if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers))
+        List<Track> dbTracks = trackDao.getAllTracks();
+        List<Score> dbScores = parentWindow.getMainScoreGUI().getScoreDao().getAllScores();
+        List<Competition> dbCompetitions = parentWindow.getMainGraphicGUI().getCompetitionDao().getAllCompetitions();
+        if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers) && areEqualTrackLists(parentWindow.getMainTrackGUI().getAllTracks(), dbTracks) && areEqualScoreLists(parentWindow.getMainScoreGUI().getAllScores(), dbScores) && areEqualCompetitionLists(parentWindow.getMainGraphicGUI().getAllCompetitions(), dbCompetitions))
             throw new IdenticalDataException("Full identical data!");
     }
 

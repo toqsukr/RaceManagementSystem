@@ -29,7 +29,7 @@ public class Competition {
         date = otherDate;
     };
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "trackID", referencedColumnName = "trackID")
     public Track getTrack() {
         return track;

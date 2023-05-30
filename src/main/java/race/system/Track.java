@@ -38,7 +38,7 @@ public class Track {
         trackLength = length;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "winnerRacerID", referencedColumnName = "racerID")
     public Racer getWinner() {
         return trackWinner;

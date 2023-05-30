@@ -48,7 +48,7 @@ public class Racer {
         racerPoints = points;
     }
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "racerTeamID", referencedColumnName = "teamID")
     public Team getTeam() {
         return racerTeam;

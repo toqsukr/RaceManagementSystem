@@ -46,7 +46,6 @@ public class RacerDao {
     public Racer findRacer(int id) {
         em.getTransaction().begin();
         Racer racer = em.find(Racer.class, id);
-        em.clear();
         em.getTransaction().commit();
         return racer;
     }
