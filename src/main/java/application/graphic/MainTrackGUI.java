@@ -725,7 +725,7 @@ public class MainTrackGUI extends JFrame {
      * The function checks whether table data is valid
      */
 
-    private void checkEditedData() throws InvalidTrackNameInputException, InvalidTrackLengthInputException {
+    public void checkEditedData() throws InvalidTrackNameInputException, InvalidTrackLengthInputException {
         for (int i = 0; i < trackTable.getRowCount(); i++) {
             if (!Validation.isValidTrackName(trackTable.getValueAt(i, 0).toString()))
                 throw new InvalidTrackNameInputException(i + 1);

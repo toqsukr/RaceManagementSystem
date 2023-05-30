@@ -156,8 +156,11 @@ public class MainMenuGUI {
         try {
             MainRacerGUI.stopEditCell(mainRacerWindow.getRacerTable());
             mainRacerWindow.checkEditedData();
+            mainTeamWindow.checkEditedData();
+            mainTrackWindow.checkEditedData();
+            mainScoreWindow.checkEditedData();
             int result = mainRacerWindow.saveBeforeClose(
-                    "Сохранить изменения в списке гонщиков?\nПосле закрытия окна несохраненные данные будут утеряны!");
+                    "Сохранить изменения?\nПосле закрытия окна несохраненные данные будут утеряны!");
             if (result != -1) {
                 System.exit(1);
             }

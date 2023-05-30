@@ -740,7 +740,7 @@ public class MainRacerGUI extends JFrame {
             copyTable(racerTable, exceptionRacerTable);
             try {
                 int result = saveBeforeClose(
-                        "Сохранить изменения в списке гонщиков локально?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
+                        "Сохранить изменения в списке гонщиков?\nПосле открытия нового файла\nнесохраненные данные будут утеряны!");
                 if (result != -1) {
                     FileDialog load = new FileDialog(mainRacerGUI, "Загрузка данных",
                             FileDialog.LOAD);
@@ -1017,17 +1017,16 @@ public class MainRacerGUI extends JFrame {
      */
     public int saveBeforeClose(String message) {
         int result = 1;
-        if (racerTable.getRowCount() > 0) {
-            result = JOptionPane.showConfirmDialog(mainRacerGUI,
-                    message,
-                    "Подтверждение действия",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE);
-            if (result == JOptionPane.YES_OPTION) {
-                // saveBtn.doClick();
-                toDataBaseBtn.doClick();
-            }
+        result = JOptionPane.showConfirmDialog(mainRacerGUI,
+                message,
+                "Подтверждение действия",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            // saveBtn.doClick();
+            toDataBaseBtn.doClick();
         }
+
         return result;
     }
 
@@ -1575,9 +1574,10 @@ public class MainRacerGUI extends JFrame {
                 allRacers.get(i).setRacerAge(Integer.parseInt(age));
             if (!team.equals(allRacers.get(i).getTeam().getTeamName())) {
                 Team newTeam = isAtTeamList(allTeams, team);
-                if (allRacers.get(i).getTeam().getRacerNumber() > 1) {
-                    allRacers.get(i).getTeam().reduceRacerNumber();
-                    allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
+                Team oldTeam = isAtTeamList(allTeams, allRacers.get(i).getTeam());
+                if (oldTeam != null) {
+                    oldTeam.reduceRacerNumber();
+                    oldTeam.deductPoints(allRacers.get(i).getRacerPoints());
                 }
                 newTeam.expandRacerNumber();
                 if (!point.equals(allRacers.get(i).getRacerPoints().toString()))
@@ -1587,9 +1587,10 @@ public class MainRacerGUI extends JFrame {
 
                 allRacers.get(i).setTeam(newTeam);
             } else if (!point.equals(allRacers.get(i).getRacerPoints().toString())) {
-                allRacers.get(i).getTeam().deductPoints(allRacers.get(i).getRacerPoints());
+                Team oldTeam = isAtTeamList(allTeams, allRacers.get(i).getTeam());
+                oldTeam.deductPoints(allRacers.get(i).getRacerPoints());
                 allRacers.get(i).setRacerPoints(Integer.parseInt(point));
-                allRacers.get(i).getTeam().addPoints(allRacers.get(i).getRacerPoints());
+                oldTeam.addPoints(allRacers.get(i).getRacerPoints());
             }
 
         }
@@ -1694,7 +1695,10 @@ public class MainRacerGUI extends JFrame {
         List<Track> dbTracks = trackDao.getAllTracks();
         List<Score> dbScores = parentWindow.getMainScoreGUI().getScoreDao().getAllScores();
         List<Competition> dbCompetitions = parentWindow.getMainGraphicGUI().getCompetitionDao().getAllCompetitions();
-        if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers) && areEqualTrackLists(parentWindow.getMainTrackGUI().getAllTracks(), dbTracks) && areEqualScoreLists(parentWindow.getMainScoreGUI().getAllScores(), dbScores) && areEqualCompetitionLists(parentWindow.getMainGraphicGUI().getAllCompetitions(), dbCompetitions))
+        if (areEqualTeamLists(allTeams, dbTeams) && areEqualRacerLists(allRacers, dbRacers)
+                && areEqualTrackLists(parentWindow.getMainTrackGUI().getAllTracks(), dbTracks)
+                && areEqualScoreLists(parentWindow.getMainScoreGUI().getAllScores(), dbScores)
+                && areEqualCompetitionLists(parentWindow.getMainGraphicGUI().getAllCompetitions(), dbCompetitions))
             throw new IdenticalDataException("Full identical data!");
     }
 

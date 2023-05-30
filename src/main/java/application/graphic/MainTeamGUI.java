@@ -394,9 +394,6 @@ public class MainTeamGUI extends JFrame {
                             JOptionPane.QUESTION_MESSAGE);
                     if (result == JOptionPane.YES_OPTION) {
                         compareEditedData();
-                        // mainTeamGUI
-                        // .setTitle(mainTeamGUI.getTitle().substring(0, mainTeamGUI.getTitle().length()
-                        // - 23));
                         setEditingPermit(false);
                         setConfirmbarUnvisible();
                     }
@@ -509,7 +506,7 @@ public class MainTeamGUI extends JFrame {
      * @throws InvalidTeamInputException the exception throws if any edited team
      *                                   isn't valid
      */
-    private void checkEditedData() throws InvalidTeamInputException {
+    public void checkEditedData() throws InvalidTeamInputException {
         for (int i = 0; i < teamTable.getRowCount(); i++)
             if (!Validation.isValidTeam(teamTable.getValueAt(i, 0).toString()))
                 throw new InvalidTeamInputException(i + 1);
@@ -522,12 +519,19 @@ public class MainTeamGUI extends JFrame {
     private void compareEditedData() {
         List<Team> allTeams = parentWindow.getMainRacerGUI().getAllTeams();
         for (int i = 0; i < teamTable.getRowCount(); i++) {
-            if (!allTeams.get(i).getTeamName().equals(teamTable.getValueAt(i, 0)))
+            if (!allTeams.get(i).getTeamName().equals(teamTable.getValueAt(i, 0))) {
                 allTeams.get(i).setTeamName(teamTable.getValueAt(i, 0).toString());
+                for (Racer racer : parentWindow.getMainRacerGUI().getAllRacers()) {
+                    if (racer.getTeam().getTeamID().equals(allTeams.get(i).getTeamID())) {
+                        racer.setTeam(allTeams.get(i));
+                    }
+                }
+            }
         }
-        parentWindow.getMainRacerGUI().setRacerTable();
+
         parentWindow.getMainRacerGUI().updateComboTeam();
         parentWindow.getMainRacerGUI().getAddRacerWindow().updateComboTeam();
+        parentWindow.getMainRacerGUI().setRacerTable();
     }
 
     /***

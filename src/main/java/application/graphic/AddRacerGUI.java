@@ -325,9 +325,11 @@ public class AddRacerGUI {
         if (comboTeam.getItemAt(0) == null) {
             setTeamCheckBoxVisibility(false);
             setComboTeamVisibility(false);
+            setInputTeamVisibility(true);
         } else {
             setTeamCheckBoxVisibility(true);
             setComboTeamVisibility(true);
+            setInputTeamVisibility(false);
         }
     }
 

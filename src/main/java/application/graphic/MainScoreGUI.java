@@ -670,7 +670,7 @@ public class MainScoreGUI extends JFrame {
      * The function checks whether table data is valid
      */
 
-    private void checkEditedData() throws InvalidTimeException {
+    public void checkEditedData() throws InvalidTimeException {
         for (int i = 0; i < scoreTable.getRowCount(); i++) {
             if (!Validation.isValidTime(scoreTable.getValueAt(i, 2).toString()))
                 throw new InvalidTimeException(i + 1);
